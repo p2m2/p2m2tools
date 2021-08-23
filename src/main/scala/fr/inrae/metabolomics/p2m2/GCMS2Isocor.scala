@@ -24,6 +24,13 @@ case class GCMS2Isocor(val gcms_inputfiles : Array[String]) {
       def parse(filename : String) = {
             val lines = Source.fromFile(filename).getLines().toList
 
-            println(lines(0))
+            val categories = lines.zipWithIndex map {
+                  case (line: String, idx: Int) => line match {
+                        case categoryC if categoryC.startsWith("[") && categoryC.endsWith("]") =>
+                              (idx,categoryC.replaceFirst("\\[","").replaceFirst("\\]",""))
+                        case _ =>
+                  }
+            }
+            println(categories)
       }
 }
