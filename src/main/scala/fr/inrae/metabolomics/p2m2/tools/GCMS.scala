@@ -19,20 +19,21 @@ object GCMS {
   }
 }
 
-case class GCMS() extends Tool {
+case class GCMS(
+                 header : Map[HeaderField,String] = Map[HeaderField,String](),
+                 ms_quantitative_results : List[Map[String, String]] = List()
+               ) extends Tool {
 
 
 
   /**
    * [Header] map key, value
    */
-  val header : Map[HeaderField,String] = Map[HeaderField,String]()
 
   /**
    * [MS_Quantitative_Results] Array of results
    */
 //List[Map[MS_Quantitative_ResultsField.MS_Quantitative_ResultsField, String]] = List()
-  val ms_quantitative_results : List[Map[String, String]] = List()
 
 }
 
