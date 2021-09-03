@@ -1,4 +1,3 @@
-[debug] not up to date. inChanged = true, force = false
-[debug] Updating ProjectRef(uri("file:/C:/Users/ofilangi/IdeaProjects/P2M2WorkflowTools/project/"), "p2m2workflowtools-build")...
-[warn] Unrecognized repository Scala Plugin Bundled Repository, ignoring it
-[debug] Done updating ProjectRef(uri("file:/C:/Users/ofilangi/IdeaProjects/P2M2WorkflowTools/project/"), "p2m2workflowtools-build")
+[0m[[0m[0mdebug[0m] [0m[0mnot up to date. inChanged = true, force = false[0m
+[0m[[0m[0mdebug[0m] [0m[0mUpdating ProjectRef(uri("file:/media/olivier/hdd-local/workspace/INRAE/P2M2/MetabolomicsWorkflowTools/project/"), "metabolomicsworkflowtools-build")...[0m
+[0m[[0m[0mdebug[0m] [0m[0mDone updating ProjectRef(uri("file:/media/olivier/hdd-local/workspace/INRAE/P2M2/MetabolomicsWorkflowTools/project/"), "metabolomicsworkflowtools-build")[0m

@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.GCMS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
 import utest.{TestSuite, Tests, test}
 
 object GCMSParserTest extends TestSuite{

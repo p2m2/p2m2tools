@@ -1,8 +1,8 @@
-package fr.inrae.metabolomics.p2m2.tools
+package fr.inrae.metabolomics.p2m2.tools.format.output
 
-import fr.inrae.metabolomics.p2m2.tools.GCMS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.HeaderField
 
-object GCMS {
+object OutputGCMS {
   object CategoryTitle extends Enumeration {
     type CategoryTitle = Value
     val Header, MS_Quantitative_Results = Value
@@ -19,21 +19,17 @@ object GCMS {
   }
 }
 
-case class GCMS(
+/**
+ * Categories management :
+ * [Header] map key, value
+ * [MS_Quantitative_Results] Array of results
+ */
+
+case class OutputGCMS(
                  header : Map[HeaderField,String] = Map[HeaderField,String](),
                  ms_quantitative_results : List[Map[String, String]] = List()
-               ) extends Tool {
-
-
-
-  /**
-   * [Header] map key, value
-   */
-
-  /**
-   * [MS_Quantitative_Results] Array of results
-   */
+               )
 //List[Map[MS_Quantitative_ResultsField.MS_Quantitative_ResultsField, String]] = List()
 
-}
+
 

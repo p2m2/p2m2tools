@@ -1,7 +1,7 @@
 package fr.inrae.metabolomics.p2m2.parser
-import fr.inrae.metabolomics.p2m2.tools.GCMS
-import fr.inrae.metabolomics.p2m2.tools.GCMS.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.GCMS.HeaderField._
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.HeaderField
 
 import scala.io.Source
 
@@ -54,12 +54,12 @@ object GCMSParser extends GCMSParser {
                   case None => throw new Exception (s"Can not capture [$category]/Data File Name value")
                 }
               case s : String if s.startsWith("""Output Date""") =>
-                """Output Date\s+(.*)""".r.findFirstMatchIn(s) match {
+                """Output\sDate\s+(.*)""".r.findFirstMatchIn(s) match {
                   case Some(v) => Some(HeaderField.Output_Date -> v.group(1))
                   case None => throw new Exception(s"Can not capture [$category]/Output Date value")
                 }
               case s : String if s.startsWith("""Output Time""") =>
-                """Output Time\s+(.*)""".r.findFirstMatchIn(s) match {
+                """Output\sTime\s+(.*)""".r.findFirstMatchIn(s) match {
                   case Some(v) => Some(HeaderField.Output_Time -> v.group(1))
                   case None => throw new Exception(s"Can not capture [$category]/Output Time value")
                 }
@@ -93,14 +93,14 @@ object GCMSParser extends GCMSParser {
     }
   }
 
-  def get(toParse : List[String]) : GCMS = {
-    GCMS(
+  def get(toParse : List[String]) : OutputGCMS = {
+    OutputGCMS(
       header = parseHeader(toParse),
       ms_quantitative_results = parseMSQuantitativeResults(toParse)
     )
   }
 
-  def parse(filename : String) : GCMS = get(
+  def parse(filename : String) : OutputGCMS = get(
     Source.fromFile(filename)
       .getLines()
       .toList

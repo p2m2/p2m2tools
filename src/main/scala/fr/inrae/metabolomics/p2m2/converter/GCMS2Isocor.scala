@@ -1,4 +1,4 @@
-package fr.inrae.metabolomics.p2m2
+package fr.inrae.metabolomics.p2m2.converter
 
 import scala.io.Source
 

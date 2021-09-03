@@ -1,9 +1,9 @@
-package fr.inrae.metabolomics.p2m2
+package fr.inrae.metabolomics.p2m2.converter
 
-import utest._
+import utest.{TestSuite, Tests, test}
 
-object GCMS2IsocorTest extends TestSuite{
-  val tests = Tests{
+object GCMS2IsocorTest extends TestSuite {
+  val tests = Tests {
     /*
     test("test1"){
       val paths = Array(
