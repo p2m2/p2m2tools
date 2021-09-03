@@ -83,7 +83,7 @@ object GCMSParserTest extends TestSuite{
       assert (v.header.get(HeaderField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT1.qgd""" )
       assert (v.header.get(HeaderField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderField.Output_Time).last == "14:08:03")
-      assert (v.ms_quantitative_results.length == 262 )
+      assert (v.ms_quantitative_results.length == 259 )
     }
 
     test("parse 13CPROT2") {

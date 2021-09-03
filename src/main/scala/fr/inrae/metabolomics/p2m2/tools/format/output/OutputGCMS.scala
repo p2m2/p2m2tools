@@ -26,8 +26,9 @@ object OutputGCMS {
  */
 
 case class OutputGCMS(
-                 header : Map[HeaderField,String] = Map[HeaderField,String](),
-                 ms_quantitative_results : List[Map[String, String]] = List()
+                      origin : String,
+                      header : Map[HeaderField,String] = Map[HeaderField,String](),
+                      ms_quantitative_results : List[Map[String, String]] = List()
                )
 //List[Map[MS_Quantitative_ResultsField.MS_Quantitative_ResultsField, String]] = List()
 

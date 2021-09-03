@@ -93,14 +93,16 @@ object GCMSParser extends GCMSParser {
     }
   }
 
-  def get(toParse : List[String]) : OutputGCMS = {
+  def get(filename : String, toParse : List[String]) : OutputGCMS = {
     OutputGCMS(
+      origin = filename,
       header = parseHeader(toParse),
       ms_quantitative_results = parseMSQuantitativeResults(toParse)
     )
   }
 
   def parse(filename : String) : OutputGCMS = get(
+    filename,
     Source.fromFile(filename)
       .getLines()
       .toList
