@@ -10,7 +10,7 @@ import scopt.OParser
 
   case class Config(
                      foo: Int = -1,
-                     out: File = new File("./isocor_input_"+java.time.LocalDate.now+".tsv"),
+                     out: File = new File("./isocor_input.tsv"),
                      resolution: Int = 2000,
                      separator: String = "_",
                      verbose: Boolean = false,
@@ -84,6 +84,7 @@ case _ =>
       .foreach(lines => lines.foreach( l => { bw.write(l); bw.write("\n") } ) )
 
     bw.close()
+    println("output file:"+output.getPath)
   }
 
 }
