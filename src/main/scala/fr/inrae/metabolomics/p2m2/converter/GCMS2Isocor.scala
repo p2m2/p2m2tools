@@ -4,23 +4,12 @@ import fr.inrae.metabolomics.p2m2.parser.GCMSParser
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
 
-object GCMS2Isocor extends App {
-      println("hello world")
-      if (args.length>1) {
-            val filename_output_isocor = args(0)
-            println("output:"+filename_output_isocor)
-            //GCMS2Isocor(args.drop(1))
-      } else {
-
-      }
-}
-
 case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name : String = "_" ) {
 
-      def export(gcms_inputfiles : Array[String]) = {
-            println(gcms_inputfiles.mkString("\n"))
+      def build(gcmsInputFiles : Seq[String]) : Seq[OutputGCMS] = {
+            println(gcmsInputFiles.mkString("\n"))
 
-            gcms_inputfiles.map(
+            gcmsInputFiles.map(
                   fileName => GCMSParser.parse(fileName)
             )
       }
@@ -28,7 +17,7 @@ case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name 
 
       def transform( gcms : OutputGCMS ) : List[String] = {
             val sample = gcms.header.get(HeaderField.Data_File_Name) match {
-                  case Some(value) => value.split("[/\\\\]").last
+                  case Some(value) => value.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
                   case None => throw new Exception("Can not retrieve sample (end of 'Data File Name' value) origin:"+gcms.origin)
             }
 
@@ -55,9 +44,10 @@ case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name 
                                           }
                                           Some(List(sample, metabolite, derivative, isotopologue,area, resolution).mkString("\t"))
                                     }
-                                    case _ => {
+                                    case nameNotFormatted => {
                                           System.err.println(
                                                 "Name should be formatted [Metabolite]_[Derivative]_[Isotopologue] " +
+                                                  ", name:"+ nameNotFormatted.mkString(separator_name) +
                                                   ", origin:" + gcms.origin + ", id:" + id )
                                           None
                                     }

@@ -5,11 +5,7 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.Hea
 
 import scala.io.Source
 
-class GCMSParser {
-
-}
-
-object GCMSParser extends GCMSParser {
+object GCMSParser {
   val separator = "\t"
   /**
    *
