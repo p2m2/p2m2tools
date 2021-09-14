@@ -1,5 +1,6 @@
 <tool id="gcms2isocor" name="Conversion GCMS PostRun Analysis to IsoCor" version="0.1.0" python_template_version="3.5">
     <requirements>
+        <requirement type="package" version="8.0.121">openjdk</requirement> 
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
         java -jar '$__tool_directory__/P2M2WorkflowsTools-assembly-0.1.jar' '$input1' '$input2' --out '$output1'
