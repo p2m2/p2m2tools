@@ -15,8 +15,7 @@ planemo t
 
 ## tool_shed
 ```
-planemo shed_init --name="metabolomics" --owner="ofilangi" --description="Conversion from GCMS PostRun Analy
-sis to Isocore"
+planemo shed_init --name="metabolomics" --owner="ofilangi" --description="Conversion from GCMS PostRun Analysis to Isocor"
 ```
 ### todo
 
