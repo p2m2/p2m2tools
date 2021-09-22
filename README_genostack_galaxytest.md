@@ -8,24 +8,45 @@ https://galaxy-p2m2-192-168-100-198.vm.openstack.genouest.org/
 - doc : https://www.genouest.org/outils/genostack/volumes.html
 - /mnt/galaxy
 
+```
+sudo -i
+lsblk -f
+mkfs.ext4 /dev/vdb
+mkdir /mnt/galaxy
+mount /dev/vdb /mnt/galaxy
+```
+
+
 ## docker image
  
 see https://github.com/bgruening/docker-galaxy-stable
 
+```
+cd /mnt/galaxy
+git clone https://github.com/bgruening/docker-galaxy-stable.git
+```
+
 ## run 
 
-### stop apache
-service apache2 stop
+### stop apache to release port 80
 
-## config
+`service apache2 stop`
 
-vi /mnt/galaxy/docker-galaxy-stable/compose/docker-compose.yml
+## config (ADMIN_USER,....)
+
+
+```
+cp /mnt/galaxy/docker-galaxy-stable/compose/docker-compose.yml docker-compose.yml 
+vi docker-compose.yml 
+cp docker-compose.yml /mnt/galaxy/docker-galaxy-stable/compose/
+```
+
 
 ### run galaxy
-
-cp docker-compose.yml /mnt/galaxy/docker-galaxy-stable/compose/
+```
 cd /mnt/galaxy/docker-galaxy-stable/compose/
 docker-compose up -d
+```
 
 ### install tool 
 
