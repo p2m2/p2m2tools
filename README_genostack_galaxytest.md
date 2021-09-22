@@ -58,6 +58,12 @@ docker-compose up -d
 `sudo cp -r /home/debian/MetabolomicsWorkflowTools/galaxy/gcms2isocor /mnt/galaxy/docker-galaxy-stable/compose/export/galaxy/tools/
 
 ### add tool menu 
-
+if tool_conf.xml exist : 
 `cp tool_conf.xml /mnt/galaxy/docker-galaxy-stable/compose/export/galaxy/config/`
 
+or add section in `/mnt/galaxy/docker-galaxy-stable/compose/export/galaxy/config/tool_conf.xml`
+```
+<section name="Metabolomics" id="metabolomics">
+	  <tool file="gcms2isocor/gcms2isocor.xml" />
+  </section>
+```
