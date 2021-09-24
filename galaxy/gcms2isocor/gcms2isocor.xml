@@ -1,16 +1,11 @@
-<tool id="gcms2isocor" name="Conversion GCMS PostRun Analysis to IsoCor" version="0.1.0" python_template_version="3.5">
+<tool id="gcms2isocor" name="Conversion GCMS PostRun Analysis to IsoCor" version="0.1.0" profile="21.05">
     <requirements>
         <requirement type="package" version="8.0.121">openjdk</requirement> 
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
-       ins="" 
-       #for $input in $input_gcms_files
-         #if $input
-           ins=\$ins" "'$input';
-         #end if
-        #end for
-
-        java -jar '$__tool_directory__/P2M2WorkflowsTools-assembly-0.1.jar' \$ins --out '$output_isocor'
+       ins='$input_gcms_files';
+       ins=\${ins/,/" "};
+       java -jar '$__tool_directory__/P2M2WorkflowsTools-assembly-0.1.jar' \$ins --out '$output_isocor'
     ]]></command>
     <inputs>
         <param type="data" name="input_gcms_files" multiple="true" format="txt" />
@@ -28,15 +23,4 @@
         Conversion from GCMS PostRun Analysis to Isocore.
 	Processes GCMS files with the following categories: Header, MS Quantitative Results.
     ]]></help>
-    <citations>
-        <citation type="bibtex">
-@misc{githubMetabolomicsWorkflowTools,
-  author = {LastTODO, FirstTODO},
-  year = {TODO},
-  title = {MetabolomicsWorkflowTools},
-  publisher = {GitHub},
-  journal = {GitHub repository},
-  url = {https://github.com/p2m2/MetabolomicsWorkflowTools},
-}</citation>
-    </citations>
 </tool>
