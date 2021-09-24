@@ -38,11 +38,20 @@ case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name 
                                     case tokens if tokens.length == 3 => {
                                           val (metabolite,derivative,isotopologue) = (tokens(0),tokens(1),tokens(2))
                                           val area = mapResults.get("Area") match {
-                                                case Some(v) => v
-                                                case None => throw new Exception("Can not parse 'Area' field "+
-                                                  ", origin:" + gcms.origin + ", id:"+id )
+                                                case Some(v) if v != "" => v
+                                                case _ => {
+                                                      System.err.println("Can not parse 'Area' field "+
+                                                        ", origin:" + gcms.origin + ", id:"+id )
+                                                      None
+                                                }
+
                                           }
-                                          Some(List(sample, metabolite, derivative, isotopologue,area, resolution).mkString("\t"))
+                                          if ( area != None )
+                                                Some(List(sample, metabolite, derivative,
+                                                isotopologue.replace("m",""),area, resolution)
+                                            .mkString("\t"))
+                                          else
+                                                None
                                     }
                                     case nameNotFormatted => {
                                           System.err.println(
