@@ -2,7 +2,6 @@ package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.GCMSParser
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
 
 case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name : String = "_" ) {
 
@@ -16,10 +15,7 @@ case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name 
 
 
       def transform( gcms : OutputGCMS ) : List[String] = {
-            val sample = gcms.header.get(HeaderField.Data_File_Name) match {
-                  case Some(value) => value.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
-                  case None => throw new Exception("Can not retrieve sample (end of 'Data File Name' value) origin:"+gcms.origin)
-            }
+            val sample = gcms.origin.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
 
             gcms.ms_quantitative_results
               .flatMap {

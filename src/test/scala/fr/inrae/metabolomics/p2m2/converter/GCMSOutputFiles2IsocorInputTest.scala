@@ -5,8 +5,6 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
 import utest.{TestSuite, Tests, test}
 
-import scala.util.{Failure, Success, Try}
-
 object GCMSOutputFiles2IsocorInputTest extends TestSuite {
   val tests = Tests {
     /*
@@ -64,19 +62,19 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
       assert (
          GCMSOutputFiles2IsocorInput(resolution).transform(entry)  ==
            List(
-             s"Date File Name\tmetabolite1\tderivative1\tisotopologue1\tarea1\t$resolution"
+             s"SAMPLE\tmetabolite1\tderivative1\tisotopologue1\tarea1\t$resolution"
            )
        )
     }
 
     test("transform - 13CPROT1.txt") {
       val gcms_output = GCMSParser.parse(getClass.getResource("/13CPROT1.txt").getPath)
-      assert( GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 259 )
+      assert( GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 247 )
     }
 
     test("transform - 13CPROT2.txt") {
       val gcms_output = GCMSParser.parse(getClass.getResource("/13CPROT2.txt").getPath)
-      assert(  GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 259 )
+      assert(  GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 254 )
     }
   }
 }

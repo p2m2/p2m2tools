@@ -1,5 +1,5 @@
 name := "P2M2WorkflowsTools"
-version := "0.1"
+version := "0.1.3"
 scalaVersion := "2.13.6"
 
 libraryDependencies += "com.lihaoyi" %% "utest" % "0.7.10" % "test"
