@@ -66,7 +66,6 @@ object OpenLabCDSParser {
       .toList
       .map( _.trim )
       .filter( _.nonEmpty)
-      .filter( ! _.startsWith("#") )
   )
 
 }

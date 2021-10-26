@@ -15,6 +15,7 @@ object OutputOpenLabCDS {
 case class OutputOpenLabCDS(
                       origin : String,
                       header : Map[HeaderField,String] = Map[HeaderField,String](),
+                      // list of Name Compound/ Area/etc....
                       results : List[Map[String, String]] = List()
                )
 
