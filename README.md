@@ -20,14 +20,27 @@ name -> extraire (metabolite/derivative/isotologue)
 "sample"_"replicat"_"passeur"
 
 
-####
+#### test
 
 ``` 
-sbt "run src/test/resources/13CPROT1.txt src/test/resources/13CPROT2.txt --out input_isocor.tsv"
+sbt test
+```
+## Compilation
+
+``` 
 sbt assembly
 ```
 
+## Gcms2Isocor
+
 ``` 
-sbt assembly
-gcms2isocor --help
+./gcms2isocor --help
+./gcms2isocor src/test/resources/GCMS/13CPROT1.txt src/test/resources/GCMS/13CPROT2.txt --out input_isocor.tsv
+```
+
+## OpenLabCDS2Csv
+
+```
+./openLabCds2Csv --help
+./openLabCds2Csv src/test/resources/OpenLabCDS/Report_Ex1.txt src/test/resources/OpenLabCDS/Report_Ex2.txt src/test/resources/OpenLabCDS/Report_Ex3.txt --out text.csv
 ```

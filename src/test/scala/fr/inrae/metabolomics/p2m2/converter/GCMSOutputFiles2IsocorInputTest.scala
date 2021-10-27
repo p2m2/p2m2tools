@@ -68,12 +68,12 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
     }
 
     test("transform - 13CPROT1.txt") {
-      val gcms_output = GCMSParser.parse(getClass.getResource("/13CPROT1.txt").getPath)
+      val gcms_output = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT1.txt").getPath)
       assert( GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 247 )
     }
 
     test("transform - 13CPROT2.txt") {
-      val gcms_output = GCMSParser.parse(getClass.getResource("/13CPROT2.txt").getPath)
+      val gcms_output = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT2.txt").getPath)
       assert(  GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 254 )
     }
   }
