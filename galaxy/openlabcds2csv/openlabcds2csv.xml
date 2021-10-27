@@ -1,0 +1,40 @@
+<tool id="openlabcds2csv" name="Converting multiple OpenLabCDS Text Files to a CSV summary file" version="0.1.0" profile="21.05">
+    <requirements>
+        <requirement type="package" version="8.0.121">openjdk</requirement> 
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+      java -cp '$__tool_directory__/P2M2WorkflowsTools-assembly-0.1.4.jar' fr.inrae.metabolomics.p2m2.OpenLabCDS2CsvCommand
+       #for $input in $input_openlabscds_files
+         #if $input
+           $input
+         #end if
+        #end for
+        --out '$output_csv' --column '$column'
+    ]]></command>
+    <inputs>
+        <param type="data" name="input_openlabscds_files" multiple="true" format="txt" />
+        <param type="select" name="column" label="target column to build as summary">
+		<option value="RetTime">RetTime</option>
+		<option value="Type">Type</option>
+		<option value="ISTD">ISTD</option>
+		<option value="Area" selected="true">Area</option>
+		<option value="Amt/Area">Amt/Area</option>
+		<option value="Amount">Amount</option>
+                <option value="Grp">Grp</option>
+        </param>
+    </inputs>
+    <outputs>
+        <data name="output_csv" format="csv" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_openlabscds_files" value="Report_Ex1.txt,Report_Ex2.txt,Report_Ex3.txt"/>
+            <param name="column" value="Area"/>
+            <output name="output_csv" file="Results.csv"/>
+        </test>
+    </tests>
+    <help><![CDATA[
+       Get multiple "Internal Standard Report" from the OpenLabCDS software where are describe a list of compound in format row (columns : RetTime  Type  ISTD    Area     Amt/Area    Amount   Grp   Name)
+       The converter creates a summary that contains a header (a list of compounds) and a list of "Sample name" with associated values ​​for a target column (RetTime,Type,ISTD,Area,Amt/Area,Amount,Grp,Name)
+    ]]></help>
+</tool>

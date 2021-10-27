@@ -28,7 +28,7 @@ OParser.sequence(
     .valueName("<file>")
     .action((x, c) => c.copy(out = x))
     .text("out is a required file property"),
-  opt[String]("column OpenlabCDS")
+  opt[String]("column")
     .optional()
     .action({ case (r , c) => c.copy(column = r) })
     .valueName("<column>")
