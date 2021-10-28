@@ -1,0 +1,4 @@
+categories: [Metabolomics]
+description: Creates a summary of several "Internal Standard Report" OpenLabCDS results. 
+name: openlabcds2csv
+owner: genouest
