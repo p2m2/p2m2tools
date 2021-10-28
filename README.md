@@ -1,4 +1,4 @@
-# MetabolomicsWorkflowTools
+# P2M2Tools
 
 
 ```sbt
@@ -44,3 +44,5 @@ sbt assembly
 ./openLabCds2Csv --help
 ./openLabCds2Csv src/test/resources/OpenLabCDS/Report_Ex1.txt src/test/resources/OpenLabCDS/Report_Ex2.txt src/test/resources/OpenLabCDS/Report_Ex3.txt --out text.csv
 ```
+
+
