@@ -4,7 +4,7 @@
 [![codecov](https://codecov.io/gh/p2m2/p2m2tools/branch/develop/graph/badge.svg)](https://codecov.io/gh/p2m2/p2m2)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/9db61bd9732740c79a39de678c6e5246)](https://www.codacy.com/gh/p2m2/p2m2tools/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=p2m2/p2m2tools&amp;utm_campaign=Badge_Grade)
 
-Development of it and bioinformatics tools for the activities of the P2M2 platform.
+Development of bioinformatics tools/software related to P2M2 platform activities.
 All the tools developed are accessible via the Galaxy instance of the Genouest platform (https://galaxy.genouest.org/)
 
 ## GCMS2Isocor

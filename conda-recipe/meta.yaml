@@ -29,8 +29,8 @@ about:
   license_family: MIT
   summary: Java tools for working with NGS data in the BAM format
   description: >- 
-    Development of it and bioinformatics tools for the activities of the P2M2 platform. 
-    All the tools developed are accessible via the Galaxy instance of the Genouest platform (https://galaxy.genouest.org/) 
+    Development of bioinformatics tools/software related to P2M2 platform activities.
+    All the tools are accessible via the Galaxy instance of the Genouest platform (https://galaxy.genouest.org/)
     
     Usage : java -cp $CONDA_PREFIX/jar/p2m2tools.jar fr.inrae.metabolomics.p2m2.`Command`
     
