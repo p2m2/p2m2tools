@@ -15,23 +15,11 @@ https://doi.org/10.15454/1I9PET
 [Galaxy worklow](https://galaxy.genouest.org/u/ofilangi-1/w/corrective-method-dedicated-to-isocor-for-calculating-carbon-isotopologue-distribution-from-gcms-runs-5)
 
 
+## OpenLabCds2Csv
 
-### Input Data / GCMS PostRun Analysis
-
-Export Data -> Compound Quantitative Results
-
-### Header - Name format
-
-name -> extraire (metabolite/derivative/isotologue)  
-#### example glycosate / TMS / m0
-"sample"_"replicat"_"passeur"
-
-
-#### test
-
-``` 
-sbt test
-```
+Get multiple "Internal Standard Report" from the OpenLabCDS software where are describe a list of compound in format row (columns : RetTime  Type  ISTD    Area     Amt/Area    Amount   Grp   Name)
+The converter creates a summary that contains a header (a list of compounds) and a list of "Sample name" with associated values ​​for a target column (RetTime,Type,ISTD,Area,Amt/Area,Amount,Grp,Name)
+    
 
 
 

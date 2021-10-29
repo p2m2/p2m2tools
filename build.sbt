@@ -1,3 +1,5 @@
+scalaVersion := "2.13.6"
+
 name := "P2M2Tools"
 organizationName := "p2m2"
 organization := "com.github.p2m2"
@@ -11,8 +13,10 @@ scmInfo := Some(
   )
 )
 
-version      := "0.1.5"
-scalaVersion := "2.13.6"
+val static_version      = "0.1.5"
+val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_version )
+
+version :=  version_build
 
 libraryDependencies += "com.lihaoyi" %% "utest" % "0.7.10" % "test"
 libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.1"

@@ -12,6 +12,16 @@ sbt assembly
 ./gcms2isocor src/test/resources/GCMS/13CPROT1.txt src/test/resources/GCMS/13CPROT2.txt --out input_isocor.tsv
 ```
 
+### Input Data / GCMS PostRun Analysis
+
+Export Data -> Compound Quantitative Results
+
+### Header - Name format
+
+name -> extraire (metabolite/derivative/isotologue)
+#### example glycosate / TMS / m0
+"sample"_"replicat"_"passeur"
+
 ### OpenLabCDS2Csv
 
 ```
