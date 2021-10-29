@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="BSP: commons-lang3-3.8.1">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/apache/commons/commons-lang3/3.8.1/commons-lang3-3.8.1.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="BSP: /home/olivier/.sbt/boot/scala-2.12.14/org.scala-sbt/sbt/1.5.5/test-interface-1.0">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.14/org.scala-sbt/sbt/1.5.5/test-interface-1.0.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

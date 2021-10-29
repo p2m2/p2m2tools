@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="BSP: pgp-library_2.12">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo.scala-sbt.org/scalasbt/sbt-plugin-releases/com.jsuereth/pgp-library_2.12/2.1.1/jars/pgp-library_2.12.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="BSP: jansi">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.14/lib/jansi.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>

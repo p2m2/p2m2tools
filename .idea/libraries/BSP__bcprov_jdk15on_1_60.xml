@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="BSP: bcprov-jdk15on-1.60">
-    <CLASSES>
-      <root url="jar://$USER_HOME$/.cache/coursier/v1/https/repo1.maven.org/maven2/org/bouncycastle/bcprov-jdk15on/1.60/bcprov-jdk15on-1.60.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
