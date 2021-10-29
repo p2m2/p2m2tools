@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BSP: file-tree-views-2.1.6">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.14/org.scala-sbt/sbt/1.5.5/file-tree-views-2.1.6.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BSP: error_prone_annotations-2.4.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.14/org.scala-sbt/sbt/1.5.5/error_prone_annotations-2.4.0.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
