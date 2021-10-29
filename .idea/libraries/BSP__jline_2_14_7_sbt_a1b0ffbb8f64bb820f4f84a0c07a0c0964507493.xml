@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BSP: jline-2.14.7-sbt-a1b0ffbb8f64bb820f4f84a0c07a0c0964507493">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.14/org.scala-sbt/sbt/1.5.5/jline-2.14.7-sbt-a1b0ffbb8f64bb820f4f84a0c07a0c0964507493.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

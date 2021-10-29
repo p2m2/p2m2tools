@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="BSP: shaded-scalajson_2.12-1.0.0-M4">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.sbt/boot/scala-2.12.14/org.scala-sbt/sbt/1.5.5/shaded-scalajson_2.12-1.0.0-M4.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
