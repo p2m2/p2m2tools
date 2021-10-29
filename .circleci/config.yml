@@ -1,0 +1,155 @@
+#
+#  - Compile JVM/Js
+#  - Tests JVM
+#  - publish JVM Sonatype Snapshot for branches : main/master/develop
+#  - publish JVM Sonatype Stagge/Release (wait approval) for tags release
+#
+#  DOCKER_CONTEXT is a context global env variable for all application github p2m2 organization
+#   - DOCKER_USER          -> login
+#   - DOCKER_PASS          -> password
+#   - ORGANIZATION_NAME    -> organization register on dockerhub
+#
+#  CREDENTIAL_CONTEXT used by build.sbt
+#   - REALM_CREDENTIAL,HOST_CREDENTIAL,LOGIN_CREDENTIAL,PASSWORD_CREDENTIAL
+#
+#  NPM_CONTEXT
+#   - NPM_TOKEN : token (from ~/.npmrc) to publish nodejs lib
+#
+version: 2.1
+orbs:
+  node: circleci/node@4.7.0
+workflows:
+  compile-workflow:
+    jobs:
+      - compile:
+          context:
+            - DOCKER_CONTEXT
+
+      - test_and_coverage_jvm:
+          requires:
+            - compile
+          context:
+            - DOCKER_CONTEXT
+
+      - publish_snapshot:
+          requires:
+            - test_and_coverage_jvm
+          context:
+            - DOCKER_CONTEXT
+            - CREDENTIAL_CONTEXT
+            - GPG_CONTEXT
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only:
+                - develop
+                - main
+                - master
+
+      - publish_tag_to_sonatype_stagge_for_release:
+          context:
+            - DOCKER_CONTEXT
+            - CREDENTIAL_CONTEXT
+            - GPG_CONTEXT
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              ignore: /.*/
+
+     
+
+executors:
+
+  openjdk:
+      working_directory: ~/repo
+      docker:
+        - image: circleci/openjdk:8-jdk
+          auth:
+            username: ${DOCKER_USER}
+            password: ${DOCKER_PASS}
+
+jobs:
+  compile:
+    executor: openjdk
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Compile - JVM
+          command: cat /dev/null | sbt test:compile
+
+      - run:
+          name: Compile - JS
+          command: cat /dev/null | sbt test:compile
+
+  test_and_coverage_jvm:
+    executor: openjdk
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Test JVM env and Coverage
+          command: |
+            cat /dev/null | sbt clean coverage Test/test coverageReport
+            bash <(curl -s https://codecov.io/bash)
+            bash <(curl -Ls https://coverage.codacy.com/get.sh) report
+
+      - store_artifacts:
+          path: target/test-reports
+
+  publish_snapshot:
+    executor: openjdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Snapshot publication
+          command: |
+            export PROG_VERSION="${CIRCLE_BRANCH}-
+            echo "Importing key"
+            echo -e "$GPG_KEY" | gpg --import
+            sbt publish
+
+  publish_tag_to_sonatype_stagge_for_release:
+    executor: openjdk
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Snapshot publication
+          command: |
+            export PROG_VERSION="${CIRCLE_TAG}"
+            echo "Importing key"
+            echo -e "$GPG_KEY" | gpg --import
+            sbt publish
+
+
+

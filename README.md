@@ -1,5 +1,7 @@
 # P2M2Tools
 
+[![CircleCI](https://circleci.com/gh/p2m2/p2m2tools/tree/main.svg?style=svg)](https://circleci.com/gh/p2m2/p2m2tools/tree/main)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/9db61bd9732740c79a39de678c6e5246)](https://www.codacy.com/gh/p2m2/p2m2tools/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=p2m2/p2m2tools&amp;utm_campaign=Badge_Grade)
 
 ```sbt
 test
