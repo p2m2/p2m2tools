@@ -59,7 +59,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
         )
       )
       val resolution = scala.util.Random.nextInt(10000)
-     
+
       assert (
          GCMSOutputFiles2IsocorInput(resolution).transform(entry)  ==
            List(
