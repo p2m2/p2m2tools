@@ -27,7 +27,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
       assert( GCMSOutputFiles2IsocorInput(2000).transform(entry) == List() )
     }
 
-    test("transform - nothing") {
+    test("transform - nothing 2") {
       val entry = OutputGCMS(
         origin = "file/SAMPLE",
         header = Map(
@@ -59,10 +59,11 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
         )
       )
       val resolution = scala.util.Random.nextInt(10000)
+     
       assert (
          GCMSOutputFiles2IsocorInput(resolution).transform(entry)  ==
            List(
-             s"SAMPLE\tmetabolite1\tderivative1\tisotopologue1\tarea1\t$resolution"
+             s"Date File Name\tmetabolite1\tderivative1\tisotopologue1\tarea1\t$resolution"
            )
        )
     }
