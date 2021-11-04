@@ -134,17 +134,15 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
-      - restore_cache:
-          keys:
-            - v1-dependencies-{{ checksum "build.sbt" }}
-            # fallback to using the latest cache if no exact match is found
-            - v1-dependencies-
       - run:
-          name: Planemo test
+          name: Planemo lint and test
           command: |
             sudo pip install planemo
-            for d in galaxy-recipe/* ; do
-               echo "$d"
+            cd galaxy-recipe
+            ## planemo lint
+            planemo l -r --fail_level error
+            ## planemo test
+            for d in * ; do
                pushd $d
                planemo t
                popd
