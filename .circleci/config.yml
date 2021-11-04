@@ -36,6 +36,14 @@ workflows:
             - test_and_coverage_jvm
           context:
             - DOCKER_CONTEXT
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only:
+                - develop
+                - main
+                - master
 
       - publish_snapshot:
           requires:
