@@ -145,9 +145,9 @@ jobs:
             # fallback to using the latest cache if no exact match is found
             - v1-dependencies-
       - run:
-          name: Test JVM env and Coverage
+          name: Planemo test
           command: |
-            pip install planemo
+            sudo pip install planemo
             for d in galaxy-recipe/* ; do
                echo "$d"
                pushd $d
