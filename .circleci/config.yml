@@ -31,6 +31,12 @@ workflows:
           context:
             - DOCKER_CONTEXT
 
+      - test_planemo:
+          - requires:
+              - test_and_coverage_jvm
+              context:
+                - DOCKER_CONTEXT
+
       - publish_snapshot:
           requires:
             - test_and_coverage_jvm
@@ -69,6 +75,19 @@ executors:
           auth:
             username: ${DOCKER_USER}
             password: ${DOCKER_PASS}
+
+  planemo_executor:
+    working_directory: ~/repo
+    docker:
+      - image: circleci/openjdk:8-jdk
+        auth:
+          username: ${DOCKER_USER}
+          password: ${DOCKER_PASS}
+
+      - image: circleci/python:3.6.4
+        auth:
+          username: ${DOCKER_USER}
+          password: ${DOCKER_PASS}
 
 jobs:
   compile:
@@ -114,6 +133,27 @@ jobs:
 
       - store_artifacts:
           path: target/test-reports
+
+  test_planemo:
+    executor: planemo_executor
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Test JVM env and Coverage
+          command: |
+            pip install planemo
+            for d in galaxy-recipe/* ; do
+               echo "$d"
+               pushd $d
+               ls
+               popd
+            done
 
   publish_snapshot:
     executor: openjdk
