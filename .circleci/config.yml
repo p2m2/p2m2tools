@@ -32,10 +32,10 @@ workflows:
             - DOCKER_CONTEXT
 
       - test_planemo:
-          - requires:
-              - test_and_coverage_jvm
-              context:
-                - DOCKER_CONTEXT
+          requires:
+            - test_and_coverage_jvm
+          context:
+            - DOCKER_CONTEXT
 
       - publish_snapshot:
           requires:
