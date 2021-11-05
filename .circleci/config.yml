@@ -192,7 +192,8 @@ jobs:
           name: Planemo lint and test
           command: |
             version=$(cat conda-recipe/meta.yaml | awk ' BEGIN {FS="\""} $0 ~ "set version" {print $2}')
-            echo "version conda package $version"
+            echo "version conda package : $version"
+            echo "circle-ci tag         : $CIRCLE_CI"
             [ "${CIRCLE_CI}" = "$version" ]
   
 
