@@ -1,0 +1,13 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]
+  then
+    echo "no commands are defined. Please refer to the list of available actions."
+    exit 1
+fi
+
+
+JAR=$(find $PWD/assembly -name "*.jar")
+
+java -cp $JAR $*
+

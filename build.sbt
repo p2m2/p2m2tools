@@ -65,6 +65,7 @@ publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
 pomIncludeRepository := { _ => false }
 publishMavenStyle := true
 
+assembly / target := file("assembly")
 
 testFrameworks += new TestFramework("utest.runner.Framework")
 Global / onChangedBuildSource := ReloadOnSourceChanges
