@@ -46,9 +46,12 @@ conda activate test
 ```
 
 ```
-p2m2tools fr.inrae.metabolomics.p2m2.OpenLabCDS2CsvCommand --help
+p2m2tools fr.inrae.metabolomics.p2m2.command.OpenLabCDS2CsvCommand --help
 ```
+### commands
 
+- fr.inrae.metabolomics.p2m2.command.OpenLabCDS2CsvCommand
+- fr.inrae.metabolomics.p2m2.command.GCMS2IsocorCommand
 
 ## circle-ci
 
