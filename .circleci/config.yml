@@ -191,7 +191,7 @@ jobs:
              cd docker
              IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
 
-             docker build -t ${ORGANIZATION_NAME}/${IMAGE_NAME} .
+             docker build --build-arg BRANCH=${CIRCLE_BRANCH} -t ${ORGANIZATION_NAME}/${IMAGE_NAME} .
              echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
              docker push ${ORGANIZATION_NAME}/${IMAGE_NAME}
   
@@ -208,8 +208,8 @@ jobs:
             IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
             IMAGE_NAME_LATEST=${CIRCLE_PROJECT_REPONAME}:latest
 
-            docker build -t ${ORGANIZATION_NAME}/${IMAGE_NAME} .
-            docker build -t ${ORGANIZATION_NAME}/${IMAGE_NAME_LATEST} .
+            docker build --build-arg BRANCH=${CIRCLE_BRANCH} -t ${ORGANIZATION_NAME}/${IMAGE_NAME} .
+            docker build --build-arg BRANCH=${CIRCLE_BRANCH} -t ${ORGANIZATION_NAME}/${IMAGE_NAME_LATEST} .
 
             echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
             docker push ${ORGANIZATION_NAME}/${IMAGE_NAME}

@@ -3,7 +3,7 @@ FROM openjdk:jdk-bullseye
 LABEL author="Olivier Filangi"
 LABEL mail="olivier.filangi@inrae.fr" 
 
-ARG CIRCLE_BRANCH=main
+ARG BRANCH=main
 ARG REPOSITORY_URL=https://github.com/p2m2/p2m2tools.git
 
 USER root
@@ -22,8 +22,8 @@ RUN apt update &&\
 RUN git clone ${REPOSITORY_URL} /p2m2tools_repo
 
 WORKDIR /p2m2tools_repo
-RUN git checkout ${CIRCLE_BRANCH} && sbt assembly
+RUN git checkout ${BRANCH} && sbt assembly
 
 COPY p2m2tools .
 
-ENTRYPOINT [ "p2m2tools" ]
+ENTRYPOINT [ "./p2m2tools" ]
