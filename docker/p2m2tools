@@ -7,7 +7,7 @@ if [ $# -eq 0 ]
 fi
 
 
-JAR=$(find $PWD/assembly -name "p2m2tools*.jar")
+JAR=$(find $PWD/assembly -name "*.jar")
 
 java -cp $JAR $*
 

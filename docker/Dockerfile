@@ -26,4 +26,4 @@ RUN git checkout ${BRANCH} && sbt assembly
 
 COPY p2m2tools .
 
-CMD [ "./p2m2tools" ]
+ENTRYPOINT [ "./p2m2tools" ]
