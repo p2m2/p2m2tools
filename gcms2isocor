@@ -1,2 +1,0 @@
-#!/bin/bash
-java -cp target/scala-2.13/P2M2WorkflowsTools-assembly-0.1.4.jar fr.inrae.metabolomics.p2m2.GCMS2IsocorCommand $*

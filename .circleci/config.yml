@@ -58,8 +58,6 @@ workflows:
             branches:
               ignore: /.*/
 
-     
-
 executors:
 
   openjdk:
@@ -114,7 +112,7 @@ jobs:
 
       - store_artifacts:
           path: target/test-reports
-
+  
   publish_snapshot:
     executor: openjdk
     steps:
@@ -128,7 +126,7 @@ jobs:
       - run:
           name: Snapshot publication
           command: |
-            export PROG_VERSION="${CIRCLE_BRANCH}-
+            export PROG_VERSION="${CIRCLE_BRANCH}-SNAPSHOT"
             echo "Importing key"
             echo -e "$GPG_KEY" | gpg --import
             sbt publish
