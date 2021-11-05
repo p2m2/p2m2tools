@@ -31,9 +31,15 @@ workflows:
           context:
             - DOCKER_CONTEXT
 
-      - test_planemo:
+      - planemo_lint:
           requires:
             - test_and_coverage_jvm
+          context:
+            - DOCKER_CONTEXT
+
+      - planemo_tests:
+          requires:
+            - planemo_lint
           context:
             - DOCKER_CONTEXT
           filters:
@@ -71,6 +77,13 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
+      
+      - test_tag_package_conda:
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              only: /.*/
 
      
 
@@ -137,7 +150,20 @@ jobs:
       - store_artifacts:
           path: target/test-reports
 
-  test_planemo:
+  planemo_lint:
+    executor: planemo_executor
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Planemo lint and test
+          command: |
+            sudo pip install planemo
+            cd galaxy-recipe
+            ## planemo lint
+            planemo l -r --fail_level error
+
+  planemo_tests:
     executor: planemo_executor
     steps:
       - checkout
@@ -155,6 +181,20 @@ jobs:
                planemo t
                popd
             done
+  # check only in a tag branch
+  test_tag_package_conda:
+    docker: # executor type
+      - image: buildpack-deps:trusty 
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Planemo lint and test
+          command: |
+            version=$(cat conda-recipe/meta.yaml | awk ' BEGIN {FS="\""} $0 ~ "set version" {print $2}')
+            echo "version conda package $version"
+            [ "${CIRCLE_CI}" = "$version" ]
+  
 
   publish_snapshot:
     executor: openjdk
