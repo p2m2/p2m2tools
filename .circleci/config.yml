@@ -57,6 +57,29 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
+      
+      # only develop is build and push on dockerhub !
+      - build_branch:
+          context:
+            - DOCKER_CONTEXT
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only:
+                - develop
+                - dockerfile
+
+      # all tags are build and push on dockerhub !
+      - build_tag_latest:
+          context:
+            - DOCKER_CONTEXT
+          filters:
+            tags:
+              only: /.*/
+            branches:
+              # nothing coming from branch are deployed as latest
+              ignore: /.*/
 
 executors:
 
@@ -64,6 +87,13 @@ executors:
       working_directory: ~/repo
       docker:
         - image: circleci/openjdk:8-jdk
+          auth:
+            username: ${DOCKER_USER}
+            password: ${DOCKER_PASS}
+  
+  docker-publisher:
+      docker:
+        - image: circleci/buildpack-deps:stretch
           auth:
             username: ${DOCKER_USER}
             password: ${DOCKER_PASS}
@@ -149,5 +179,37 @@ jobs:
             echo -e "$GPG_KEY" | gpg --import
             sbt publish
 
+  build_branch:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Publish Docker Image to Docker Hub
+          # publication of <application>:<application_branch>
+          command: |
+             IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
 
+             docker build -t ${ORGANIZATION_NAME}/${IMAGE_NAME} .
+             echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
+             docker push ${ORGANIZATION_NAME}/${IMAGE_NAME}
+  
+  build_tag_latest:
+    executor: docker-publisher
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Publish Docker Tag to Docker Hub
+          # publication of <application>:<application_tag>
+          command: |
+            IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
+            IMAGE_NAME_LATEST=${CIRCLE_PROJECT_REPONAME}:latest
+
+            docker build -t ${ORGANIZATION_NAME}/${IMAGE_NAME} .
+            docker build -t ${ORGANIZATION_NAME}/${IMAGE_NAME_LATEST} .
+
+            echo ${DOCKER_PASS} | docker login -u ${DOCKER_USER} --password-stdin
+            docker push ${ORGANIZATION_NAME}/${IMAGE_NAME}
+            docker push ${ORGANIZATION_NAME}/${IMAGE_NAME_LATEST}
 
