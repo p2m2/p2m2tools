@@ -188,6 +188,7 @@ jobs:
           name: Publish Docker Image to Docker Hub
           # publication of <application>:<application_branch>
           command: |
+             cd docker
              IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}:${CIRCLE_BRANCH}
 
              docker build -t ${ORGANIZATION_NAME}/${IMAGE_NAME} .
@@ -203,6 +204,7 @@ jobs:
           name: Publish Docker Tag to Docker Hub
           # publication of <application>:<application_tag>
           command: |
+            cd docker
             IMAGE_NAME=${CIRCLE_PROJECT_REPONAME}:${CIRCLE_TAG}
             IMAGE_NAME_LATEST=${CIRCLE_PROJECT_REPONAME}:latest
 
