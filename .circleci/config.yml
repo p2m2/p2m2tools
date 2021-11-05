@@ -31,26 +31,6 @@ workflows:
           context:
             - DOCKER_CONTEXT
 
-      - planemo_lint:
-          requires:
-            - test_and_coverage_jvm
-          context:
-            - DOCKER_CONTEXT
-
-      - planemo_tests:
-          requires:
-            - planemo_lint
-          context:
-            - DOCKER_CONTEXT
-          filters:
-            tags:
-              ignore: /.*/
-            branches:
-              only:
-                - develop
-                - main
-                - master
-
       - publish_snapshot:
           requires:
             - test_and_coverage_jvm
@@ -87,14 +67,6 @@ executors:
           auth:
             username: ${DOCKER_USER}
             password: ${DOCKER_PASS}
-
-  planemo_executor:
-    working_directory: ~/repo
-    docker:
-      - image: circleci/python:3.9.4
-        auth:
-          username: ${DOCKER_USER}
-          password: ${DOCKER_PASS}
 
 jobs:
   compile:
@@ -140,38 +112,6 @@ jobs:
 
       - store_artifacts:
           path: target/test-reports
-
-  planemo_lint:
-    executor: planemo_executor
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Planemo lint and test
-          command: |
-            sudo pip install planemo
-            cd galaxy-recipe
-            ## planemo lint
-            planemo l -r --fail_level error
-
-  planemo_tests:
-    executor: planemo_executor
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Planemo lint and test
-          command: |
-            sudo pip install planemo
-            cd galaxy-recipe
-            ## planemo lint
-            planemo l -r --fail_level error
-            ## planemo test
-            for d in * ; do
-               pushd $d
-               planemo t
-               popd
-            done
   
   publish_snapshot:
     executor: openjdk
