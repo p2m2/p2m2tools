@@ -5,6 +5,7 @@ organizationName := "p2m2"
 organization := "com.github.p2m2"
 organizationHomepage := Some(url("https://www6.inrae.fr/p2m2"))
 licenses := Seq("MIT License" -> url("http://www.opensource.org/licenses/mit-license.php"))
+homepage := Some(url("https://github.com/p2m2/p2m2tools"))
 description := "Development of it and bioinformatics tools for the activities of the P2M2 platform."
 scmInfo := Some(
   ScmInfo(
@@ -12,6 +13,8 @@ scmInfo := Some(
     "scm:git@github.com:p2m2/p2m2tools.git"
   )
 )
+
+versionScheme := Some("early-semver")
 
 val static_version      = "0.1.5"
 val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_version )
@@ -33,6 +36,7 @@ coverageHighlighting := true
 developers := List(
   Developer("ofilangi", "Olivier Filangi", "olivier.filangi@inrae.fr",url("https://github.com/ofilangi"))
 )
+
 credentials += {
 
   val realm = scala.util.Properties.envOrElse("REALM_CREDENTIAL", "" )
