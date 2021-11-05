@@ -77,15 +77,6 @@ workflows:
               only: /.*/
             branches:
               ignore: /.*/
-      
-      - test_tag_package_conda:
-          filters:
-            tags:
-              only: /.*/
-            branches:
-              ignore: /.*/
-
-     
 
 executors:
 
@@ -181,22 +172,7 @@ jobs:
                planemo t
                popd
             done
-  # check only in a tag branch
-  test_tag_package_conda:
-    docker: # executor type
-      - image: buildpack-deps:trusty 
-    steps:
-      - checkout
-      - setup_remote_docker
-      - run:
-          name: Planemo lint and test
-          command: |
-            version=$(cat conda-recipe/meta.yaml | awk ' BEGIN {FS="\""} $0 ~ "set version" {print $2}')
-            echo "version conda package : $version"
-            echo "circle-ci tag         : $CIRCLE_CI"
-            [ "${CIRCLE_CI}" = "$version" ]
   
-
   publish_snapshot:
     executor: openjdk
     steps:
