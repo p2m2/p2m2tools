@@ -3,10 +3,8 @@ FROM openjdk:jdk-bullseye
 LABEL author="Olivier Filangi"
 LABEL mail="olivier.filangi@inrae.fr" 
 
-ARG BRANCH=main
+ARG BRANCH=develop
 ARG REPOSITORY_URL=https://github.com/p2m2/p2m2tools.git
-
-USER root
 
 # install sbt:https://www.scala-sbt.org/1.x/docs/Installing-sbt-on-Linux.html
 
@@ -22,8 +20,13 @@ RUN apt update &&\
 RUN git clone ${REPOSITORY_URL} /p2m2tools_repo
 
 WORKDIR /p2m2tools_repo
-RUN git checkout ${BRANCH} && sbt assembly
 
-COPY p2m2tools .
 
-ENTRYPOINT [ "./p2m2tools" ]
+RUN git checkout ${BRANCH} && sbt coverageOff assembly
+
+COPY p2m2tools /usr/bin/
+
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+

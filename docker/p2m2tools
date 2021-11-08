@@ -6,8 +6,8 @@ if [ $# -eq 0 ]
     exit 1
 fi
 
-
-JAR=$(find $PWD/assembly -name "*.jar")
+#  Directory inside Dockerfile should correspond to /p2m2tools_repo directory 
+JAR=$(find /p2m2tools_repo/assembly -name "*.jar")
 
 java -cp $JAR $*
 

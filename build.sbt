@@ -26,7 +26,6 @@ libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.1"
 
 // Coverage
 
-coverageEnabled := true
 coverageMinimumStmtTotal := 70
 coverageFailOnMinimum := false
 coverageHighlighting := true
