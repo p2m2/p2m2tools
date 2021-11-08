@@ -20,9 +20,11 @@ RUN apt update &&\
 RUN git clone ${REPOSITORY_URL} /p2m2tools_repo
 
 WORKDIR /p2m2tools_repo
+
 RUN git checkout ${BRANCH} && sbt coverageOff assembly
 
 COPY p2m2tools /usr/bin/
 
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 
