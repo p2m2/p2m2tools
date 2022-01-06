@@ -11,7 +11,7 @@ object MassLynxParser {
   def parseHeader( toParse : List[String] ) : Header =
     {
       val start = toParse.indices.find( id => toParse(id).trim == "Quantify Compound Summary Report" )
-      val end = toParse.indices.find(id => toParse(id).strip().startsWith("Compound"))
+      val end = toParse.indices.find(id => toParse(id).trim.startsWith("Compound"))
 
       start match {
         case Some(s) => end match {
