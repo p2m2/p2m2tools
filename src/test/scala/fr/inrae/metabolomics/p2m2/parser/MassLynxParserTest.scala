@@ -67,7 +67,7 @@ object MassLynxParserTest extends TestSuite{
           |
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
-      
+
       assert(MassLynxParser.parseResults(toParse.split("\n").toList) == List(("NH4+", List())))
     }
 
@@ -101,12 +101,12 @@ object MassLynxParserTest extends TestSuite{
           )
         ))
     }
-/*
+
     test("complete file") {
       val results : OutputMassLynx = MassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath)
       assert( results.header == Header(Some("Fri Sep 20 14:23:33 2019")) )
       assert( results.results.length == 163  )
-    }*/
+    }
 
   }
 
