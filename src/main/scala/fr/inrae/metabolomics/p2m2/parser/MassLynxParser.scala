@@ -30,6 +30,7 @@ object MassLynxParser {
     }
   def parseResults( toParse : List[String] ) : List[(String,List[CompoundField])] = {
     val listCompoundIndexLine = toParse.zipWithIndex.filter( _._1.trim.startsWith("Compound")).map(_._2)
+
     listCompoundIndexLine
       .zipWithIndex.map(
       vzip => {
@@ -57,17 +58,17 @@ object MassLynxParser {
       // split String => List[String] "List of Fields"
       .map( (line : String) => line.split(separator) )
       .map( l => (l,l.length) )
-      .map( something => {
+      .flatMap( something => {
         val mapLine : Seq[String] = something._1
         val length : Int = something._2
-        buildCompoundField(mapLine
-          .zipWithIndex.flatMap {
-          case (value, index) if length == header.length => Some(header(index) -> value)
-          case _ => {
-            System.err.println(" *** bad line def :" + mapLine.mkString(",") + " field number:" + length)
-            None
-          }
-        }.toMap)
+
+        if (length == header.length ) {
+          Some(buildCompoundField(mapLine
+            .zipWithIndex.map {  case (value, index) => header(index) -> value  }.toMap))
+        } else {
+          System.err.println(" *** bad line def :" + mapLine.mkString(",") + " field number:" + length)
+          None
+        }
       })
 
   }
