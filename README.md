@@ -17,9 +17,9 @@ https://doi.org/10.15454/1I9PET
 
 ### Targeted P2M2 device
 
-| **Manufacturer** | **Model**      |
-|:-----------------|:---------------| 
-| GCMS Shimadzu    | GCTQD (TQ8040) |
+| **Manufacturer** | **Model**     |
+|-----------------|---------------| 
+| GCMS Shimadzu   | GCTQD (TQ8040) |
 
 
 
@@ -30,9 +30,9 @@ The converter creates a summary that contains a header (a list of compounds) and
 
 ### Targeted P2M2 device
 
-| **Manufacturer**  | **Model**     |
-|:------------------|:--------------| 
-| Agilent           |       GC-FID Agilent 6890N        |
+| **Manufacturer** | **Model**            |
+|----------------|----------------------| 
+| Agilent        | GC-FID Agilent 6890N |
 
 ## MassLynx2Isocor
 
@@ -40,8 +40,8 @@ Build Isocor input file from MassLynx report ("Quantify Compound Summary Report"
 
 ### Targeted P2M2 device
 
-| **Manufacturer** | **Model**         |
-|:-----------------|:------------------| 
-| Waters Acquity   | HPLC TQD          |
+| **Manufacturer** | **Model**        |
+|-----------------|------------------| 
+| Waters Acquity  | HPLC TQD         |
 
 
