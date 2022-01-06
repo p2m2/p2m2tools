@@ -61,11 +61,13 @@ object MassLynxParser {
         val mapLine : Seq[String] = something._1
         val length : Int = something._2
         buildCompoundField(mapLine
-          .zipWithIndex
-          .map {
-            case (value, index) if length == header.length => header(index) -> value
-                case _ => throw new Exception("bad line of array :"+mapLine.mkString(","))
-          }.toMap)
+          .zipWithIndex.flatMap {
+          case (value, index) if length == header.length => Some(header(index) -> value)
+          case _ => {
+            System.err.println(" *** bad line def :" + mapLine.mkString(",") + " field number:" + length)
+            None
+          }
+        }.toMap)
       })
 
   }

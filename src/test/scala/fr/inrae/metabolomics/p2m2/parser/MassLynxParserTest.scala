@@ -4,6 +4,8 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{CompoundField, Header}
 import utest.{TestSuite, Tests, test}
 
+import scala.util.{Failure, Success, Try}
+
 object MassLynxParserTest extends TestSuite{
   val tests = Tests{
     test("file empty") {
@@ -49,7 +51,20 @@ object MassLynxParserTest extends TestSuite{
           List(CompoundField("GlyN15_A_3",188,"","",1.78,96688,"","",796,"1:A,6",11.911,"17-sept-19",1151660)))))
     }
 
-    test("complete file") {
+    test("parse compound with bad line") {
+      val toParse =
+        """Compound 1:  NH4+
+          |
+          |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
+          |1	GlyN15_A_3	188	--------------------	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
+
+      Try(MassLynxParser.parseResults(toParse.split("\n").toList) == List(("NH4+", List()))) match {
+        case Success(_) => assert(true)
+        case Failure(_) => assert(false)
+      }
+    }
+
+    test("full file content") {
       val toParse = """Quantify Compound Summary Report
                       |
                       |Printed Fri Sep 20 14:23:33 2019
@@ -57,14 +72,33 @@ object MassLynxParserTest extends TestSuite{
                       |Compound 1:  NH4+
                       |
                       |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
-                      |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
+                      |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660
+                      |
+                      |Compound 2:  NH4+, M+1
+                      |
+                      |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
+                      |1	SE1_GlyN15_3	189			1.75	16945			58	1:A,3	12.562	17-sept-19	212863
+                      |""".stripMargin
 
       val results : OutputMassLynx = MassLynxParser.get("test",toParse.split("\n").toList)
 
       assert( results.header == Header(Some("Fri Sep 20 14:23:33 2019")) )
       assert( results.results ==
-        List(("NH4+",
-          List(CompoundField("GlyN15_A_3",188,"","",1.78,96688,"","",796,"1:A,6",11.911,"17-sept-19",1151660)))))
+        List(
+          (
+            "NH4+",
+            List(CompoundField("GlyN15_A_3",188,"","",1.78,96688,"","",796,"1:A,6",11.911,"17-sept-19",1151660))
+        ),(
+            "NH4+, M+1",
+            List(CompoundField("SE1_GlyN15_3",189,"","",1.75,16945,"","",58,"1:A,3",12.562,"17-sept-19",212863))
+          )
+        ))
+    }
+
+    test("complete file") {
+      val results : OutputMassLynx = MassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath)
+      assert( results.header == Header(Some("Fri Sep 20 14:23:33 2019")) )
+      assert( results.results.length == 163  )
     }
 
   }
