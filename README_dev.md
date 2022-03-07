@@ -5,11 +5,16 @@ sbt assembly
 ```
 ### Tools
 
+```shell
+JAR=assembly/$(ls  assembly/ | tail -n1)
+```
+
 ### Gcms2Isocor
 
-``` 
-./gcms2isocor --help
-./gcms2isocor src/test/resources/GCMS/13CPROT1.txt src/test/resources/GCMS/13CPROT2.txt --out input_isocor.tsv
+```
+COMMAND="fr.inrae.metabolomics.p2m2.command.GCMS2IsocorCommand"
+java -cp $JAR $COMMAND --help
+java -cp $JAR $COMMAND src/test/resources/GCMS/13CPROT1.txt src/test/resources/GCMS/13CPROT2.txt --out input_isocor.tsv
 ```
 
 ### Input Data / GCMS PostRun Analysis
@@ -25,8 +30,17 @@ name -> extraire (metabolite/derivative/isotologue)
 ### OpenLabCDS2Csv
 
 ```
-./openLabCds2Csv --help
-./openLabCds2Csv src/test/resources/OpenLabCDS/Report_Ex1.txt src/test/resources/OpenLabCDS/Report_Ex2.txt src/test/resources/OpenLabCDS/Report_Ex3.txt --out text.csv
+COMMAND="fr.inrae.metabolomics.p2m2.command.OpenLabCDS2CsvCommand"
+java -cp $JAR $COMMAND --help
+java -cp $JAR $COMMAND src/test/resources/OpenLabCDS/Report_Ex1.txt src/test/resources/OpenLabCDS/Report_Ex2.txt src/test/resources/OpenLabCDS/Report_Ex3.txt --out text.csv
+```
+
+### 
+
+```
+COMMAND="fr.inrae.metabolomics.p2m2.command.MassLynx2IsocorCommand"
+java -cp $JAR $COMMAND --help
+java -cp $JAR $COMMAND src/test/resources/MassLynx/mass_15Ngly.txt -d src/test/resources/MassLynx/correspondence_derivatives.txt --out input_isocor.tsv
 ```
 
 ## Create conda package
@@ -52,6 +66,7 @@ p2m2tools fr.inrae.metabolomics.p2m2.command.OpenLabCDS2CsvCommand --help
 
 - fr.inrae.metabolomics.p2m2.command.OpenLabCDS2CsvCommand
 - fr.inrae.metabolomics.p2m2.command.GCMS2IsocorCommand
+- fr.inrae.metabolomics.p2m2.command.MassLynx2IsocorCommand
 
 ## circle-ci
 
