@@ -75,9 +75,22 @@ docker-compose up -d
 if tool_conf.xml exist : 
 `cp tool_conf.xml /mnt/galaxy/docker-galaxy-stable/compose/export/galaxy/config/`
 
-or add section in `/mnt/galaxy/docker-galaxy-stable/compose/export/galaxy/config/tool_conf.xml`
+or create `/mnt/galaxy/docker-galaxy-stable/compose/export/galaxy/config/tool_conf.xml`
 ```
-<section name="Metabolomics" id="metabolomics">
-	  <tool file="gcms2isocor/gcms2isocor.xml" />
+<?xml version="1.0"?>
+<toolbox>
+  <section name="Metabolomics" id="metabolomics">
+        <tool file="gcms2isocor/gcms2isocor.xml" />
   </section>
+
+ <section name="Metabolomics" id="metabolomics">
+        <tool file="openlabcds2csv/openlabcds2csv.xml" />
+ </section>
+
+
+ <section name="Metabolomics" id="metabolomics">
+     <tool file="masslynx2isocor/masslynx2isocor.xml" />
+ </section>
+
+</toolbox>
 ```
