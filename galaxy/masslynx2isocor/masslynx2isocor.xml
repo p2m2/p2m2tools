@@ -1,4 +1,4 @@
-<tool id="gcms2isocor" name="Conversion GCMS PostRun Analysis to IsoCor" version="0.1.0" profile="21.05">
+<tool id="masslynx2isocor" name="Conversion MassLynx [Quantify Compound Summary Report] to IsoCor" version="0.1.0" profile="21.05">
     <requirements>
         <requirement type="package" version="8.0.121">openjdk</requirement> 
     </requirements>
