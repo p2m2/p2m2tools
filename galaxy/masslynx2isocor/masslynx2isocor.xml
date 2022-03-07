@@ -1,0 +1,31 @@
+<tool id="gcms2isocor" name="Conversion GCMS PostRun Analysis to IsoCor" version="0.1.0" profile="21.05">
+    <requirements>
+        <requirement type="package" version="8.0.121">openjdk</requirement> 
+    </requirements>
+    <command detect_errors="exit_code"><![CDATA[
+      java -cp '$__tool_directory__/P2M2Tools-assembly-0.1.6.jar' fr.inrae.metabolomics.p2m2.command.MassLynx2IsocorCommand
+       #for $input in $input_masslynx_files
+         #if $input
+           $input
+         #end if
+        #end for
+        -d '$input_corr_derivatives' --out '$output_isocor'
+    ]]></command>
+    <inputs>
+        <param type="data" name="input_masslynx_files" multiple="true" format="txt" />
+        <param type="data" name="input_corr_derivatives" multiple="false" format="txt" />
+    </inputs>
+    <outputs>
+        <data name="output_isocor" format="tabular" />
+    </outputs>
+    <tests>
+        <test>
+            <param name="input_masslynx_files" value="mass_15Ngly.txt"/>
+            <param name="input_corr_derivatives" value="correspondence_derivatives.txt"/>
+            <output name="output_isocor" file="input_isocor.tsv"/>
+        </test>
+    </tests>
+    <help><![CDATA[
+        Convert the Build Isocor input file from MassLynx report ("Quantify Compound Summary Report") / HPLC TQD
+    ]]></help>
+</tool>
