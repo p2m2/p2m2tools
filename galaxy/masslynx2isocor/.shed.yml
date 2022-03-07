@@ -1,0 +1,4 @@
+categories: [Metabolomics]
+description: Conversion MassLynx [Quantify Compound Summary Report] to IsoCor
+name: masslynx2isocor
+owner: p2m2
