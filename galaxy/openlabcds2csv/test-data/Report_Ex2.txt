@@ -1,0 +1,52 @@
+Data File C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\Std 500.D
+Sample Name: EX2
+MPSr-GCFID 10/19/2021 2:39:33 PM SYSTEM
+
+=====================================================================
+Acq. Operator   : SYSTEM                         Seq. Line :   8
+Sample Operator : SYSTEM                                                                     
+Acq. Instrument : MPSr-GCFID                      Location :   6  (F)
+Injection Date  : 10/11/2021 11:03:47 PM               Inj :   1
+                                                Inj Volume : 1 µl
+Acq. Method     : C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\190314_
+                  Glucides_prep_12-110.M
+Last changed    : 2/25/2021 3:02:59 PM by SYSTEM
+Analysis Method : C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\190314_
+                  Glucides_retraitement.M
+Last changed    : 10/19/2021 2:39:30 PM by SYSTEM
+                  (modified after loading)
+Additional Info : Peak(s) manually integrated
+=====================================================================
+                      Internal Standard Report                       
+=====================================================================
+
+Sorted By             :      Signal
+Calib. Data Modified  :      10/15/2021 5:02:32 PM
+Multiplier            :      1.0000
+Dilution              :      1.0000
+Sample Amount:        :    100.00000  [ng/ul]   (not used in calc.)
+Use Multiplier & Dilution Factor with ISTDs
+Sample ISTD Information:
+ISTD  ISTD Amount   Name
+  #    [ng/ul]  
+----|-------------|-------------------------
+  1    100.00000   Adonitol
+
+
+Signal 1: FID1 A, 
+
+RetTime  Type  ISTD    Area     Amt/Area    Amount   Grp   Name
+ [min]         used  [pA*s]      ratio     [ng/ul]  
+-------|------|----|----------|----------|----------|--|------------------
+ 18.803 FM   I    1   11.20124    1.00000  100.00000    Glyoxylate
+ 20.245 MF        1   33.88725    1.83246  554.37562    Glycolate
+ 21.196 FM        1   58.95049    1.03368  544.01047    Succinate
+ 21.483 BB        1   34.04986    1.80697  549.28838    Glycerate
+Totals without ISTD(s) :                  1.95262e4 
+
+1 Warnings or Errors :
+
+Warning : Calibration warnings (see calibration table listing)
+
+=====================================================================
+                          *** End of Report ***
