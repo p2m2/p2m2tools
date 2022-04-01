@@ -1,7 +1,7 @@
 package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{CompoundField, Header, buildCompoundField}
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{SampleField, Header, buildSampleField}
 
 import scala.io.Source
 
@@ -28,7 +28,7 @@ object MassLynxParser {
         case None => Header()
       }
     }
-  def parseResults( toParse : List[String] ) : List[(String,List[CompoundField])] = {
+  def parseResults( toParse : List[String] ) : List[(String,List[SampleField])] = {
     val listCompoundIndexLine = toParse.zipWithIndex.filter( _._1.trim.startsWith("Compound")).map(_._2)
 
     listCompoundIndexLine
@@ -48,7 +48,7 @@ object MassLynxParser {
       })
   }
 
-  def parseArrayCompound( toParse : List[String] ) :List[CompoundField] = {
+  def parseArrayCompound( toParse : List[String] ) :List[SampleField] = {
     val header = List("INDEX","Name","Trace","Type","Std. Conc","RT",
       "Area","uM","%Dev","S/N","Vial","Height/Area","Acq.Date","Height")
 
@@ -63,7 +63,7 @@ object MassLynxParser {
         val length : Int = something._2
 
         if (length == header.length ) {
-          Some(buildCompoundField(mapLine
+          Some(buildSampleField(mapLine
             .zipWithIndex.map {  case (value, index) => header(index) -> value  }.toMap))
         } else {
           System.err.println(" *** bad line def :" + mapLine.mkString(",") + " field number:" + length +" should be :"+header.length)

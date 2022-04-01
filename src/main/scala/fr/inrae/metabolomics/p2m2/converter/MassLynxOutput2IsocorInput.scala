@@ -2,13 +2,12 @@ package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.MassLynxParser
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.CompoundField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.SampleField
 
 case class MassLynxOutput2IsocorInput(
                             correspondenceMetabolitesDerivative : Map[String,String],
                             resolution : Int = 2000 ,
-                            listSampleToRemove : Seq[String] = Seq("NH4"),
-                            defaultDerivative : String = "ACCQTAG"
+                            listSampleToRemove : Seq[String] = Seq("NH4")
                           ) {
 
       def build(inputFiles : Seq[String]) : Seq[OutputMassLynx] = {
@@ -25,32 +24,37 @@ case class MassLynxOutput2IsocorInput(
             massLynx
               .results
               .flatMap  {
-                    case (sample_and_compType : String , listMetabolites : List[CompoundField])  => {
-                          val sample = sample_and_compType.split(",").head.trim
+                    case (sample_and_compType : String , listMetabolites : List[SampleField])  => {
+                          val metabolite = sample_and_compType.split(",").head.trim
                           val compoundType = sample_and_compType.split(",").last.trim
-                          if (! listSampleToRemove.contains(sample))
+                          if (! listSampleToRemove.contains(metabolite))
                             listMetabolites
                               .flatMap(
-                                    (field: CompoundField) => {
-                                      (compoundType match {
-                                        case "M+H" => Some(List(
-                                          field.Name,
-                                          sample,
-                                          correspondenceMetabolitesDerivative.getOrElse(field.Name,defaultDerivative),
-                                          0,
-                                          field.Area,
-                                          resolution.toString
-                                        ).mkString("\t"))
-                                        case v if v.startsWith("M+") => Some(List(
-                                          field.Name,
-                                          sample,
-                                          correspondenceMetabolitesDerivative.getOrElse(field.Name,defaultDerivative),
-                                          v.replace("M+", "").toInt,
-                                          field.Area,
-                                          resolution.toString
-                                        ).mkString("\t"))
-                                        case _ => None
-                                      })
+                                    (field: SampleField) => {
+                                      correspondenceMetabolitesDerivative.get(metabolite) match {
+                                        case Some(fieldName) => {
+                                          (compoundType match {
+                                            case "M+H" => Some(List(
+                                              field.Name,
+                                              metabolite,
+                                              fieldName,
+                                              0,
+                                              field.Area,
+                                              resolution.toString
+                                            ).mkString("\t"))
+                                            case v if v.startsWith("M+") => Some(List(
+                                              field.Name,
+                                              metabolite,
+                                              fieldName,
+                                              v.replace("M+", "").toInt,
+                                              field.Area,
+                                              resolution.toString
+                                            ).mkString("\t"))
+                                            case _ => None
+                                          })
+                                        }
+                                        case None => None
+                                      }
                                     })
                           else List()
                     }

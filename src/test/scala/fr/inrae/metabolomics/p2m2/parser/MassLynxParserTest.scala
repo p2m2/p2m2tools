@@ -1,7 +1,7 @@
 package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{CompoundField, Header}
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{SampleField, Header}
 import utest.{TestSuite, Tests, test}
 
 import scala.util.{Failure, Success, Try}
@@ -58,7 +58,7 @@ object MassLynxParserTest extends TestSuite{
 
       assert(MassLynxParser.parseResults(toParse.split("\n").toList) ==
         List(("NH4+",
-          List(CompoundField("GlyN15_A_3",188,"","",1.78,96688,"","",796,"1:A,6",11.911,"17-sept-19",1151660)))))
+          List(SampleField("GlyN15_A_3",188,"","",1.78,96688,"","",796,"1:A,6",11.911,"17-sept-19",1151660)))))
     }
 
     test("parse compound with bad line") {
@@ -94,10 +94,10 @@ object MassLynxParserTest extends TestSuite{
         List(
           (
             "NH4+",
-            List(CompoundField("GlyN15_A_3",188,"","",1.78,96688,"","",796,"1:A,6",11.911,"17-sept-19",1151660))
+            List(SampleField("GlyN15_A_3",188,"","",1.78,96688,"","",796,"1:A,6",11.911,"17-sept-19",1151660))
         ),(
             "NH4+, M+1",
-            List(CompoundField("SE1_GlyN15_3",189,"","",1.75,16945,"","",58,"1:A,3",12.562,"17-sept-19",212863))
+            List(SampleField("SE1_GlyN15_3",189,"","",1.75,16945,"","",58,"1:A,3",12.562,"17-sept-19",212863))
           )
         ))
     }

@@ -14,7 +14,6 @@ case object MassLynx2IsocorCommand extends App {
                      resolution: Int = 2000,
                      derivatives : Option[File] = None,
                      separatorDerivativesFile : String = "[ \t;,]",
-                     defaultDerivative: String = "ACCQTAG",
                      listSampleToRemove : Seq [String] = Seq("NH4"),
                      verbose: Boolean = false,
                      debug: Boolean = false,
@@ -49,11 +48,6 @@ case object MassLynx2IsocorCommand extends App {
           else failure("Value <resolution> must be >0"))
         .valueName("<resolution>")
         .text("resolution for isocor tool."),
-      opt[String]("default_derivative")
-        .optional()
-        .action({ case (r, c) => c.copy(defaultDerivative = r) })
-        .valueName("<default_derivative>")
-        .text("default_derivative value"),
       opt[String]("list_sample_to_remove")
         .optional()
         .action({ case (r, c) => c.copy(listSampleToRemove = r.split(",")) })
@@ -89,7 +83,6 @@ case object MassLynx2IsocorCommand extends App {
         config.derivatives,
         config.separatorDerivativesFile,
         config.resolution,
-        config.defaultDerivative,
         config.listSampleToRemove
       )
     case _ =>
@@ -102,7 +95,6 @@ case object MassLynx2IsocorCommand extends App {
                       derivatives : Option[File],
                       separatorDerivativesFile : String,
                       resolution: Int,
-                      defaultDerivative: String,
                       listSampleToRemove : Seq[String]
                      ): Unit = {
 
@@ -125,7 +117,7 @@ case object MassLynx2IsocorCommand extends App {
 
     bw.write("sample\tmetabolite\tderivative\tisotopologue\tarea\tresolution\n")
 
-    val pro = MassLynxOutput2IsocorInput(correspondence,resolution, listSampleToRemove,defaultDerivative )
+    val pro = MassLynxOutput2IsocorInput(correspondence,resolution, listSampleToRemove )
 
     pro
       .build(files.map(_.getPath))
