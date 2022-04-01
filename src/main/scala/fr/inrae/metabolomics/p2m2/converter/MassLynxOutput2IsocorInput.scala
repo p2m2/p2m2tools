@@ -34,16 +34,16 @@ case class MassLynxOutput2IsocorInput(
                                     (field: CompoundField) => {
                                       (compoundType match {
                                         case "M+H" => Some(List(
-                                          sample,
                                           field.Name,
+                                          sample,
                                           correspondenceMetabolitesDerivative.getOrElse(field.Name,defaultDerivative),
                                           0,
                                           field.Area,
                                           resolution.toString
                                         ).mkString("\t"))
                                         case v if v.startsWith("M+") => Some(List(
-                                          sample,
                                           field.Name,
+                                          sample,
                                           correspondenceMetabolitesDerivative.getOrElse(field.Name,defaultDerivative),
                                           v.replace("M+", "").toInt,
                                           field.Area,
