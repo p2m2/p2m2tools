@@ -74,7 +74,7 @@ object MassLynxOutput2IsocorInputTest extends TestSuite {
         header=OutputMassLynx.Header(),
         results=MassLynxParser.parseResults(toParse.split("\n").toList)
       )
-      assert( MassLynxOutput2IsocorInput(Map()).transform(entry) == List("M+H\tGlyN15_A_3\tACCQTAG\t0\t96688\t2000"))
+      assert( MassLynxOutput2IsocorInput(Map()).transform(entry) == List("GlyN15_A_3\tM+H\tACCQTAG\t0\t96688\t2000"))
     }
 
     test("basic run with a sample M+H, resolution=1000") {
@@ -90,7 +90,7 @@ object MassLynxOutput2IsocorInputTest extends TestSuite {
         results=MassLynxParser.parseResults(toParse.split("\n").toList)
       )
       assert( MassLynxOutput2IsocorInput(Map(),resolution=1000).transform(entry) ==
-        List("M+H\tGlyN15_A_3\tACCQTAG\t0\t96688\t1000"))
+        List("GlyN15_A_3\tM+H\tACCQTAG\t0\t96688\t1000"))
     }
     test("basic run with a sample M+H, resolution=1000, defaultDerivative='TOTO'") {
       val toParse =
@@ -106,7 +106,7 @@ object MassLynxOutput2IsocorInputTest extends TestSuite {
       )
 
       assert( MassLynxOutput2IsocorInput(Map(),resolution=1000, defaultDerivative="TOTO").transform(entry) ==
-        List("M+H\tGlyN15_A_3\tTOTO\t0\t96688\t1000"))
+        List("GlyN15_A_3\tM+H\tTOTO\t0\t96688\t1000"))
     }
 
     test("basic run with a sample M+H, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
@@ -123,7 +123,7 @@ object MassLynxOutput2IsocorInputTest extends TestSuite {
       )
 
       assert( MassLynxOutput2IsocorInput(Map("GlyN15_A_3" -> "TOTO"),resolution=1000).transform(entry) ==
-        List("M+H\tGlyN15_A_3\tTOTO\t0\t96688\t1000"))
+        List("GlyN15_A_3\tM+H\tTOTO\t0\t96688\t1000"))
     }
   }
 }
