@@ -13,7 +13,7 @@ case object MassLynx2IsocorCommand extends App {
                      out: File = new File("./isocor_input.tsv"),
                      resolution: Int = 2000,
                      derivatives : Option[File] = None,
-                     separatorDerivativesFile : String = " ",
+                     separatorDerivativesFile : String = "[ \t;,]",
                      defaultDerivative: String = "ACCQTAG",
                      listSampleToRemove : Seq [String] = Seq("NH4"),
                      verbose: Boolean = false,
@@ -110,11 +110,16 @@ case object MassLynx2IsocorCommand extends App {
     val correspondence : Map[String,String] = derivatives match  {
       case Some(f) =>  Source.fromFile(f)
         .getLines()
+        .filter( _.trim.nonEmpty )
         .map(_.split(separatorDerivativesFile))
-        .map( x => (x(0), x(1)) ).toMap
+        .map( x => { if ( x.length != 2 ) {
+          System.err.println("bad definition of '"+f+"'\n------------------\n"+x.mkString(":")+"'\n------------------\n")
+          System.err.println("use [TABULATION] !\n")
+          throw new RuntimeException("Bad definition file.")
+        }; x })
+        .map( x =>  (x(0), x(1))  ).toMap
       case None => Map()
     }
-
 
     val bw = new BufferedWriter(new FileWriter(new File(output.getPath)))
 
