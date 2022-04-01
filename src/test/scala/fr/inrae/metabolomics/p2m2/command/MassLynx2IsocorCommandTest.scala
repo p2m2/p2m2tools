@@ -13,6 +13,7 @@ object MassLynx2IsocorCommandTest extends TestSuite {
       Try(MassLynx2IsocorCommand.main(Array(""))) match {
         case Success(_) => assert(true)
         case Failure(f) => f.printStackTrace();assert(false)
+
       }
     }
 
