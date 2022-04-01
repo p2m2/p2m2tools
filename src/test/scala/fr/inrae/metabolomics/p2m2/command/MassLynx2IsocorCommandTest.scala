@@ -39,6 +39,19 @@ object MassLynx2IsocorCommandTest extends TestSuite {
       }
     }
 
+    test("GCMS2IsocorCommandTest - with args derivatives bad definition. throw an error !") {
+      val tp = File.createTempFile("out-", ".tsv").getPath
+
+      Try(MassLynx2IsocorCommand.main(
+        Array(
+          getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath,
+          "--out",tp,
+          "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives_baddef.txt").getPath))) match {
+        case Success(_) => assert(false)
+        case Failure(f) => assert(true)
+      }
+    }
+
     test("GCMS2IsocorCommandTest - with args derivatives") {
       val tp = File.createTempFile("out-", ".tsv").getPath
 
