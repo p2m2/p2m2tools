@@ -124,5 +124,39 @@ object MassLynxOutput2IsocorInputTest extends TestSuite {
       assert( MassLynxOutput2IsocorInput(Map("M+H" -> "TOTO"),resolution=1000).transform(entry) ==
         List("GlyN15_A_3\tM+H\tTOTO\t0\t96688\t1000"))
     }
+
+    test("basic run with a sample M+H, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
+      val toParse =
+        """Compound 1:  M+H
+          |
+          |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
+          |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
+
+      val entry = OutputMassLynx(
+        origin="",
+        header=OutputMassLynx.Header(),
+        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+      )
+
+      assert( MassLynxOutput2IsocorInput(Map("M+H" -> "TOTO"),resolution=1000).transform(entry) ==
+        List("GlyN15_A_3\tM+H\tTOTO\t0\t96688\t1000"))
+    }
+
+    test("basic run with a sample M+H, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
+      val toParse =
+        """Compound 1:  TATA
+          |
+          |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
+          |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
+
+      val entry = OutputMassLynx(
+        origin="",
+        header=OutputMassLynx.Header(),
+        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+      )
+
+      assert( MassLynxOutput2IsocorInput(Map("TATA" -> "TOTO"),resolution=1000).transform(entry) ==
+        List("GlyN15_A_3\tTATA\tTOTO\t0\t96688\t1000"))
+    }
   }
 }
