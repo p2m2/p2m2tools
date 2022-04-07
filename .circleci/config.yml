@@ -173,7 +173,16 @@ jobs:
               pushd $directory
               planemo t
               popd
-            done  
+            done
+      - run:
+          name: Run on fail status
+          command: |
+            mkdir -p /tmp/html_reports
+            cp $(find ./galaxy/ -name *.html -type f)  /tmp/html_reports/
+          when: on_fail
+      - store_artifacts:
+          path: /tmp/html_reports
+          destination: artifacts-planemo-reports-html
           
 
   publish_snapshot:
