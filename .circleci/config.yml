@@ -167,7 +167,7 @@ jobs:
           command: |
             cd galaxy
             pip install planemo
-            for directory in $(ls -d */)
+            for directory in $(ls -d ls -d */ | awk '!/docker/ {print $0}')
             do
               echo " == $directory == "
               pushd $directory
