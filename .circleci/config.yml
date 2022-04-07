@@ -179,11 +179,16 @@ jobs:
           command: |
             mkdir -p /tmp/html_reports
             cp $(find ./galaxy/ -name *.html -type f)  /tmp/html_reports/
+            mkdir -p /tmp/json_reports
+            cp $(find ./galaxy/ -name *.json -type f)  /tmp/json_reports/
           when: on_fail
+
       - store_artifacts:
-          path: /tmp/html_reports
+          path: /tmp/html_reports/tool_test_output.html
           destination: artifacts-planemo-reports-html
-          
+      - store_artifacts:
+          path: /tmp/json_reports/tool_test_output.json
+          destination: artifacts-planemo-reports-json
 
   publish_snapshot:
     executor: openjdk
