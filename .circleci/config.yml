@@ -24,20 +24,18 @@ workflows:
       - compile:
           context:
             - DOCKER_CONTEXT
-
       - test_and_coverage_jvm:
           requires:
             - compile
           context:
             - DOCKER_CONTEXT
       - planemo_stage:
-          requires:
-            - test_and_coverage_jvm
           context:
             - DOCKER_CONTEXT
       - publish_snapshot:
           requires:
             - test_and_coverage_jvm
+            - planemo_stage
           context:
             - DOCKER_CONTEXT
             - CREDENTIAL_CONTEXT
@@ -173,7 +171,7 @@ jobs:
             do
               echo " == $directory == "
               pushd $directory
-              planemo -t
+              planemo t
               popd
             done  
           
