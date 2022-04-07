@@ -4,7 +4,7 @@ import fr.inrae.metabolomics.p2m2.parser.MassLynxParser
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
 import utest.{TestSuite, Tests, test}
 
-object MassLynxOutput2IsocorInputTest extends TestSuite {
+object  MassLynxOutput2IsocorInputTest extends TestSuite {
   val tests = Tests {
     test("nothing") {
       val entry = OutputMassLynx(
@@ -155,8 +155,7 @@ object MassLynxOutput2IsocorInputTest extends TestSuite {
         results=MassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
-      assert( MassLynxOutput2IsocorInput(Map("TATA" -> "TOTO"),resolution=1000).transform(entry) ==
-        List("GlyN15_A_3\tTATA\tTOTO\t0\t96688\t1000"))
+      assert( MassLynxOutput2IsocorInput(Map("TATA" -> "TOTO"),resolution=1000).transform(entry) == List())
     }
   }
 }
