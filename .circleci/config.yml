@@ -17,7 +17,7 @@
 #
 version: 2.1
 orbs:
-  node: circleci/node@4.7.0
+  node: circleci/node@5.0.2
 workflows:
   compile-workflow:
     jobs:
@@ -30,7 +30,11 @@ workflows:
             - compile
           context:
             - DOCKER_CONTEXT
-
+      - planemo_stage:
+          requires:
+            - test_and_coverage_jvm
+          context:
+            - DOCKER_CONTEXT
       - publish_snapshot:
           requires:
             - test_and_coverage_jvm
@@ -89,7 +93,15 @@ executors:
           auth:
             username: ${DOCKER_USER}
             password: ${DOCKER_PASS}
-  
+
+  python:
+      working_directory: ~/planemo
+      docker:
+        - image: cimg/python:3.10.1  # primary container for the build job
+          auth:
+            username: ${DOCKER_USER}
+            password: ${DOCKER_PASS}
+
   docker-publisher:
       docker:
         - image: circleci/buildpack-deps:stretch
@@ -141,7 +153,30 @@ jobs:
 
       - store_artifacts:
           path: target/test-reports
-  
+
+  planemo_stage:
+    executor: python
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Test P2M2 tools for Galaxy
+          command: |
+            cd galaxy
+            for directory in $(ls -d */)
+            do
+              echo " == $directory == "
+              pushd $directory
+              echo "planemo -t"
+              popd
+            done  
+          
+
   publish_snapshot:
     executor: openjdk
     steps:
