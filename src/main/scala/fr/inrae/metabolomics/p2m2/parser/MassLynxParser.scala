@@ -66,7 +66,7 @@ object MassLynxParser {
           Some(buildSampleField(mapLine
             .zipWithIndex.map {  case (value, index) => header(index) -> value  }.toMap))
         } else {
-          System.err.println(" *** bad line def :" + mapLine.mkString(",") + " field number:" + length +" should be :"+header.length)
+          //System.err.println(" *** bad line def :" + mapLine.mkString(",") + " field number:" + length +" should be :"+header.length)
           None
         }
       })
