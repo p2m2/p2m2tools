@@ -3,6 +3,8 @@ package fr.inrae.metabolomics.p2m2.parser
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
 import utest.{TestSuite, Tests, test}
 
+import scala.util.{Failure, Success, Try}
+
 object GCMSParserTest extends TestSuite{
   val tests = Tests{
     test("getIndexLinesByCategories empty") {
@@ -56,6 +58,60 @@ object GCMSParserTest extends TestSuite{
         HeaderField.Output_Date -> "23/08/2021",
         HeaderField.Output_Time -> "14:09:36"
       ))
+    }
+
+    test("parseHeader - parse exception *Data File Name* attribute malformed (empty) ") {
+      val toParse =
+        """
+          |
+          |[Header]
+          |Data File Name
+          |Output Date	23/08/2021
+          |Output Time	14:09:36
+          |
+          |[U]
+          |""".stripMargin
+
+      Try(GCMSParser.parseHeader(toParse.split("\n").toList)) match {
+        case Success(_) => assert(false)
+        case Failure(_) => assert(true)
+      }
+    }
+
+    test("parseHeader - parse exception *Output Date* attribute malformed (empty) ") {
+      val toParse =
+        """
+          |
+          |[Header]
+          |Data File Name test
+          |Output Date
+          |Output Time	14:09:36
+          |
+          |[U]
+          |""".stripMargin
+
+      Try(GCMSParser.parseHeader(toParse.split("\n").toList)) match {
+        case Success(_) => assert(false)
+        case Failure(_) => assert(true)
+      }
+    }
+
+    test("parseHeader - parse exception *Output Time* attribute malformed (empty) ") {
+      val toParse =
+        """
+          |
+          |[Header]
+          |Data File Name test
+          |Output Date
+          |Output Time
+          |
+          |[U]
+          |""".stripMargin
+
+      Try(GCMSParser.parseHeader(toParse.split("\n").toList)) match {
+        case Success(_) => assert(false)
+        case Failure(_) => assert(true)
+      }
     }
 
     test("parseMSQuantitativeResults - 1") {

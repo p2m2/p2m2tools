@@ -23,8 +23,8 @@ object OpenLabCDS2CsvCommandTest extends TestSuite {
       )
       val tp = File.createTempFile("out-", ".csv").getPath
 
-      Try(OpenLabCDS2CsvCommand.main(Array(getClass.getResource("/GCMS/13CPROT1.txt").getPath,"--out",tp))) match {
-        case Success(_) => assert(true)
+      Try(OpenLabCDS2CsvCommand.main(infiles ++ Array("--out",tp))) match {
+        case Success(a) => println(a);assert(true)
         case Failure(_) => assert(false)
       }
     }

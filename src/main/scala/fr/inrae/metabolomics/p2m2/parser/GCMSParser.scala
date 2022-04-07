@@ -45,18 +45,18 @@ object GCMSParser {
             .slice( lMin_lMax._1+1, lMin_lMax._2 )
             .flatMap {
               case s : String if s.startsWith("""Data File Name""") =>
-                """Data\sFile\sName\s+(.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Data_File_Name -> v.group(1))
+                """Data\sFile\sName(\s+.*)""".r.findFirstMatchIn(s) match {
+                  case Some(v) => Some(HeaderField.Data_File_Name -> v.group(1).trim)
                   case None => throw new Exception (s"Can not capture [$category]/Data File Name value")
                 }
               case s : String if s.startsWith("""Output Date""") =>
-                """Output\sDate\s+(.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Output_Date -> v.group(1))
+                """Output\sDate(\s+.*)""".r.findFirstMatchIn(s) match {
+                  case Some(v) => Some(HeaderField.Output_Date -> v.group(1).trim)
                   case None => throw new Exception(s"Can not capture [$category]/Output Date value")
                 }
               case s : String if s.startsWith("""Output Time""") =>
-                """Output\sTime\s+(.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Output_Time -> v.group(1))
+                """Output\sTime(\s+.*)""".r.findFirstMatchIn(s) match {
+                  case Some(v) => Some(HeaderField.Output_Time -> v.group(1).trim)
                   case None => throw new Exception(s"Can not capture [$category]/Output Time value")
                 }
               case _ => None
