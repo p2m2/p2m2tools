@@ -168,11 +168,12 @@ jobs:
           name: Test P2M2 tools for Galaxy
           command: |
             cd galaxy
+            pip install planemo
             for directory in $(ls -d */)
             do
               echo " == $directory == "
               pushd $directory
-              echo "planemo -t"
+              planemo -t
               popd
             done  
           
