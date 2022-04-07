@@ -1,7 +1,7 @@
 package fr.inrae.metabolomics.p2m2.tools.format.output
 
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{CompoundField, Header}
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{SampleField, Header}
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatterBuilder
@@ -22,7 +22,7 @@ object OutputMassLynx {
   }
 
   //Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
-  case class CompoundField(
+  case class SampleField(
                             Name          : String,
                             Trace         : Int,
                             Type          : String,
@@ -37,8 +37,8 @@ object OutputMassLynx {
                             `Acq.Date`    : String,
                             Height        : Int )
 
-  def buildCompoundField(map : Map[String,String] ) : CompoundField = {
-    CompoundField(
+  def buildSampleField(map : Map[String,String] ) : SampleField = {
+    SampleField(
       map.getOrElse("Name",""),
       map.getOrElse("Trace","-1").toInt,
       map.getOrElse("Type",""),
@@ -64,7 +64,7 @@ case class OutputMassLynx(
                       origin : String,
                       header : Header,
                       // list of Name Compound/ Area/etc....
-                      results : List[(String,List[CompoundField])] = List()
+                      results : List[(String,List[SampleField])] = List()
                )
 
 

@@ -3,20 +3,22 @@ package fr.inrae.metabolomics.p2m2.command
 import utest.{TestSuite, Tests, test}
 
 import java.io.File
+import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
 object MassLynx2IsocorCommandTest extends TestSuite {
 
   val tests = Tests {
 
-    test("GCMS2IsocorCommandTest - help") {
+    test("MassLynx2IsocorCommand - help") {
       Try(MassLynx2IsocorCommand.main(Array(""))) match {
         case Success(_) => assert(true)
         case Failure(f) => f.printStackTrace();assert(false)
+
       }
     }
 
-    test("GCMS2IsocorCommandTest - with args") {
+    test("MassLynx2IsocorCommand - with args") {
       val tp = File.createTempFile("out-", ".tsv").getPath
 
       Try(MassLynx2IsocorCommand.main(
@@ -26,20 +28,21 @@ object MassLynx2IsocorCommandTest extends TestSuite {
       }
     }
 
-    test("GCMS2IsocorCommandTest - with args derivatives (epty fil)") {
-      val tp = File.createTempFile("out-", ".tsv").getPath
-
+    test("MassLynx2IsocorCommand - with args derivatives (empty file)") {
+      val fileTp = File.createTempFile("out-", ".tsv")
+      val tp = fileTp.getPath
+      println(tp)
       Try(MassLynx2IsocorCommand.main(
         Array(
           getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath,
           "--out",tp,
           "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives_empty.txt").getPath))) match {
-        case Success(_) => assert(true)
+        case Success(a) => assert(Source.fromFile(tp).getLines().length == 1) // only header
         case Failure(f) => f.printStackTrace();assert(false)
       }
     }
 
-    test("GCMS2IsocorCommandTest - with args derivatives bad definition. throw an error !") {
+    test("MassLynx2IsocorCommand - with args derivatives bad definition. throw an error !") {
       val tp = File.createTempFile("out-", ".tsv").getPath
 
       Try(MassLynx2IsocorCommand.main(
@@ -52,7 +55,7 @@ object MassLynx2IsocorCommandTest extends TestSuite {
       }
     }
 
-    test("GCMS2IsocorCommandTest - with args derivatives") {
+    test("MassLynx2IsocorCommand - with args derivatives") {
       val tp = File.createTempFile("out-", ".tsv").getPath
 
       Try(MassLynx2IsocorCommand.main(
@@ -60,10 +63,9 @@ object MassLynx2IsocorCommandTest extends TestSuite {
           getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath,
           "--out",tp,
           "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives.txt").getPath))) match {
-        case Success(_) => assert(true)
+        case Success(_) => assert(Source.fromFile(tp).getLines().length > 1) // header and data
         case Failure(f) => f.printStackTrace();assert(false)
       }
     }
-
   }
 }
