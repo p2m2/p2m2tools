@@ -171,7 +171,7 @@ jobs:
             do
               echo " == $directory == "
               pushd $directory
-              planemo t
+              planemo l --fail_level error
               popd
             done
       - run:
