@@ -27,11 +27,11 @@ libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.1"
 // Coverage
 
 coverageMinimumStmtTotal := 97
-coverageMinimumBranchTotal := 94
-coverageMinimumStmtPerPackage := 94
-coverageMinimumBranchPerPackage := 94
-coverageMinimumStmtPerFile := 94
-coverageMinimumBranchPerFile := 94
+coverageMinimumBranchTotal := 93
+coverageMinimumStmtPerPackage := 93
+coverageMinimumBranchPerPackage := 93
+coverageMinimumStmtPerFile := 93
+coverageMinimumBranchPerFile := 93
 coverageFailOnMinimum := true
 coverageHighlighting := true
 
