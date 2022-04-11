@@ -21,13 +21,18 @@ val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_versi
 
 version :=  version_build
 
-libraryDependencies += "com.lihaoyi" %% "utest" % "0.7.10" % "test"
+libraryDependencies += "com.lihaoyi" %% "utest" % "0.7.11" % "test"
 libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.1"
 
 // Coverage
 
-coverageMinimumStmtTotal := 98
-coverageFailOnMinimum := false
+coverageMinimumStmtTotal := 97
+coverageMinimumBranchTotal := 93
+coverageMinimumStmtPerPackage := 93
+coverageMinimumBranchPerPackage := 93
+coverageMinimumStmtPerFile := 93
+coverageMinimumBranchPerFile := 93
+coverageFailOnMinimum := true
 coverageHighlighting := true
 
 // Publication
