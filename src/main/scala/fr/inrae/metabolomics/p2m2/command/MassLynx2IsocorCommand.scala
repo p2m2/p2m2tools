@@ -13,6 +13,7 @@ case object MassLynx2IsocorCommand extends App {
                      out: File = new File("./isocor_input.tsv"),
                      resolution: Int = 2000,
                      derivatives : Option[File] = None,
+                     metabolites : Option[File] = None,
                      separatorDerivativesFile : String = "[ \t;,]",
                      listSampleToRemove : Seq [String] = Seq("NH4"),
                      verbose: Boolean = false,
@@ -35,6 +36,11 @@ case object MassLynx2IsocorCommand extends App {
         .valueName("<file>")
         .action((x, c) => c.copy(derivatives = Some(x)))
         .text("derivatives is a required file property"),
+      opt[File]('m', "metabolites")
+        .optional()
+        .valueName("<file>")
+        .action((x, c) => c.copy(metabolites = Some(x)))
+        .text("metabolites isocor file property"),
       opt[String]("separator_derivatives_file")
         .optional()
         .action({ case (r, c) => c.copy(separatorDerivativesFile = r) })
@@ -81,6 +87,7 @@ case object MassLynx2IsocorCommand extends App {
         config.files,
         config.out,
         config.derivatives,
+        config.metabolites,
         config.separatorDerivativesFile,
         config.resolution,
         config.listSampleToRemove
@@ -93,6 +100,7 @@ case object MassLynx2IsocorCommand extends App {
   def MassLynx2Isocor(files: Seq[File],
                       output: File,
                       derivatives : Option[File],
+                      metabolites : Option[File],
                       separatorDerivativesFile : String,
                       resolution: Int,
                       listSampleToRemove : Seq[String]
@@ -107,7 +115,19 @@ case object MassLynx2IsocorCommand extends App {
         .map( x => { if ( x.length != 2 ) {
           System.err.println("bad definition of '"+f+"'\n------------------\n"+x.mkString(":")+"'\n------------------\n")
           System.err.println("use [TABULATION] !\n")
-          throw new RuntimeException("Bad definition file.")
+          throw new RuntimeException("Bad [Derivatives] definition file.")
+        }; x })
+        .map( x =>  (x(0), x(1))  ).toMap
+      case None => Map()
+    }
+
+    val formula : Map[String,String] = metabolites match  {
+      case Some(f) =>  Source.fromFile(f)
+        .getLines()
+        .filter( _.trim.nonEmpty )
+        .map(_.split(separatorDerivativesFile))
+        .map( x => { if ( x.length != 2 ) {
+          throw new RuntimeException("Bad [Metabolite] definition file.")
         }; x })
         .map( x =>  (x(0), x(1))  ).toMap
       case None => Map()
@@ -117,7 +137,7 @@ case object MassLynx2IsocorCommand extends App {
 
     bw.write("sample\tmetabolite\tderivative\tisotopologue\tarea\tresolution\n")
 
-    val pro = MassLynxOutput2IsocorInput(correspondence,resolution, listSampleToRemove )
+    val pro = MassLynxOutput2IsocorInput(correspondence,formula,resolution, listSampleToRemove )
 
     pro
       .build(files.map(_.getPath))
