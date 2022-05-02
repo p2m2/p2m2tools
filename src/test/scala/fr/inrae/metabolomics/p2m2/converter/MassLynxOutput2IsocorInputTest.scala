@@ -1,6 +1,7 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.MassLynxParser
+import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
 import utest.{TestSuite, Tests, test}
 
@@ -74,7 +75,9 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         header=OutputMassLynx.Header(),
         results=MassLynxParser.parseResults(toParse.split("\n").toList)
       )
-      assert( MassLynxOutput2IsocorInput(derivatives=Map("His"->"ACCQTAG"),formula=Map()).transform(entry) == List("GlyN15_A_3\tHis\tACCQTAG\t0\t96688\t2000"))
+
+      assert(MassLynxOutput2IsocorInput(derivatives=Map("His"->"ACCQTAG"),formula=Map())
+        .transform(entry) == List(InputIsocor("GlyN15_A_3","His","ACCQTAG",0,96688,"2000")))
     }
 
     test("basic run with a sample His, resolution=1000") {
@@ -90,7 +93,7 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         results=MassLynxParser.parseResults(toParse.split("\n").toList)
       )
       assert( MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map(),resolution=1000).transform(entry) ==
-        List("GlyN15_A_3\tHis\tACCQTAG\t0\t96688\t1000"))
+        List(InputIsocor("GlyN15_A_3","His","ACCQTAG",0,96688,"1000")))
     }
     test("basic run with a sample His, resolution=1000") {
       val toParse =
@@ -122,7 +125,7 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) ==
-        List("GlyN15_A_3\tHis\tTOTO\t0\t96688\t1000"))
+        List(InputIsocor("GlyN15_A_3","His","TOTO",0,96688,"1000")))
     }
 
     test("basic run with a sample M+H, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
@@ -139,7 +142,7 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) ==
-        List("GlyN15_A_3\tHis\tTOTO\t0\t96688\t1000"))
+        List(InputIsocor("GlyN15_A_3","His","TOTO",0,96688,"1000")))
     }
 
     test("basic run with a sample M+H, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
@@ -173,10 +176,18 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map("some" -> "C2HN"))
           .getNumberElementFromFormula("some",'C') == 2)
     }
-    test("getNumberElementFromFormula - C2HN definition get 16 for Carbone element") {
+    test("getNumberElementFromFormula - C16HN definition get 16 for Carbone element") {
       assert(
         MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map("some" -> "C16HN"))
           .getNumberElementFromFormula("some",'C') == 16)
+    }
+
+    test("getNumberElementFromFormula - C2H5N10 definition get 16 for Carbone element") {
+      val t = MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map("some" -> "C2H5N10"))
+      assert(t.getNumberElementFromFormula("some",'C') == 2)
+      assert(t.getNumberElementFromFormula("some",'H') == 5)
+      assert(t.getNumberElementFromFormula("some",'N') == 10)
+      assert(t.getNumberElementFromFormula("some",'U') == 0)
     }
   }
 }

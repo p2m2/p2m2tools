@@ -1,8 +1,11 @@
 package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.converter.MassLynxOutput2IsocorInput
+import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
 
 import java.io.{BufferedWriter, File, FileWriter}
+import scala.collection.immutable.Seq
 import scala.io.Source
 
 case object MassLynx2IsocorCommand extends App {
@@ -10,7 +13,8 @@ case object MassLynx2IsocorCommand extends App {
   import scopt.OParser
 
   case class Config(
-                     out: File = new File("./isocor_input.tsv"),
+                     out_13C: File = new File("./isocor_input_13C.tsv"),
+                     out_15N: File = new File("./isocor_input_15N.tsv"),
                      resolution: Int = 2000,
                      derivatives : Option[File] = None,
                      metabolites : Option[File] = None,
@@ -26,11 +30,16 @@ case object MassLynx2IsocorCommand extends App {
     OParser.sequence(
       programName("masslynx2isocor"),
       head("masslynx2isocor", "1.0"),
-      opt[File]('o', "out")
-        .required()
+      opt[File]( "out_13C")
+        .optional()
         .valueName("<file>")
-        .action((x, c) => c.copy(out = x))
-        .text("out is a required file property"),
+        .action((x, c) => c.copy(out_13C = x))
+        .text("out_13C is a optional file property"),
+      opt[File]( "out_15N")
+        .optional()
+        .valueName("<file>")
+        .action((x, c) => c.copy(out_15N = x))
+        .text("out_15N is a optional file property"),
       opt[File]('d', "derivatives")
         .optional()
         .valueName("<file>")
@@ -85,7 +94,8 @@ case object MassLynx2IsocorCommand extends App {
       println(config)
       MassLynx2Isocor(
         config.files,
-        config.out,
+        config.out_13C,
+        config.out_15N,
         config.derivatives,
         config.metabolites,
         config.separatorDerivativesFile,
@@ -96,9 +106,19 @@ case object MassLynx2IsocorCommand extends App {
       // arguments are bad, error message will have been displayed
       System.err.println("exit with error.")
   }
+  def build_results_element(pro: MassLynxOutput2IsocorInput,
+                            lists: Seq[InputIsocor],
+                            element : Char) : Seq[InputIsocor] = {
+
+    lists.filter((in : InputIsocor) => {
+        //  println(in.isotopologue, pro.getNumberElementFromFormula(in.metabolite,element))
+            in.isotopologue <= pro.getNumberElementFromFormula(in.metabolite,element)
+      })
+  }
 
   def MassLynx2Isocor(files: Seq[File],
-                      output: File,
+                      output_13C: File,
+                      output_15N: File,
                       derivatives : Option[File],
                       metabolites : Option[File],
                       separatorDerivativesFile : String,
@@ -124,30 +144,40 @@ case object MassLynx2IsocorCommand extends App {
     val formula : Map[String,String] = metabolites match  {
       case Some(f) =>  Source.fromFile(f)
         .getLines()
+        .drop(1)
         .filter( _.trim.nonEmpty )
-        .map(_.split(separatorDerivativesFile))
-        .map( x => { if ( x.length != 2 ) {
-          throw new RuntimeException("Bad [Metabolite] definition file.")
-        }; x })
+        .map(_.split("\\w"))
+        .map( v => { v.foreach(println);v }  )
         .map( x =>  (x(0), x(1))  ).toMap
       case None => Map()
     }
+    println("=================FORMULA ==================")
+    println(formula)
 
-    val bw = new BufferedWriter(new FileWriter(new File(output.getPath)))
+    val pro = MassLynxOutput2IsocorInput(correspondence,formula,resolution, listSampleToRemove)
+    val list:  Seq[InputIsocor] = pro.build(files.map(_.getPath)).map(pro.transform(_)).flatten
+
+    //======================================= output_13C =================================================
+    val bw = new BufferedWriter(new FileWriter(new File(output_13C.getPath)))
 
     bw.write("sample\tmetabolite\tderivative\tisotopologue\tarea\tresolution\n")
-
-    val pro = MassLynxOutput2IsocorInput(correspondence,formula,resolution, listSampleToRemove )
-
-    pro
-      .build(files.map(_.getPath))
-      .map(pro.transform)
-      .foreach(lines => lines.foreach(l => {
-        bw.write(l); bw.write("\n")
-      }))
-
+   build_results_element(pro, list, 'C')
+    .foreach( l => {
+      bw.write(l.string()); bw.write("\n")
+    })
     bw.close()
-    println("output file:" + output.getPath)
+
+    println("output_13C file:" + output_13C.getPath)
+
+    //======================================= output_15N =================================================
+    val bw2 = new BufferedWriter(new FileWriter(new File(output_15N.getPath)))
+    bw2.write("sample\tmetabolite\tderivative\tisotopologue\tarea\tresolution\n")
+    build_results_element(pro, list, 'N').foreach( l => {
+      bw2.write(l.string()); bw2.write("\n")
+    })
+    bw2.close()
+
+    println("output_15N file:" + output_15N.getPath)
   }
 
 }
