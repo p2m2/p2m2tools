@@ -1,28 +1,32 @@
-<tool id="masslynx2isocor" name="Conversion MassLynx [Quantify Compound Summary Report] to IsoCor" version="0.1.0" profile="20.09">
+<tool id="masslynx2isocor" name="Conversion MassLynx [Quantify Compound Summary Report] to IsoCor" version="0.1.1" profile="20.09">
     <requirements>
         <requirement type="package" version="8.0.121">openjdk</requirement> 
     </requirements>
     <command detect_errors="exit_code"><![CDATA[
-      java -cp '$__tool_directory__/P2M2Tools-assembly-0.1.7.jar' fr.inrae.metabolomics.p2m2.command.MassLynx2IsocorCommand
+      java -cp '$__tool_directory__/P2M2Tools-assembly-0.1.8.jar' fr.inrae.metabolomics.p2m2.command.MassLynx2IsocorCommand
        #for $input in $input_masslynx_files
          #if $input
            $input
          #end if
         #end for
-        -d '$input_corr_derivatives' --out '$output_isocor'
+        -d '$input_corr_derivatives' -m '$input_corr_metabolites' --out_13C '$output_isocor_13C' --out_15N '$output_isocor_15N'
     ]]></command>
     <inputs>
         <param type="data" name="input_masslynx_files" multiple="true" format="txt" />
         <param type="data" name="input_corr_derivatives" multiple="false" format="txt" />
+        <param type="data" name="input_corr_metabolites" multiple="false" format="tabular" />
     </inputs>
     <outputs>
-        <data name="output_isocor" format="tabular" />
+        <data name="output_isocor_13C" format="tabular" />
+        <data name="output_isocor_15N" format="tabular" />
     </outputs>
     <tests>
         <test>
             <param name="input_masslynx_files" value="mass_15Ngly.txt"/>
             <param name="input_corr_derivatives" value="correspondence_derivatives.txt"/>
-            <output name="output_isocor" file="input_isocor.tsv"/>
+            <param name="input_corr_metabolites" value="Metabolites.dat"/>
+            <output name="output_isocor_13C" file="isocor_input_13C.tsv"/>
+            <output name="output_isocor_15N" file="isocor_input_15N.tsv"/>
         </test>
     </tests>
     <help><![CDATA[
