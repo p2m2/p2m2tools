@@ -157,7 +157,6 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         header=OutputMassLynx.Header(),
         results=MassLynxParser.parseResults(toParse.split("\n").toList)
       )
-
       assert( MassLynxOutput2IsocorInput(derivatives=Map("TATA" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) == List())
     }
 

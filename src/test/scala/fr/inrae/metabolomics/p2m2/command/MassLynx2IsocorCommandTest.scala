@@ -84,7 +84,6 @@ object MassLynx2IsocorCommandTest extends TestSuite {
         case Failure(f) => f.printStackTrace();assert(false)
       }
     }
-
     test("MassLynx2IsocorCommand - with args metabolites.dat (formula)") {
       val toParse =
         """Compound 1:  His, M+7
