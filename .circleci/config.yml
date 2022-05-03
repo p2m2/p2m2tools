@@ -17,23 +17,33 @@
 #
 version: 2.1
 orbs:
-  node: circleci/node@4.7.0
+  node: circleci/node@5.0.2
 workflows:
   compile-workflow:
     jobs:
       - compile:
           context:
             - DOCKER_CONTEXT
-
       - test_and_coverage_jvm:
           requires:
             - compile
           context:
             - DOCKER_CONTEXT
-
+      - planemo_stage:
+          context:
+            - DOCKER_CONTEXT
+          filters:
+            tags:
+              ignore: /.*/
+            branches:
+              only:
+                - develop
+                - main
+                - master
       - publish_snapshot:
           requires:
             - test_and_coverage_jvm
+            - planemo_stage
           context:
             - DOCKER_CONTEXT
             - CREDENTIAL_CONTEXT
@@ -89,7 +99,15 @@ executors:
           auth:
             username: ${DOCKER_USER}
             password: ${DOCKER_PASS}
-  
+
+  python:
+      working_directory: ~/planemo
+      docker:
+        - image: cimg/python:3.10.1  # primary container for the build job
+          auth:
+            username: ${DOCKER_USER}
+            password: ${DOCKER_PASS}
+
   docker-publisher:
       docker:
         - image: circleci/buildpack-deps:stretch
@@ -141,7 +159,45 @@ jobs:
 
       - store_artifacts:
           path: target/test-reports
-  
+
+  planemo_stage:
+    executor: python
+    steps:
+      - checkout
+      - setup_remote_docker
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "build.sbt" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
+      - run:
+          name: Test P2M2 tools for Galaxy
+          command: |
+            cd galaxy
+            pip install planemo
+            for directory in $(ls -d ls -d */ | awk '!/docker/ {print $0}')
+            do
+              echo " == $directory == "
+              pushd $directory
+              planemo l --fail_level error
+              popd
+            done
+      - run:
+          name: Run on fail status
+          command: |
+            mkdir -p /tmp/html_reports
+            cp $(find ./galaxy/ -name *.html -type f)  /tmp/html_reports/
+            mkdir -p /tmp/json_reports
+            cp $(find ./galaxy/ -name *.json -type f)  /tmp/json_reports/
+          when: on_fail
+
+      - store_artifacts:
+          path: /tmp/html_reports/tool_test_output.html
+          destination: artifacts-planemo-reports-html
+      - store_artifacts:
+          path: /tmp/json_reports/tool_test_output.json
+          destination: artifacts-planemo-reports-json
+
   publish_snapshot:
     executor: openjdk
     steps:
