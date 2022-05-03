@@ -17,8 +17,8 @@
         <param type="data" name="input_corr_metabolites" multiple="false" format="tabular" />
     </inputs>
     <outputs>
-        <data name="output_isocor_13C" format="tabular" />
-        <data name="output_isocor_15N" format="tabular" />
+        <data name="output_isocor_13C" format="tabular" label="Input Data IsoCor : 13C" />
+        <data name="output_isocor_15N" format="tabular" label="Input Data IsoCor : 15N" />
     </outputs>
     <tests>
         <test>
