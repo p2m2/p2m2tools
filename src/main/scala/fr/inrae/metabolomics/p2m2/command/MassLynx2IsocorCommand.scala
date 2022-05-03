@@ -2,10 +2,8 @@ package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.converter.MassLynxOutput2IsocorInput
 import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
 
 import java.io.{BufferedWriter, File, FileWriter}
-import scala.collection.immutable.Seq
 import scala.io.Source
 
 case object MassLynx2IsocorCommand extends App {
@@ -41,12 +39,12 @@ case object MassLynx2IsocorCommand extends App {
         .action((x, c) => c.copy(out_15N = x))
         .text("out_15N is a optional file property"),
       opt[File]('d', "derivatives")
-        .optional()
+        .required()
         .valueName("<file>")
         .action((x, c) => c.copy(derivatives = Some(x)))
         .text("derivatives is a required file property"),
       opt[File]('m', "metabolites")
-        .optional()
+        .required()
         .valueName("<file>")
         .action((x, c) => c.copy(metabolites = Some(x)))
         .text("metabolites isocor file property"),
@@ -79,7 +77,6 @@ case object MassLynx2IsocorCommand extends App {
       help("help").text("prints this usage text"),
       arg[File]("<file>...")
         .unbounded()
-        .optional()
         .action((x, c) => c.copy(files = c.files :+ x))
         .text("optional unbounded args"),
       note("some notes." + sys.props("line.separator")),
@@ -111,7 +108,7 @@ case object MassLynx2IsocorCommand extends App {
                             element : Char) : Seq[InputIsocor] = {
 
     lists.filter((in : InputIsocor) => {
-        //  println(in.isotopologue, pro.getNumberElementFromFormula(in.metabolite,element))
+            //println(in.metabolite,in.isotopologue, pro.getNumberElementFromFormula(in.metabolite,element))
             in.isotopologue <= pro.getNumberElementFromFormula(in.metabolite,element)
       })
   }
@@ -146,8 +143,7 @@ case object MassLynx2IsocorCommand extends App {
         .getLines()
         .drop(1)
         .filter( _.trim.nonEmpty )
-        .map(_.split("\\w"))
-        .map( v => { v.foreach(println);v }  )
+        .map(_.split("\t"))
         .map( x =>  (x(0), x(1))  ).toMap
       case None => Map()
     }

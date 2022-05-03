@@ -13,9 +13,9 @@ import scala.util.{Failure, Success, Try}
 
 object MassLynx2IsocorCommandTest extends TestSuite {
 
-  val tests = Tests {
+  val tests: Tests = Tests {
 
-    /*test("MassLynx2IsocorCommand - help") {
+    test("MassLynx2IsocorCommand - help") {
       Try(MassLynx2IsocorCommand.main(Array())) match {
         case Success(_) => assert(true)
         case Failure(f) => f.printStackTrace();assert(false)
@@ -46,8 +46,9 @@ object MassLynx2IsocorCommandTest extends TestSuite {
           getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath,
           "--out_13C",tp,
           "--out_15N",tp2,
-          "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives_empty.txt").getPath))) match {
-        case Success(a) => assert(Source.fromFile(tp).getLines().length == 1) // only header
+          "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives_empty.txt").getPath,
+          "--metabolites",getClass.getResource("/MassLynx/Metabolites.dat").getPath))) match {
+        case Success(_) => assert(Source.fromFile(tp).getLines().length == 1)
         case Failure(f) => f.printStackTrace();assert(false)
       }
     }
@@ -61,9 +62,10 @@ object MassLynx2IsocorCommandTest extends TestSuite {
           getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath,
           "--out_13C",tp,
           "--out_15N",tp2,
-          "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives_baddef.txt").getPath))) match {
+          "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives_baddef.txt").getPath,
+          "--metabolites",getClass.getResource("/MassLynx/Metabolites.dat").getPath))) match {
         case Success(_) => assert(false)
-        case Failure(f) => assert(true)
+        case Failure(_) => assert(true)
       }
     }
 
@@ -76,11 +78,12 @@ object MassLynx2IsocorCommandTest extends TestSuite {
           getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath,
           "--out_13C",tp,
           "--out_15N",tp2,
-          "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives.txt").getPath))) match {
+          "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives.txt").getPath,
+          "--metabolites",getClass.getResource("/MassLynx/Metabolites.dat").getPath))) match {
         case Success(_) => assert(Source.fromFile(tp).getLines().length > 1) // header and data
         case Failure(f) => f.printStackTrace();assert(false)
       }
-    }*/
+    }
 
     test("MassLynx2IsocorCommand - with args metabolites.dat (formula)") {
       val toParse =
@@ -94,7 +97,7 @@ object MassLynx2IsocorCommandTest extends TestSuite {
         header=OutputMassLynx.Header(),
         results=MassLynxParser.parseResults(toParse.split("\n").toList)
       )
-      val list = Seq(MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map("His"->"C6H9N3O2")).transform(entry))
+      val list = MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map("His"->"C6H9N3O2")).transform(entry)
 
       assert(build_results_element(
         MassLynxOutput2IsocorInput(
