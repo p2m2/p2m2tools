@@ -27,8 +27,9 @@ object XcaliburParserTest extends TestSuite {
     test("getHeaderSheet") {
       val r = XcaliburXlsParser.getResults(workbook.getSheetAt(0))
       assert(r.length == 1)
-      assert(r.head.contains(HeaderField.Filename -> "020622_Std_290920_106_inj1_220603204908"))
-      assert(r.head.contains(HeaderField.Proc_Method -> "P:\\bia-prp_partage\\Projets_Interne_PRP\\PRP_Bia_partage\\DosagePolyphenols\\Reprocess_Methode\\050422_QC_Std290920"))
+      assert(r.head.get(HeaderField.Filename).contains("020622_Std_290920_106_inj1_220603204908"))
+      assert(r.head.get(HeaderField.Proc_Method)
+        .contains("P:\\bia-prp_partage\\Projets_Interne_PRP\\PRP_Bia_partage\\DosagePolyphenols\\Reprocess_Methode\\050422_QC_Std290920"))
     }
   }
 }

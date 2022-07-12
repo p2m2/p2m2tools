@@ -21,14 +21,11 @@ object OutputXcalibur {
   }
 }
 
-
+case class CompoundSheetXcalibur(
+                                  header : Map[HeaderSheetField,String] = Map[HeaderSheetField,String](),
+                                  results : Seq[Map[HeaderField, String]] = Seq())
 
 case class OutputXcalibur(
                            origin : String,
-                           header : Map[HeaderSheetField,String] = Map[HeaderSheetField,String](),
-                           results : List[Map[HeaderField, String]] = List()
-                         ) {
-
-
-
-}
+                           compounds : Seq[CompoundSheetXcalibur]
+                         )

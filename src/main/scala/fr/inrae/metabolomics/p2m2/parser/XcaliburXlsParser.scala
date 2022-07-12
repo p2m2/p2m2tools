@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur
+import fr.inrae.metabolomics.p2m2.tools.format.output.{CompoundSheetXcalibur, OutputXcalibur}
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.HeaderSheetField.HeaderSheetField
@@ -25,7 +25,7 @@ object XcaliburXlsParser extends Parser[OutputXcalibur] {
       }
   }
 
-  def getResults(sheet : HSSFSheet) : Seq[Seq[(HeaderField,String)]] = {
+  def getResults(sheet : HSSFSheet) : Seq[Map[HeaderField,String]] = {
 
     // get header
     val header : Seq[String] = (XLSParserUtil.getRowCellIndexesFromTerm(sheet,"Filename").headOption match {
@@ -61,7 +61,7 @@ object XcaliburXlsParser extends Parser[OutputXcalibur] {
               case Some(keyT) => Some(keyT -> value)
               case _ => None
             })
-        }
+        }.toMap
     }
   }
 
@@ -70,7 +70,7 @@ object XcaliburXlsParser extends Parser[OutputXcalibur] {
     val workbook : HSSFWorkbook = new HSSFWorkbook(file)
     val numSheet = workbook.getNumberOfSheets
 
-    0.until(numSheet)
+    val compounds : Seq[CompoundSheetXcalibur] = 0.until(numSheet)
       .map( workbook.getSheetAt )
       .map(
         sheet => {
@@ -78,11 +78,13 @@ object XcaliburXlsParser extends Parser[OutputXcalibur] {
         })
       .map {
         case (sheet : HSSFSheet, mapping : Map[String,String]) => {
-          sheet.getSheetName->(getHeaderSheet(mapping),Map())
+          CompoundSheetXcalibur(
+            getHeaderSheet(mapping),
+            getResults(sheet))
         }
       }
 
-    OutputXcalibur(filename,Map())
+    OutputXcalibur(filename,compounds)
   }
 
 }
