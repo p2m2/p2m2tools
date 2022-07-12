@@ -2,7 +2,7 @@ package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.parser.GCMSParserTest.getClass
 import fr.inrae.metabolomics.p2m2.parser.XLSParserTest.fileTestPath
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.HeaderSheetField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
@@ -25,7 +25,10 @@ object XcaliburParserTest extends TestSuite {
     }
 
     test("getHeaderSheet") {
-      XcaliburXlsParser.getResults(workbook.getSheetAt(0)).mkString("\n")
+      val r = XcaliburXlsParser.getResults(workbook.getSheetAt(0))
+      assert(r.length == 1)
+      assert(r.head.contains(HeaderField.Filename -> "020622_Std_290920_106_inj1_220603204908"))
+      assert(r.head.contains(HeaderField.Proc_Method -> "P:\\bia-prp_partage\\Projets_Interne_PRP\\PRP_Bia_partage\\DosagePolyphenols\\Reprocess_Methode\\050422_QC_Std290920"))
     }
   }
 }
