@@ -25,6 +25,13 @@ object XLSParserTest extends TestSuite {
       assert(res("Filename") == "Sample Type")
     }
 
+    test("getValuesRow") {
+      val file = new FileInputStream(new File(fileTestPath))
+      val workbook: HSSFWorkbook = new HSSFWorkbook(file)
+      val res = XLSParserUtil.getValuesRow(workbook.getSheetAt(0),4,0)
+      assert(res.head == "Filename")
+    }
+
     test("getRowCellIndexesFromTerm") {
       val file = new FileInputStream(new File(fileTestPath))
       val workbook: HSSFWorkbook = new HSSFWorkbook(file)

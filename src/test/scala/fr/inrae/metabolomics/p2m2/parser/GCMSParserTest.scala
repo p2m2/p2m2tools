@@ -60,6 +60,36 @@ object GCMSParserTest extends TestSuite{
       ))
     }
 
+    test("parseHeader - Error Time definition") {
+      val toParse =
+        """
+          |
+          |[Header]
+          |Data File Name	C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT2.qgd
+          |Output Date	23/08/2021
+          |Output Time
+          |
+          |[U]
+          |""".stripMargin
+
+      assert(Try(GCMSParser.parseHeader(toParse.split("\n").toList)) match{
+        case Success(_) => false
+        case Failure(_) => true
+      })
+    }
+
+    test("parseHeader -no header") {
+      val toParse =
+        """
+          |[U]
+          |""".stripMargin
+
+      assert(Try(GCMSParser.parseHeader(toParse.split("\n").toList)) match{
+        case Success(_) => false
+        case Failure(_) => true
+      })
+    }
+
     test("parseHeader - parse exception *Data File Name* attribute malformed (empty) ") {
       val toParse =
         """

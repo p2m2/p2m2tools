@@ -22,7 +22,8 @@ object XLSParserUtil {
           .filter(sheet.getRow(rowIndex).getCell(_) != null)
           .filter(sheet.getRow(rowIndex).getCell(_).toString.toLowerCase.contains(lowercaseSearchTerm))
         .map { rowIndex -> _ }
-      }).reduce( (x,y) => x ++ y)
+      })
+      .foldLeft(Seq[(Int,Int)]())( (x,y) => x ++ y)
   }
 
   def getValuesRow(sheet : HSSFSheet, indexRow : Int, startCellIndex : Int = 0) : Seq[String] = {

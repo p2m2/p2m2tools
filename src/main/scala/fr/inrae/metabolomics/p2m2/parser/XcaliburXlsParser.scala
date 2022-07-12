@@ -25,6 +25,11 @@ object XcaliburXlsParser extends Parser[OutputXcalibur] {
       }
   }
 
+  /**
+   * Get the list of Injection
+   * @param sheet
+   * @return
+   */
   def getResults(sheet : HSSFSheet) : Seq[Map[HeaderField,String]] = {
 
     // get header

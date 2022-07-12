@@ -22,10 +22,10 @@ object OutputXcalibur {
 }
 
 case class CompoundSheetXcalibur(
-                                  header : Map[HeaderSheetField,String] = Map[HeaderSheetField,String](),
-                                  results : Seq[Map[HeaderField, String]] = Seq())
+                                  compoundInformationHeader : Map[HeaderSheetField,String] = Map[HeaderSheetField,String](),
+                                  compoundByInjection : Seq[Map[HeaderField, String]] = Seq())
 
 case class OutputXcalibur(
                            origin : String,
-                           compounds : Seq[CompoundSheetXcalibur]
+                           injections : Seq[CompoundSheetXcalibur]
                          )
