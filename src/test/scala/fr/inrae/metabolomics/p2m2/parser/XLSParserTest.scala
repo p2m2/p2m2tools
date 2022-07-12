@@ -28,7 +28,7 @@ object XLSParserTest extends TestSuite {
     test("getRowCellIndexesFromTerm") {
       val file = new FileInputStream(new File(fileTestPath))
       val workbook: HSSFWorkbook = new HSSFWorkbook(file)
-      assert(XLSParserUtil.getRowCellIndexesFromTerm(workbook.getSheetAt(0),"Filename") == Seq(4,0))
+      assert(XLSParserUtil.getRowCellIndexesFromTerm(workbook.getSheetAt(0),"Filename") == Seq(4->0))
     }
   }
 }
