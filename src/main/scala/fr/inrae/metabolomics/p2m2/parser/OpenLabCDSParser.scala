@@ -7,7 +7,7 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderFie
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-object OpenLabCDSParser {
+object OpenLabCDSParser extends Parser[OutputOpenLabCDS]  {
   val separator = " "
 
   def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =

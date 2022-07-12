@@ -20,8 +20,11 @@ val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_versi
 
 version :=  version_build
 
-libraryDependencies += "com.lihaoyi" %% "utest" % "0.7.11" % "test"
-libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.1"
+libraryDependencies ++= Seq(
+  "com.lihaoyi" %% "utest" % "0.7.11" % "test",
+  "org.apache.poi" % "poi-ooxml" % "5.2.2",
+  "com.github.scopt" %% "scopt" % "4.0.1"
+)
 
 // Coverage
 

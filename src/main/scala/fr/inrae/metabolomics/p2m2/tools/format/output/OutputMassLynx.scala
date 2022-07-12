@@ -1,16 +1,16 @@
 package fr.inrae.metabolomics.p2m2.tools.format.output
 
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{SampleField, Header}
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{Header, SampleField}
 
 import java.time.LocalDate
-import java.time.format.DateTimeFormatterBuilder
+import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
 
 object OutputMassLynx {
 
   case class  Header(dateStr : Option[String] = None)  {
-    val formatter = new DateTimeFormatterBuilder()
+    val formatter: DateTimeFormatter = new DateTimeFormatterBuilder()
       .appendPattern("E MMM dd HH:mm:ss yyyy")
       .toFormatter(Locale.US)
 

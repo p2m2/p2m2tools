@@ -6,7 +6,7 @@ import utest.{TestSuite, Tests, test}
 
 import scala.util.{Failure, Success, Try}
 
-object MassLynxParserTest extends TestSuite{
+object MassLynxParserTest extends TestSuite {
   val tests = Tests{
     test("file empty") {
       val toParse = ""

@@ -5,7 +5,7 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{SampleFiel
 
 import scala.io.Source
 
-object MassLynxParser {
+object MassLynxParser extends Parser[OutputMassLynx] {
   val separator = "\t"
 
   def parseHeader( toParse : List[String] ) : Header =
