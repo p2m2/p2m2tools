@@ -1,9 +1,7 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.parser.GCMSParserTest.getClass
-import fr.inrae.metabolomics.p2m2.parser.XLSParserTest.fileTestPath
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
-import org.apache.poi.hssf.usermodel.{HSSFSheet, HSSFWorkbook}
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
 import java.io.{File, FileInputStream}
@@ -24,11 +22,11 @@ object XcaliburParserTest extends TestSuite {
       assert(r.contains(HeaderSheetField.Equation))
     }
 
-    test("getResults") {
+    test("getResults of empty sheet") {
       val workbook = new HSSFWorkbook()
       val sheet = workbook.createSheet("FirstSheet")
       val res = XcaliburXlsParser.getResults(sheet)
-      println("==================>",res)
+      assert(res.isEmpty)
     }
 
     test("getHeaderSheet") {
@@ -39,8 +37,16 @@ object XcaliburParserTest extends TestSuite {
         .contains("P:\\bia-prp_partage\\Projets_Interne_PRP\\PRP_Bia_partage\\DosagePolyphenols\\Reprocess_Methode\\050422_QC_Std290920"))
     }
 
-    test("getResults") {
-      XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+    test("parse test xls file") {
+      val out = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+      assert(out.origin == getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+      assert(out.injections.length==6)
+      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT")))
+      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT_MS")))
+      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC")))
+      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC_MS")))
+      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ")))
+      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ_MS")))
     }
 
   }

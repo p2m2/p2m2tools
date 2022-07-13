@@ -30,7 +30,7 @@ object XLSParserUtil {
     startCellIndex.to(sheet.getRow(indexRow).getLastCellNum).flatMap(
       cellIndex =>
         Try(sheet.getRow(indexRow).getCell(cellIndex).toString) match {
-          case Success(value) => Some(value)
+          case Success(value) => Some(value.trim)
           case _ => None
         }
     )
@@ -46,7 +46,7 @@ object XLSParserUtil {
             cellIndex =>
               Try(sheet.getRow(rowIndex).getCell(cellIndex).toString.trim
                 -> sheet.getRow(rowIndex+1).getCell(cellIndex).toString.trim) match {
-                case Success(value) if value._1.nonEmpty => Some(value)
+                case Success(value) if value._1.nonEmpty => Some(value._1.trim,value._2.trim)
                 case _ => None
               }
           )
@@ -63,7 +63,7 @@ object XLSParserUtil {
             cellIndex =>
               Try(sheet.getRow(rowIndex).getCell(cellIndex).toString.trim
                 -> sheet.getRow(rowIndex).getCell(cellIndex+1).toString.trim) match {
-                case Success(value) if value._1.nonEmpty => Some(value)
+                case Success(value) if value._1.nonEmpty => Some(value._1.trim,value._2.trim)
                 case _ => None
               }
           )
