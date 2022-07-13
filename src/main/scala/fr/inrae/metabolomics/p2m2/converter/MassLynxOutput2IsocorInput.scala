@@ -3,7 +3,8 @@ package fr.inrae.metabolomics.p2m2.converter
 import fr.inrae.metabolomics.p2m2.parser.MassLynxParser
 import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.SampleField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField.HeaderField
 
 case class MassLynxOutput2IsocorInput(
                                        derivatives : Map[String,String],
@@ -22,7 +23,7 @@ case class MassLynxOutput2IsocorInput(
 
       def getNumberElementFromFormula(metabolite: String, element: Char) : Int = formula.get(metabolite) match {
         case Some(formula) =>
-          val Pattern = "\\S[0-9]*".r
+          val Pattern = "\\S\\d*".r
           val it = Pattern
             .findAllMatchIn(formula)
             .filter( _.group(0).startsWith(element.toString))
@@ -42,30 +43,32 @@ case class MassLynxOutput2IsocorInput(
             massLynx
               .results
               .flatMap  {
-                    case (sample_and_compType : String , listMetabolites : List[SampleField])  =>
+                    case (sample_and_compType : String , listMetabolites : List[Map[HeaderField,String]])  =>
                       val metabolite = sample_and_compType.split(",").head.trim
                       val compoundType = sample_and_compType.split(",").last.trim
                       if (! listSampleToRemove.contains(metabolite))
                         listMetabolites
                           .flatMap(
-                                (field: SampleField) => {
+                                (field: Map[HeaderField,String]) => {
                                   derivatives.get(metabolite) match {
                                     case Some(fieldName) =>
-                                      (compoundType match {
+                                      compoundType match {
                                         case "M+H" =>
                                           Some(List(
                                             InputIsocor(
-                                              field.Name,metabolite,fieldName,0,field.Area,resolution.toString)))//.mkString("\t")
+                                              field.getOrElse(HeaderField.Name,"Unknown"),
+                                              metabolite,fieldName,0,
+                                              field.getOrElse(HeaderField.Area,"-1").toInt,resolution.toString)))//.mkString("\t")
                                         case v if v.startsWith("M+") => Some(List(InputIsocor(
-                                          field.Name,
+                                          field.getOrElse(HeaderField.Name,"Unknown"),
                                           metabolite,
                                           fieldName,
                                           v.replace("M+", "").toInt,
-                                          field.Area,
+                                          field.getOrElse(HeaderField.Area,"-1").toInt,
                                           resolution.toString
                                         ))) //.mkString("\t")
                                         case _ => None
-                                      })
+                                      }
                                         //.filter( (s: List[InputIsocor]) => s.isotopologue<=threshold)
                                     case None => None
                                   }

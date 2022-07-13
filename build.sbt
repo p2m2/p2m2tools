@@ -32,8 +32,8 @@ libraryDependencies ++= Seq(
 
 coverageMinimumStmtTotal := 98
 coverageMinimumBranchTotal := 98
-coverageMinimumStmtPerPackage := 97
-coverageMinimumBranchPerPackage := 97
+coverageMinimumStmtPerPackage := 95
+coverageMinimumBranchPerPackage := 95
 coverageMinimumStmtPerFile := 93
 coverageMinimumBranchPerFile := 93
 coverageFailOnMinimum := true

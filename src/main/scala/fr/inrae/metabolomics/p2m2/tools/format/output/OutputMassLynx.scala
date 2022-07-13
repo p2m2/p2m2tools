@@ -1,7 +1,8 @@
 package fr.inrae.metabolomics.p2m2.tools.format.output
 
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{Header, SampleField}
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.Header
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField.HeaderField
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
@@ -20,8 +21,26 @@ object OutputMassLynx {
     }
 
   }
+  object HeaderField extends Enumeration {
+    type HeaderField = Value
+    val `Num. Injection`, /* Build artificial (Column namle does not exist in the Quantify Compound Summary Report) */
+    Name, `Inj. Vol`, `Acq.Date`, `Acq.Time`, Type, `Conc.`, `Mod.Time`, `Std. Conc`,
+    Trace, RT, Area, uM, `%Dev`, `S/N`, `Vial`, `Height/Area`, Height = Value
+  }
+
+  def getHeaderField(token : String) : Option[HeaderField] =
+    HeaderField
+      .values
+      .find( _
+          .toString
+          .replace("$percent","%")
+          .replace("$u002E",".")
+          .replace("$u0020"," ")
+          .replace("$div","/")
+          .equalsIgnoreCase(token))
 
   //Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
+ /*
   case class SampleField(
                             Name          : String,
                             Trace         : Int,
@@ -53,7 +72,7 @@ object OutputMassLynx {
       map.getOrElse("Acq.Date",""),
       map.getOrElse("Height","-1").toInt,
     )
-  }
+  }*/
 }
 
 
@@ -64,7 +83,7 @@ case class OutputMassLynx(
                       origin : String,
                       header : Header,
                       // list of Name Compound/ Area/etc....
-                      results : List[(String,List[SampleField])] = List()
+                      results : Seq[(String,Seq[Map[HeaderField,String]])] = List()
                )
 
 

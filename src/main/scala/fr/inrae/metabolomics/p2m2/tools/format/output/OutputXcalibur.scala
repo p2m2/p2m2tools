@@ -1,8 +1,5 @@
 package fr.inrae.metabolomics.p2m2.tools.format.output
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.HeaderSheetField.HeaderSheetField
-
 
 object OutputXcalibur {
 
@@ -20,10 +17,6 @@ object OutputXcalibur {
     Sample_Vol, ISTD_Base_Amt, ISTD_Calc_Amt, Dilution_Factor, Study, Client, Laboratory, Company, Phone, Comment = Value
   }
 }
-
-case class CompoundSheetXcalibur(
-                                  compoundInformationHeader : Map[HeaderSheetField,String] = Map[HeaderSheetField,String](),
-                                  compoundByInjection : Seq[Map[HeaderField, String]] = Seq())
 
 case class OutputXcalibur(
                            origin : String,

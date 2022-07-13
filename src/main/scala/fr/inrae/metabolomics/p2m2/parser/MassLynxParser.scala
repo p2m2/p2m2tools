@@ -1,14 +1,15 @@
 package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{SampleField, Header, buildSampleField}
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.Header
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField.HeaderField
 
 import scala.io.Source
 
 object MassLynxParser extends Parser[OutputMassLynx] {
   val separator = "\t"
 
-  def parseHeader( toParse : List[String] ) : Header =
+  def parseHeader( toParse : Seq[String] ) : Header =
     {
       val start = toParse.indices.find( id => toParse(id).trim == "Quantify Compound Summary Report" )
       val end = toParse.indices.find(id => toParse(id).trim.startsWith("Compound"))
@@ -28,52 +29,52 @@ object MassLynxParser extends Parser[OutputMassLynx] {
         case None => Header()
       }
     }
-  def parseResults( toParse : List[String] ) : List[(String,List[SampleField])] = {
+  def parseResults( toParse : Seq[String] ) : Seq[(String,Seq[Map[HeaderField,String]])] = {
     val listCompoundIndexLine = toParse.zipWithIndex.filter( _._1.trim.startsWith("Compound")).map(_._2)
 
     listCompoundIndexLine
       .zipWithIndex.map(
-      vzip => {
-        val idx_line = vzip._1
-        val i_start = listCompoundIndexLine(vzip._2)+1
-        val i_end = vzip._2 match {
+      zip => {
+        val idx_line = zip._1
+        val iStart = listCompoundIndexLine(zip._2)+1
+        val iEnd = zip._2 match {
           case v if v == listCompoundIndexLine.length-1 => toParse.length
-          case _ => listCompoundIndexLine(vzip._2+1)
+          case idx => listCompoundIndexLine(idx+1)
         }
         val compoundName : String = """Compound\s\d+:\s+(.*)""".r.findFirstMatchIn(toParse(idx_line)) match {
           case Some(v) => v.group(1)
           case None => throw new Exception("Can not parse Compound name:"+toParse(idx_line))
         }
-        (compoundName,parseArrayCompound(toParse.slice(i_start,i_end)))
+        (compoundName,parseArrayCompound(toParse.slice(iStart,iEnd)))
       })
   }
 
-  def parseArrayCompound( toParse : List[String] ) :List[SampleField] = {
-    val header = List("INDEX","Name","Trace","Type","Std. Conc","RT",
-      "Area","uM","%Dev","S/N","Vial","Height/Area","Acq.Date","Height")
-
-    toParse
-      .filter(_.trim.nonEmpty)
-      .filter( ! _.trim.startsWith("Name") ) //avoid header
-      // split String => List[String] "List of Fields"
-      .map( (line : String) => line.split(separator) )
-      .map( l => (l,l.length) )
-      .flatMap( something => {
-        val mapLine : Seq[String] = something._1
-        val length : Int = something._2
-
-        if (length == header.length ) {
-          Some(buildSampleField(mapLine
-            .zipWithIndex.map {  case (value, index) => header(index) -> value  }.toMap))
-        } else {
-          //System.err.println(" *** bad line def :" + mapLine.mkString(",") + " field number:" + length +" should be :"+header.length)
-          None
+  def parseArrayCompound( toParse : Seq[String] ) :Seq[Map[HeaderField,String]] = {
+      toParse.filter(_.trim.nonEmpty).find(_.trim.startsWith("Name")) match {
+        case Some(headerString) => {
+          /* first value of array in the number corresponding to the injection*/
+          val header :Seq[String] = "Num. Injection" +: headerString.trim.split(separator)
+          toParse
+            .map(_.trim)
+            .filter(_.nonEmpty)
+            .filter( ! _.startsWith("Name") )
+            // split String => List[String] "List of Fields"
+            .map( (line : String) => line.split(separator) )
+            .map( mapLine => {
+              mapLine
+                .zipWithIndex.flatMap {  case (value, index) =>
+                OutputMassLynx.getHeaderField(header(index)) match {
+                  case Some(k) if value.nonEmpty => Some(k -> value)
+                  case _ => None
+                }
+              }.toMap
+            })
         }
-      })
-
+        case None => Seq()
+      }
   }
 
-  def get(filename : String, toParse : List[String]) : OutputMassLynx = {
+  def get(filename : String, toParse : Seq[String]) : OutputMassLynx = {
     OutputMassLynx(
       origin = filename,
       header = parseHeader(toParse),
@@ -81,14 +82,19 @@ object MassLynxParser extends Parser[OutputMassLynx] {
     )
   }
 
-  def parse(filename : String) : OutputMassLynx = get(
-    filename,
-    Source
+  def parse(filename : String) : OutputMassLynx = {
+
+    val s = Source
       .fromFile(filename)
-      .getLines()
-      .toList
-      .map( _.trim )
-      .filter( _.nonEmpty)
-  )
+    val lines = s.getLines().toList
+    s.close()
+
+    get(
+      filename,
+      lines
+        .map( _.trim )
+        .filter( _.nonEmpty)
+    )
+  }
 
 }
