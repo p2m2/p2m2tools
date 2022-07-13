@@ -25,7 +25,8 @@ libraryDependencies ++= Seq(
   "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.18.0" % Test,
   "org.slf4j" % "slf4j-simple" % "2.0.0-alpha7" % Test,
   "org.apache.poi" % "poi-ooxml" % "5.2.2",
-  "com.github.scopt" %% "scopt" % "4.0.1"
+  "com.github.scopt" %% "scopt" % "4.0.1",
+  "org.scala-lang.modules" %% "scala-xml" % "2.1.0",
 )
 
 // Coverage

@@ -84,8 +84,7 @@ object QuantifyCompoundSummaryReportMassLynxParser extends Parser[OutputQuantify
 
   def parse(filename : String) : OutputQuantifyCompoundSummaryReportMassLynx = {
 
-    val s = Source
-      .fromFile(filename)
+    val s = Source.fromFile(filename)
     val lines = s.getLines().toList
     s.close()
 
