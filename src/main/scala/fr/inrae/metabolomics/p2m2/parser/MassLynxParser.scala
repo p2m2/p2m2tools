@@ -36,16 +36,16 @@ object MassLynxParser extends Parser[OutputMassLynx] {
       .zipWithIndex.map(
       zip => {
         val idx_line = zip._1
-        val i_start = listCompoundIndexLine(zip._2)+1
-        val i_end = zip._2 match {
+        val iStart = listCompoundIndexLine(zip._2)+1
+        val iEnd = zip._2 match {
           case v if v == listCompoundIndexLine.length-1 => toParse.length
-          case _ => listCompoundIndexLine(zip._2+1)
+          case idx => listCompoundIndexLine(idx+1)
         }
         val compoundName : String = """Compound\s\d+:\s+(.*)""".r.findFirstMatchIn(toParse(idx_line)) match {
           case Some(v) => v.group(1)
           case None => throw new Exception("Can not parse Compound name:"+toParse(idx_line))
         }
-        (compoundName,parseArrayCompound(toParse.slice(i_start,i_end)))
+        (compoundName,parseArrayCompound(toParse.slice(iStart,iEnd)))
       })
   }
 
