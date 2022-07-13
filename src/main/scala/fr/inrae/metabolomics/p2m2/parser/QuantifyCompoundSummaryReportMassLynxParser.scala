@@ -1,12 +1,12 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.Header
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 
 import scala.io.Source
 
-object MassLynxParser extends Parser[OutputMassLynx] {
+object QuantifyCompoundSummaryReportMassLynxParser extends Parser[OutputQuantifyCompoundSummaryReportMassLynx] {
   val separator = "\t"
 
   def parseHeader( toParse : Seq[String] ) : Header =
@@ -63,7 +63,7 @@ object MassLynxParser extends Parser[OutputMassLynx] {
             .map( mapLine => {
               mapLine
                 .zipWithIndex.flatMap {  case (value, index) =>
-                OutputMassLynx.getHeaderField(header(index)) match {
+                OutputQuantifyCompoundSummaryReportMassLynx.getHeaderField(header(index)) match {
                   case Some(k) if value.nonEmpty => Some(k -> value)
                   case _ => None
                 }
@@ -74,18 +74,17 @@ object MassLynxParser extends Parser[OutputMassLynx] {
       }
   }
 
-  def get(filename : String, toParse : Seq[String]) : OutputMassLynx = {
-    OutputMassLynx(
+  def get(filename : String, toParse : Seq[String]) : OutputQuantifyCompoundSummaryReportMassLynx = {
+    OutputQuantifyCompoundSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
       results = parseResults(toParse)
     )
   }
 
-  def parse(filename : String) : OutputMassLynx = {
+  def parse(filename : String) : OutputQuantifyCompoundSummaryReportMassLynx = {
 
-    val s = Source
-      .fromFile(filename)
+    val s = Source.fromFile(filename)
     val lines = s.getLines().toList
     s.close()
 

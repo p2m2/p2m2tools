@@ -1,13 +1,13 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.{Header, HeaderField}
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.{Header, HeaderField}
 import utest.{TestSuite, Tests, test}
 
 import scala.util.{Failure, Success, Try}
 
-object MassLynxParserTest extends TestSuite {
+object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
   val injectionTest1 : Map[HeaderField,String]=Seq(
     HeaderField.`Num. Injection` -> 1,
     HeaderField.Name -> "GlyN15_A_3",
@@ -43,13 +43,13 @@ object MassLynxParserTest extends TestSuite {
   val tests: Tests = Tests{
     test("file empty") {
       val toParse = ""
-      assert( MassLynxParser.parseHeader(toParse.split("\n").toList) == Header() )
+      assert( QuantifyCompoundSummaryReportMassLynxParser.parseHeader(toParse.split("\n").toList) == Header() )
     }
 
     test("empty file - no date, no compound") {
       val toParse =
         """Quantify Compound Summary Report """.stripMargin
-      assert( MassLynxParser.parseHeader(toParse.split("\n").toList) == Header() )
+      assert( QuantifyCompoundSummaryReportMassLynxParser.parseHeader(toParse.split("\n").toList) == Header() )
     }
 
     test("empty file - no compound") {
@@ -63,20 +63,20 @@ object MassLynxParserTest extends TestSuite {
 
       val h = Header(Some("Fri Sep 20 14:23:33 2019"))
 
-      assert( MassLynxParser.parseHeader(toParse.split("\n").toList) == h )
+      assert( QuantifyCompoundSummaryReportMassLynxParser.parseHeader(toParse.split("\n").toList) == h )
     }
 
     test("parse empty compound") {
       val toParse =
         """Compound 1:  NH4+""".stripMargin
-      assert(MassLynxParser.parseResults(toParse.split("\n").toList) == List(("NH4+",List())))
+      assert(QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList) == List(("NH4+",List())))
     }
 
     test("parse bad def compound") {
       val toParse =
         """Compoundsss 1  :  NH4+""".stripMargin
 
-      Try(MassLynxParser.parseResults(toParse.split("\n").toList)) match {
+      Try(QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)) match {
         case Success(v) => println(v);assert(false)
         case Failure(_) => assert(true)
       }
@@ -88,7 +88,7 @@ object MassLynxParserTest extends TestSuite {
           |
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
-      assert(MassLynxParser.parseResults(toParse.split("\n").toList) == List(("NH4+", List(injectionTest1))))
+      assert(QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList) == List(("NH4+", List(injectionTest1))))
     }
 
     test("Test Unknown Name") {
@@ -98,7 +98,7 @@ object MassLynxParserTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1		188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      assert(!MassLynxParser.parseResults(toParse.split("\n").toList).head._2.head.contains(HeaderField.Name))
+      assert(!QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList).head._2.head.contains(HeaderField.Name))
     }
 
     test("full file content") {
@@ -117,20 +117,20 @@ object MassLynxParserTest extends TestSuite {
                       |1	SE1_GlyN15_3	189			1.75	16945			58	1:A,3	12.562	17-sept-19	212863
                       |""".stripMargin
 
-      val results : OutputMassLynx = MassLynxParser.get("test",toParse.split("\n").toList)
+      val results : OutputQuantifyCompoundSummaryReportMassLynx = QuantifyCompoundSummaryReportMassLynxParser.get("test",toParse.split("\n").toList)
 
       assert( results.header == Header(Some("Fri Sep 20 14:23:33 2019")) )
       assert( results.results == List(("NH4+", List(injectionTest1)),("NH4+, M+1", List(injectionTest2))))
     }
 
     test("complete file") {
-      val results : OutputMassLynx = MassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath)
+      val results : OutputQuantifyCompoundSummaryReportMassLynx = QuantifyCompoundSummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath)
       assert( results.header == Header(Some("Fri Sep 20 14:23:33 2019")) )
       assert( results.results.length == 163  )
     }
 
     test("targeted compound file") {
-      val results : OutputMassLynx = MassLynxParser.parse(getClass.getResource("/MassLynx/targeted/190522_97.txt").getPath)
+      val results : OutputQuantifyCompoundSummaryReportMassLynx = QuantifyCompoundSummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/targeted/190522_97.txt").getPath)
       assert( results.header == Header(Some("Thu Jun 09 13:49:54 2022")) )
       assert( results.results.length == 6  )
       assert(results.results.map(_._2).exists(_.nonEmpty))
