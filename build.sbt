@@ -1,4 +1,4 @@
-scalaVersion := "2.13.6"
+scalaVersion := "2.13.8"
 
 name := "P2M2Tools"
 organizationName := "p2m2"
@@ -21,17 +21,19 @@ val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_versi
 version :=  version_build
 
 libraryDependencies ++= Seq(
-  "com.lihaoyi" %% "utest" % "0.7.11" % "test",
+  "com.lihaoyi" %% "utest" % "0.7.11" % Test,
+  "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.18.0" % Test,
+  "org.slf4j" % "slf4j-simple" % "2.0.0-alpha7" % Test,
   "org.apache.poi" % "poi-ooxml" % "5.2.2",
   "com.github.scopt" %% "scopt" % "4.0.1"
 )
 
 // Coverage
 
-coverageMinimumStmtTotal := 97
-coverageMinimumBranchTotal := 93
-coverageMinimumStmtPerPackage := 93
-coverageMinimumBranchPerPackage := 93
+coverageMinimumStmtTotal := 98
+coverageMinimumBranchTotal := 98
+coverageMinimumStmtPerPackage := 97
+coverageMinimumBranchPerPackage := 97
 coverageMinimumStmtPerFile := 93
 coverageMinimumBranchPerFile := 93
 coverageFailOnMinimum := true

@@ -1,14 +1,12 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.{CompoundSheetXcalibur, OutputXcalibur}
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.HeaderSheetField.HeaderSheetField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
+import fr.inrae.metabolomics.p2m2.tools.format.output.{CompoundSheetXcalibur, OutputXcalibur}
 import org.apache.poi.hssf.usermodel.{HSSFSheet, HSSFWorkbook}
 
 import java.io.{File, FileInputStream}
-import scala.collection.immutable.Map
-import scala.io.Source
 import scala.util.{Success, Try}
 
 object XcaliburXlsParser extends Parser[OutputXcalibur] {
@@ -81,11 +79,13 @@ object XcaliburXlsParser extends Parser[OutputXcalibur] {
         sheet => {
           sheet -> XLSParserUtil.getVerticalKeyValue(sheet)
         })
-      .map {
+      .flatMap {
         case (sheet : HSSFSheet, mapping : Map[String,String]) => {
-          CompoundSheetXcalibur(
-            getHeaderSheet(mapping),
-            getResults(sheet))
+          val header = getHeaderSheet(mapping)
+          header.filter(_._2.trim.nonEmpty) match {
+            case head if head.nonEmpty => Some(CompoundSheetXcalibur(header, getResults(sheet)))
+            case _ => None
+          }
         }
       }
 
