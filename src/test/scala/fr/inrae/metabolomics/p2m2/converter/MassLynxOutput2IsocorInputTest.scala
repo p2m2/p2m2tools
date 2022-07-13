@@ -1,16 +1,16 @@
 package fr.inrae.metabolomics.p2m2.converter
 
-import fr.inrae.metabolomics.p2m2.parser.MassLynxParser
+import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
 import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx
 import utest.{TestSuite, Tests, test}
 
 object  MassLynxOutput2IsocorInputTest extends TestSuite {
   val tests = Tests {
     test("nothing") {
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
         results=List()
       )
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry) == List())
@@ -22,10 +22,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry) == List())
@@ -38,10 +38,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry) == List())
@@ -54,10 +54,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),listSampleToRemove=Seq("M+H")).transform(entry) == List())
@@ -70,10 +70,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
       assert(MassLynxOutput2IsocorInput(derivatives=Map("His"->"ACCQTAG"),formula=Map())
@@ -87,10 +87,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
       assert( MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map(),resolution=1000).transform(entry) ==
         List(InputIsocor("GlyN15_A_3","His","ACCQTAG",0,96688,"1000")))
@@ -102,10 +102,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),resolution=1000).transform(entry) == List())
@@ -118,10 +118,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) ==
@@ -135,10 +135,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) ==
@@ -152,10 +152,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
           |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
           |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-      val entry = OutputMassLynx(
+      val entry = OutputQuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=OutputMassLynx.Header(),
-        results=MassLynxParser.parseResults(toParse.split("\n").toList)
+        header=OutputQuantifyCompoundSummaryReportMassLynx.Header(),
+        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
       assert( MassLynxOutput2IsocorInput(derivatives=Map("TATA" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) == List())
     }

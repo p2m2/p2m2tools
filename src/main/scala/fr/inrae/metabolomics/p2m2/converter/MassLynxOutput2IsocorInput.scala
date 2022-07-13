@@ -1,10 +1,10 @@
 package fr.inrae.metabolomics.p2m2.converter
 
-import fr.inrae.metabolomics.p2m2.parser.MassLynxParser
+import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
 import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 
 case class MassLynxOutput2IsocorInput(
                                        derivatives : Map[String,String],
@@ -13,11 +13,11 @@ case class MassLynxOutput2IsocorInput(
                                        listSampleToRemove : Seq[String] = Seq("NH4")
                           ) {
 
-      def build(inputFiles : Seq[String]) : Seq[OutputMassLynx] = {
+      def build(inputFiles : Seq[String]) : Seq[OutputQuantifyCompoundSummaryReportMassLynx] = {
             println(inputFiles.mkString("\n"))
 
             inputFiles.map(
-                  fileName => MassLynxParser.parse(fileName)
+                  fileName => QuantifyCompoundSummaryReportMassLynxParser.parse(fileName)
             )
       }
 
@@ -38,7 +38,7 @@ case class MassLynxOutput2IsocorInput(
       }
 
         //sample	metabolite	derivative	isotopologue	area	resolution
-      def transform( massLynx : OutputMassLynx) : Seq[InputIsocor] = {
+      def transform( massLynx : OutputQuantifyCompoundSummaryReportMassLynx) : Seq[InputIsocor] = {
 
             massLynx
               .results

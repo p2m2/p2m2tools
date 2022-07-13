@@ -1,14 +1,14 @@
 package fr.inrae.metabolomics.p2m2.tools.format.output
 
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.Header
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
 
-object OutputMassLynx {
+object OutputQuantifyCompoundSummaryReportMassLynx {
 
   case class  Header(dateStr : Option[String] = None)  {
     val formatter: DateTimeFormatter = new DateTimeFormatterBuilder()
@@ -79,7 +79,7 @@ object OutputMassLynx {
 /**
  */
 
-case class OutputMassLynx(
+case class OutputQuantifyCompoundSummaryReportMassLynx(
                       origin : String,
                       header : Header,
                       // list of Name Compound/ Area/etc....
