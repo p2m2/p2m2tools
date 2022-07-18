@@ -16,8 +16,8 @@ object QuantitativeDataProcessingMassLynxParser
 
   override def extensionIsCompatible(filename: String): Boolean = {
     filename.split("\\.").lastOption match {
-      case Some(ext) => ext.trim.toLowerCase == "xml"
-      case None => false
+      case Some(ext) if ext.trim.toLowerCase == "xml" => true 
+      case _ => false
     }
   }
 
