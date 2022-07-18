@@ -113,7 +113,6 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
   override def extensionIsCompatible(filename: String): Boolean = {
     filename.split("\\.").lastOption match {
       case Some(a) if a.trim!="" => true
-      case None => false
       case _ => false
     }
   }

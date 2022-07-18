@@ -11,12 +11,24 @@ object QuantitativeDataProcessingMassLynxParser
 
     val xml = XML.load(filename)
 
-    println(xml)
-
     QuantitativeDataProcessingMassLynx.fromXml(xml)
   }
 
-  override def extensionIsCompatible(filename: String): Boolean = ???
+  override def extensionIsCompatible(filename: String): Boolean = {
+    filename.split("\\.").lastOption match {
+      case Some(ext) => ext.trim.toLowerCase == "xml"
+      case None => false
+    }
+  }
 
-  override def sniffFile(filename: String): Boolean = ???
+  override def sniffFile(filename: String): Boolean = {
+    try {
+      val xml = XML.load(filename)
+      QuantitativeDataProcessingMassLynx.fromXml(xml).dataset.version!=""
+    } catch {
+      case _: Throwable => {
+        false
+      }
+    }
+  }
 }

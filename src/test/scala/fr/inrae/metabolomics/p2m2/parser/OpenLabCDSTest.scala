@@ -116,6 +116,7 @@ object OpenLabCDSTest extends TestSuite{
       assert(OpenLabCDSParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
       assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath))
       assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
+      assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
     }
   }
 }

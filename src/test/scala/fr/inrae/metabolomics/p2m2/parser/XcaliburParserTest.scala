@@ -67,6 +67,7 @@ object XcaliburParserTest extends TestSuite {
       assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath))
       assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath))
       assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
+      assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
     }
 
   }
