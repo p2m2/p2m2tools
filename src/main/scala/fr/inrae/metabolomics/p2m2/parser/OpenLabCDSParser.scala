@@ -1,8 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField
 import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderFileField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
@@ -10,20 +11,20 @@ import scala.util.{Failure, Success, Try}
 object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
   val separator = " "
 
-  def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =
+  def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
     {
           toParse
             .flatMap {
               case s : String if s.startsWith("""Sample""") =>
                 """Sample\sName:\s+(.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Sample_Name -> v.group(1))
+                  case Some(v) => Some(HeaderFileField.Sample_Name -> v.group(1))
                   case None => None
                 }
               case _ => None
             }.toMap
     }
 
-  def parseResults( toParse : List[String] ) : List[Map[String,String]] = {
+  def parseResults( toParse : List[String] ) : List[Map[HeaderField,String]] = {
     // Grp ?????     val header_7 = List("RetTime","Type","used","Area","Amt/Area","Amount","Grp","Name")
     val header_7 = List("RetTime","Type","used","Area","Amt/Area","Amount","Name")
     val header_8 = List("RetTime","Type","ISTD","used","Area","Amt/Area","Amount","Name")
@@ -44,8 +45,12 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
               mapLine
               .zipWithIndex
               .map {
-                case (value, index) if length == 7 => header_7(index) -> value
-                case (value, index) if length == 8 => header_8(index) -> value
+                case (value, index) if length == 7 => OpenLabCDS.getHeaderField(header_7(index)) -> value
+                case (value, index) if length == 8 => OpenLabCDS.getHeaderField(header_8(index)) -> value
+              }.
+                flatMap {
+                case k->v if k.isDefined=> Some(k.get -> v)
+                case _ => None
               }.toMap
           })
 

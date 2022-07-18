@@ -2,7 +2,7 @@ package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.converter.OpenLabCDS2CompilCsv
 import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderFileField
 
 import java.io.{BufferedWriter, File, FileWriter}
 
@@ -81,7 +81,7 @@ case object OpenLabCDS2CsvCommand extends App {
     bw.write(";" + header.mkString(";") + "\n")
     lopenlabs_results
       .map(ol => {
-        (ol.header.getOrElse(HeaderField.Sample_Name, "UNKOWN"), pro.transform(ol, header))
+        (ol.header.getOrElse(HeaderFileField.Sample_Name, "UNKOWN"), pro.transform(ol, header))
       })
       .foreach((sampleName_lines: (String, List[Serializable])) => {
         val lines = sampleName_lines._2

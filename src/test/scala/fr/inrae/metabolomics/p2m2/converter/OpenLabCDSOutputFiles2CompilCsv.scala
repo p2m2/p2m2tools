@@ -2,7 +2,7 @@ package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSParser
 import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
 object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
@@ -12,7 +12,7 @@ object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
       val entry = OpenLabCDS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderField.Sample_Name -> "Sample Name 1"
+          HeaderFileField.Sample_Name -> "Sample Name 1"
         )
       )
       assert(OpenLabCDS2CompilCsv("").transform(entry,List()) == List())
@@ -22,15 +22,9 @@ object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
       val entry = OpenLabCDS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderField.Sample_Name -> "Sample Name 1",
+          HeaderFileField.Sample_Name -> "Sample Name 1",
         ),
-        results = List(
-          Map(
-            "Name_bad_" -> "CompoundX",
-            "X" -> "5",
-            "Y" -> "6"
-          )
-        )
+        results = List(Map())
       )
       /* Name should be [Metabolite]_[Derivative]_[Isotopologue] */
       assert(OpenLabCDS2CompilCsv("X").transform(entry, List("CompoundX")) == List(None))
@@ -40,22 +34,19 @@ object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
       val entry = OpenLabCDS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderField.Sample_Name -> "Sample Name 1",
+          HeaderFileField.Sample_Name -> "Sample Name 1",
         ),
         results = List(
           Map(
-            "Name" -> "CompoundX",
-            "X" -> "5",
-            "Y" -> "6"
+            HeaderField.Name -> "CompoundX",
           ),
           Map(
-            "Name" -> "CompoundY",
-            "X" -> "8",
-            "Y" -> "9"
+            HeaderField.Name -> "CompoundY",
           )
         )
       )
       /* Name should be [Metabolite]_[Derivative]_[Isotopologue] */
+      println(OpenLabCDS2CompilCsv("X").transform(entry,List("CompoundX","CompoundY","badCompound")))
       assert(OpenLabCDS2CompilCsv("X").transform(entry,List("CompoundX","CompoundY","badCompound"))
         == List(Some("5"),Some("8"),None))
       assert(OpenLabCDS2CompilCsv("X").transform(entry,List("CompoundX","badCompound","CompoundY"))

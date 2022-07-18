@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
 object OpenLabCDSTest extends TestSuite{
@@ -24,7 +24,7 @@ object OpenLabCDSTest extends TestSuite{
           |Injection Date  : 10/11/2021 11:03:47 PM               Inj :   1
           |                                                Inj Volume : 1 µl
           |""".stripMargin
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderField.Sample_Name).last == "Std 500")
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.Sample_Name).last == "Std 500")
     }
 
     test("parse results") {
@@ -94,14 +94,14 @@ object OpenLabCDSTest extends TestSuite{
           |=====================================================================
           |                          *** End of Report ***
           |""".stripMargin
-      val values = ( OpenLabCDSParser.parseResults(toParse.split("\n").toList) )
-      assert(values.head.get("RetTime").contains("8.335"))
-      assert(values.head.get("Name").contains("Glyoxylate"))
-      assert(values.head.get("Area").contains("10.97505"))
-      assert(values(10).get("ISTD").contains("I"))
-      assert(values.last.get("RetTime").contains("42.896"))
-      assert(values.last.get("Name").contains("Melezitose"))
-      assert(values.last.get("Area").contains("158.98767"))
+      val values = OpenLabCDSParser.parseResults(toParse.split("\n").toList)
+      assert(values.head.get(HeaderField.RetTime).contains("8.335"))
+      assert(values.head.get(HeaderField.Name).contains("Glyoxylate"))
+      assert(values.head.get(HeaderField.Area).contains("10.97505"))
+      assert(values(10).get(HeaderField.ISTD).contains("I"))
+      assert(values.last.get(HeaderField.RetTime).contains("42.896"))
+      assert(values.last.get(HeaderField.Name).contains("Melezitose"))
+      assert(values.last.get(HeaderField.Area).contains("158.98767"))
     }
 
     test("extensionIsCompatible") {
