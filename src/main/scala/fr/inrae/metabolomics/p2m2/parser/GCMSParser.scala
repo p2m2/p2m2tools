@@ -16,20 +16,19 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
   def getIndexLinesByCategories( toParse : List[String]  ) : Map[String,(Int,Int)] = {
     val base = toParse.zipWithIndex.flatMap {
       case (element, index) =>
-        val pattern = """\[([a-zA-Z ]+)\]""".r
-        (pattern.findFirstMatchIn(element)) match {
+        val pattern = """\[([a-zA-Z ]+)""".r
+        pattern.findFirstMatchIn(element) match {
           case Some(elt) => Some(elt.group(1) -> (index, index))
           case None => None
         }
     }
 
     base.zipWithIndex.map {
-      case (element, index) => {
+      case (element, index) =>
         element match {
           case s -> d if index < ( base.length - 1 ) => s -> (d._1,base(index+1)._2._1)
           case lastCategory -> d => lastCategory -> (d._1,toParse.length)
         }
-      }
     }.toMap
   }
 
@@ -71,7 +70,7 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
 
     getIndexLinesByCategories(toParse)
       .get(category) match {
-      case Some(lMin_lMax) => {
+      case Some(lMin_lMax) =>
         /* header */
         val header = toParse(lMin_lMax._1 + 1).split(separator)
         /* values */
@@ -85,7 +84,6 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
                 case (value, index) => header(index) -> value
               }.toMap
           })
-      }
       case None => throw new Exception(s"Category [$category] does not exist !")
     }
   }
@@ -103,8 +101,7 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
     val lines = source.getLines()
     val ret = get(
       filename,
-      lines
-        .toList
+      lines.toList
         .map( _.trim )
         .filter( _.nonEmpty)
         .filter( ! _.startsWith("#") )
@@ -128,7 +125,7 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
       source.close()
       Try(parseHeader(lines)) match {
         case Success(m) if m.nonEmpty => true
-        case Failure(e) => false
+        case _ => false
       }
     } catch {
       case _: Throwable => false

@@ -202,7 +202,7 @@ object GCMSParserTest extends TestSuite{
       assert(GCMSParser.extensionIsCompatible("/GCMS/13CPROT4.xls"))
     }
 
-    test("extensionIsCompatible") {
+    test("sniffFile") {
       assert(GCMSParser.sniffFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath))
       assert(!GCMSParser.sniffFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath))
       assert(!GCMSParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
