@@ -6,7 +6,7 @@ import utest.{TestSuite, Tests, test}
 import scala.util.{Failure, Success, Try}
 
 object GCMSParserTest extends TestSuite{
-  val tests = Tests{
+  val tests: Tests = Tests{
     test("getIndexLinesByCategories empty") {
       val toParse = ""
       assert( GCMSParser.getIndexLinesByCategories(toParse.split("\n").toList) == Map() )
@@ -161,7 +161,7 @@ object GCMSParserTest extends TestSuite{
           |""".stripMargin
       val v = GCMSParser.parseMSQuantitativeResults(toParse.split("\n").toList)
       assert (v.length == 1 )
-      assert (v(0).size == 56 )
+      assert (v.head.size == 56 )
     }
 
     test("parse 13CPROT1") {
@@ -194,6 +194,20 @@ object GCMSParserTest extends TestSuite{
       assert (v.header.get(HeaderField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderField.Output_Time).last == "14:10:14")
       assert (v.ms_quantitative_results.length == 262 )
+    }
+
+    test("extensionIsCompatible") {
+      assert(GCMSParser.extensionIsCompatible("/GCMS/13CPROT4.txt"))
+      assert(!GCMSParser.extensionIsCompatible(""))
+      assert(GCMSParser.extensionIsCompatible("/GCMS/13CPROT4.xls"))
+    }
+
+    test("extensionIsCompatible") {
+      assert(GCMSParser.sniffFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath))
+      assert(!GCMSParser.sniffFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath))
+      assert(!GCMSParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
+      assert(!GCMSParser.sniffFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath))
+      assert(!GCMSParser.sniffFile(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
     }
   }
 }

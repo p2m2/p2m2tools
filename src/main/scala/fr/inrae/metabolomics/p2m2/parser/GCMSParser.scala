@@ -4,6 +4,7 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.HeaderField
 
 import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
 object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
   val separator = "\t"
@@ -97,17 +98,41 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
     )
   }
 
-  def parse(filename : String) : OutputGCMS = get(
-    filename,
-    Source.fromFile(filename)
-      .getLines()
-      .toList
-      .map( _.trim )
-      .filter( _.nonEmpty)
-      .filter( ! _.startsWith("#") )
-  )
+  def parse(filename : String) : OutputGCMS = {
+    val source =       Source.fromFile(filename)
+    val lines = source.getLines()
+    val ret = get(
+      filename,
+      lines
+        .toList
+        .map( _.trim )
+        .filter( _.nonEmpty)
+        .filter( ! _.startsWith("#") )
+    )
+    source.close()
+    ret
+  }
 
-  override def extensionIsCompatible(filename: String): Boolean = ???
+  override def extensionIsCompatible(filename: String): Boolean = {
+    filename.split("\\.").lastOption match {
+      case Some(a) if a.trim!="" => true
+      case None => false
+      case _ => false
+    }
+  }
 
-  override def sniffFile(filename: String): Boolean = ???
+  override def sniffFile(filename: String): Boolean = {
+    try {
+      val source =       Source.fromFile(filename)
+      val lines = source.getLines().slice(0,20).toList
+      source.close()
+      Try(parseHeader(lines)) match {
+        case Success(m) if m.nonEmpty => true
+        case Failure(e) => false
+      }
+    } catch {
+      case _: Throwable => false
+    }
+
+  }
 }
