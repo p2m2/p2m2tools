@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.QuantitativeDataProcessingMassLynx.{CalibrationData, SecondaryPeaks}
+import fr.inrae.metabolomics.p2m2.tools.format.XMLQuantitativeDataProcessingMassLynx.{CalibrationData, SecondaryPeaks}
 import utest.{TestSuite, Tests, test}
 
 import scala.xml.XML

@@ -1,16 +1,16 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.QuantitativeDataProcessingMassLynx
+import fr.inrae.metabolomics.p2m2.tools.format.XMLQuantitativeDataProcessingMassLynx
 import scala.xml.XML
 
 object QuantitativeDataProcessingMassLynxParser
-  extends Parser[QuantitativeDataProcessingMassLynx] with FormatSniffer {
+  extends Parser[XMLQuantitativeDataProcessingMassLynx] with FormatSniffer {
 
-  override def parse(filename: String): QuantitativeDataProcessingMassLynx = {
+  override def parse(filename: String): XMLQuantitativeDataProcessingMassLynx = {
 
     val xml = XML.load(filename)
 
-    QuantitativeDataProcessingMassLynx.fromXml(xml)
+    XMLQuantitativeDataProcessingMassLynx.fromXml(xml)
   }
 
   override def extensionIsCompatible(filename: String): Boolean = {
@@ -23,7 +23,7 @@ object QuantitativeDataProcessingMassLynxParser
   override def sniffFile(filename: String): Boolean = {
     try {
       val xml = XML.load(filename)
-      QuantitativeDataProcessingMassLynx.fromXml(xml).dataset.version!=""
+      XMLQuantitativeDataProcessingMassLynx.fromXml(xml).dataset.version!=""
     } catch {
       case _: Throwable =>
         false

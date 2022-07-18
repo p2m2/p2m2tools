@@ -1,10 +1,10 @@
 package fr.inrae.metabolomics.p2m2.tools.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.QuantitativeDataProcessingMassLynx.QuanDataset
+import fr.inrae.metabolomics.p2m2.tools.format.XMLQuantitativeDataProcessingMassLynx.QuanDataset
 
 import scala.util.{Failure, Success, Try}
 
-object QuantitativeDataProcessingMassLynx {
+object XMLQuantitativeDataProcessingMassLynx {
   //https://www.waters.com/webassets/cms/support/docs/71500123505ra.pdf
 
   object QuanDataset {
@@ -665,11 +665,11 @@ object QuantitativeDataProcessingMassLynx {
                      secondarytrace : String
                    )
 
-  def fromXml(node: scala.xml.Node):QuantitativeDataProcessingMassLynx =
-    QuantitativeDataProcessingMassLynx(QuanDataset.fromXml((node \\ "QUANDATASET").head))
+  def fromXml(node: scala.xml.Node):XMLQuantitativeDataProcessingMassLynx =
+    XMLQuantitativeDataProcessingMassLynx(QuanDataset.fromXml((node \\ "QUANDATASET").head))
 
 }
 
-case class QuantitativeDataProcessingMassLynx(dataset:QuanDataset)
+case class XMLQuantitativeDataProcessingMassLynx(dataset:QuanDataset)
 
 
