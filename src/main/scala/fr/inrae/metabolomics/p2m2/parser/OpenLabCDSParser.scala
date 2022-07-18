@@ -7,7 +7,7 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderFie
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-object OpenLabCDSParser extends Parser[OutputOpenLabCDS]  {
+object OpenLabCDSParser extends Parser[OutputOpenLabCDS] with FormatSniffer {
   val separator = " "
 
   def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =
@@ -68,4 +68,7 @@ object OpenLabCDSParser extends Parser[OutputOpenLabCDS]  {
       .filter( _.nonEmpty)
   )
 
+  override def extensionIsCompatible(filename: String): Boolean = ???
+
+  override def sniffFile(filename: String): Boolean = ???
 }

@@ -6,7 +6,9 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSumm
 
 import scala.io.Source
 
-object QuantifyCompoundSummaryReportMassLynxParser extends Parser[OutputQuantifyCompoundSummaryReportMassLynx] {
+object QuantifyCompoundSummaryReportMassLynxParser
+  extends Parser[OutputQuantifyCompoundSummaryReportMassLynx]
+  with FormatSniffer {
   val separator = "\t"
 
   def parseHeader( toParse : Seq[String] ) : Header =
@@ -96,4 +98,7 @@ object QuantifyCompoundSummaryReportMassLynxParser extends Parser[OutputQuantify
     )
   }
 
+  override def extensionIsCompatible(filename: String): Boolean = ???
+
+  override def sniffFile(filename: String): Boolean = ???
 }

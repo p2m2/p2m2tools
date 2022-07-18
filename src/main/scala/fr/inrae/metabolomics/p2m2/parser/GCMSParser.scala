@@ -5,7 +5,7 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.Hea
 
 import scala.io.Source
 
-object GCMSParser extends Parser[OutputGCMS] {
+object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
   val separator = "\t"
   /**
    *
@@ -107,4 +107,7 @@ object GCMSParser extends Parser[OutputGCMS] {
       .filter( ! _.startsWith("#") )
   )
 
+  override def extensionIsCompatible(filename: String): Boolean = ???
+
+  override def sniffFile(filename: String): Boolean = ???
 }
