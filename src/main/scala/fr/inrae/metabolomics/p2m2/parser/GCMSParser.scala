@@ -1,11 +1,12 @@
 package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.tools.format.GCMS
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField
 import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.{HeaderField, HeaderFileField}
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
-import scala.util.{Failure, Success, Try}
+import scala.util.{Success, Try}
 
 object GCMSParser extends Parser[GCMS] with FormatSniffer {
   val separator = "\t"
@@ -35,7 +36,7 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
 
 
 
-  def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =
+  def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
     {
       val category = "Header"
 
@@ -47,17 +48,17 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
             .flatMap {
               case s : String if s.startsWith("""Data File Name""") =>
                 """Data\sFile\sName(\s+.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Data_File_Name -> v.group(1).trim)
+                  case Some(v) => Some(HeaderFileField.Data_File_Name -> v.group(1).trim)
                   case None => throw new Exception (s"Can not capture [$category]/Data File Name value")
                 }
               case s : String if s.startsWith("""Output Date""") =>
                 """Output\sDate(\s+.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Output_Date -> v.group(1).trim)
+                  case Some(v) => Some(HeaderFileField.Output_Date -> v.group(1).trim)
                   case None => throw new Exception(s"Can not capture [$category]/Output Date value")
                 }
               case s : String if s.startsWith("""Output Time""") =>
                 """Output\sTime(\s+.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Output_Time -> v.group(1).trim)
+                  case Some(v) => Some(HeaderFileField.Output_Time -> v.group(1).trim)
                   case None => throw new Exception(s"Can not capture [$category]/Output Time value")
                 }
               case _ => None
@@ -66,7 +67,7 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
       }
     }
 
-  def parseMSQuantitativeResults( toParse : List[String] ) : List[Map[String,String]] = {
+  def parseMSQuantitativeResults( toParse : List[String] ) : List[Map[HeaderField,String]] = {
     val category = "MS Quantitative Results"
 
     getIndexLinesByCategories(toParse)
@@ -81,8 +82,12 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
             line
               .split(separator)
               .zipWithIndex
-              .map {
-                case (value, index) => header(index) -> value
+              .flatMap {
+                case (value, index) =>
+                  GCMS.getHeaderField(header(index).trim) match {
+                    case Some(keyT) => Some(keyT -> value)
+                    case _ => println("NO MATCH:"+header(index)); None
+                  }
               }.toMap
           })
       case None => throw new Exception(s"Category [$category] does not exist !")

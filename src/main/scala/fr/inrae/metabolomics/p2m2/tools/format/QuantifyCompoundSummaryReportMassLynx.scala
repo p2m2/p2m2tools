@@ -36,6 +36,7 @@ object QuantifyCompoundSummaryReportMassLynx {
           .replace("$u002E",".")
           .replace("$u0020"," ")
           .replace("$div","/")
+          .replace("$hash","#")
           .equalsIgnoreCase(token))
 }
 

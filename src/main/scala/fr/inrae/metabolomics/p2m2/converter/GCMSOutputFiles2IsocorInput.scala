@@ -2,7 +2,8 @@ package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.GCMSParser
 import fr.inrae.metabolomics.p2m2.tools.format.GCMS
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.{HeaderField, HeaderFileField}
 
 case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name : String = "_" ) {
 
@@ -16,19 +17,19 @@ case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name 
 
 
       def transform( gcms : GCMS ) : List[String] = {
-            val sample =gcms.header.get(HeaderField.Data_File_Name) match {
+            val sample =gcms.header.get(HeaderFileField.Data_File_Name) match {
                   case Some(value) => value.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
                   case None => throw new Exception("Can not retrieve sample (end of 'Data File Name' value) origin:"+gcms.origin)
             }
 
             gcms.ms_quantitative_results
               .flatMap {
-                    mapResults: Map[String, String] =>
-                          val id = mapResults.get("ID#") match {
+                    mapResults: Map[HeaderField, String] =>
+                          val id = mapResults.get(HeaderField.`ID#`) match {
                                 case Some(v) => v
                                 case None => "unknown"
                           }
-                          (mapResults.get("Name") match {
+                          (mapResults.get(HeaderField.Name) match {
                                 case Some(v) => v
                                 case None =>
                                       throw new Exception("Can not parse 'Name' field origin:" + gcms.origin +
@@ -36,7 +37,7 @@ case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name 
                           }).split(separator_name) match {
                                 case tokens if tokens.length == 3 =>
                                       val (metabolite, derivative, isotopologue) = (tokens(0), tokens(1), tokens(2))
-                                      mapResults.get("Area") match {
+                                      mapResults.get(HeaderField.Area) match {
                                             case Some(area) if area != "" =>
                                                   Some(List(sample, metabolite, derivative,
                                                   isotopologue.replace("m", ""), area, resolution)
