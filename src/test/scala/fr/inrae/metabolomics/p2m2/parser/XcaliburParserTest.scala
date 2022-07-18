@@ -1,10 +1,12 @@
 package fr.inrae.metabolomics.p2m2.parser
 
+import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParserTest.getClass
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
 import java.io.{File, FileInputStream}
+import scala.util.Try
 
 object XcaliburParserTest extends TestSuite {
 
@@ -47,6 +49,25 @@ object XcaliburParserTest extends TestSuite {
       assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC_MS")))
       assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ")))
       assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ_MS")))
+    }
+
+    test("extensionIsCompatible") {
+      assert(XcaliburXlsParser.extensionIsCompatible("test.XLS"))
+      assert(XcaliburXlsParser.extensionIsCompatible("test.xls"))
+      assert(!XcaliburXlsParser.extensionIsCompatible("test.XL"))
+      assert(!XcaliburXlsParser.extensionIsCompatible("test"))
+      assert(!XcaliburXlsParser.extensionIsCompatible(""))
+    }
+
+    test("sniffFile") {
+      assert(!XcaliburXlsParser.sniffFile("test.XLS"))
+      assert(XcaliburXlsParser.sniffFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath))
+      assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/MassLynx/targeted/190522_97.txt").getPath))
+      assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
+      assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath))
+      assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath))
+      assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
+      assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
     }
 
   }

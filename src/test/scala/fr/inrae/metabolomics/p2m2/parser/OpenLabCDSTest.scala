@@ -103,5 +103,20 @@ object OpenLabCDSTest extends TestSuite{
       assert(values.last.get("Name").contains("Melezitose"))
       assert(values.last.get("Area").contains("158.98767"))
     }
+
+    test("extensionIsCompatible") {
+      assert(OpenLabCDSParser.extensionIsCompatible("/GCMS/13CPROT4.txt"))
+      assert(!OpenLabCDSParser.extensionIsCompatible(""))
+      assert(OpenLabCDSParser.extensionIsCompatible("/GCMS/13CPROT4.xls"))
+    }
+
+    test("sniffFile") {
+      assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath))
+      assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath))
+      assert(OpenLabCDSParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
+      assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath))
+      assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
+      assert(!OpenLabCDSParser.sniffFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
+    }
   }
 }

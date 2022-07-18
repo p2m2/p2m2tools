@@ -7,7 +7,7 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderFie
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-object OpenLabCDSParser extends Parser[OutputOpenLabCDS]  {
+object OpenLabCDSParser extends Parser[OutputOpenLabCDS] with FormatSniffer {
   val separator = " "
 
   def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =
@@ -44,8 +44,8 @@ object OpenLabCDSParser extends Parser[OutputOpenLabCDS]  {
               mapLine
               .zipWithIndex
               .map {
-                case (value, index) if (length == 7) => header_7(index) -> value
-                case (value, index) if (length == 8) => header_8(index) -> value
+                case (value, index) if length == 7 => header_7(index) -> value
+                case (value, index) if length == 8 => header_8(index) -> value
               }.toMap
           })
 
@@ -59,13 +59,37 @@ object OpenLabCDSParser extends Parser[OutputOpenLabCDS]  {
     )
   }
 
-  def parse(filename : String) : OutputOpenLabCDS = get(
-    filename,
-    Source.fromFile(filename)
-      .getLines()
-      .toList
-      .map( _.trim )
-      .filter( _.nonEmpty)
-  )
+  def parse(filename : String) : OutputOpenLabCDS = {
+    val source =       Source.fromFile(filename)
+    val lines = source.getLines()
+    val ret = get(
+      filename,
+      lines.toList
+        .map( _.trim )
+        .filter( _.nonEmpty)
+    )
+    source.close()
+    ret
+  }
 
+  override def extensionIsCompatible(filename: String): Boolean = {
+    filename.split("\\.").lastOption match {
+      case Some(a) if a.trim!="" => true
+      case _ => false
+    }
+  }
+
+  override def sniffFile(filename: String): Boolean = {
+    try {
+      val source =       Source.fromFile(filename)
+      val lines = source.getLines().slice(0,20).toList
+      source.close()
+      Try(parseHeader(lines)) match {
+        case Success(m) if m.nonEmpty => true
+        case _ => false
+      }
+    } catch {
+      case _: Throwable => false
+    }
+  }
 }

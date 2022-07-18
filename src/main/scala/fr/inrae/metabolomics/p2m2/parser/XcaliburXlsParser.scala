@@ -9,7 +9,7 @@ import org.apache.poi.hssf.usermodel.{HSSFSheet, HSSFWorkbook}
 import java.io.{File, FileInputStream}
 import scala.util.{Success, Try}
 
-object XcaliburXlsParser extends Parser[OutputXcalibur] {
+object XcaliburXlsParser extends Parser[OutputXcalibur] with FormatSniffer {
 
   def getHeaderSheet(mapping : Map[String,String]) : Map[HeaderSheetField,String] = {
       mapping flatMap {
@@ -92,4 +92,29 @@ object XcaliburXlsParser extends Parser[OutputXcalibur] {
     OutputXcalibur(filename,compounds)
   }
 
+  override def extensionIsCompatible(filename: String): Boolean = {
+    filename.split("\\.").lastOption match {
+      case Some(ext) => ext.trim.toLowerCase == "xls"
+      case None => false
+    }
+  }
+
+  override def sniffFile(filename: String): Boolean = {
+
+    try {
+      val file = new FileInputStream(new File(filename))
+      val workbook: HSSFWorkbook = new HSSFWorkbook(file)
+
+      0.until(workbook.getNumberOfSheets)
+        .map(workbook.getSheetAt)
+        .exists(sheet => {
+        XLSParserUtil.getRowCellIndexesFromTerm(sheet, "Filename").headOption match {
+          case Some(_) => true
+          case None => false
+        }
+      })
+    } catch {
+      case _: Throwable => false
+    }
+  }
 }

@@ -136,6 +136,21 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
       assert(results.results.map(_._2).exists(_.nonEmpty))
     }
 
+    test("extensionIsCompatible") {
+      assert(QuantifyCompoundSummaryReportMassLynxParser.extensionIsCompatible("/GCMS/13CPROT4.txt"))
+      assert(!QuantifyCompoundSummaryReportMassLynxParser.extensionIsCompatible(""))
+      assert(QuantifyCompoundSummaryReportMassLynxParser.extensionIsCompatible("/GCMS/13CPROT4.xls"))
+    }
+
+    test("sniffFile") {
+      assert(!QuantifyCompoundSummaryReportMassLynxParser.sniffFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath))
+      assert(QuantifyCompoundSummaryReportMassLynxParser.sniffFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath))
+      assert(!QuantifyCompoundSummaryReportMassLynxParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
+      assert(!QuantifyCompoundSummaryReportMassLynxParser.sniffFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath))
+      assert(!QuantifyCompoundSummaryReportMassLynxParser.sniffFile(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
+      assert(!QuantifyCompoundSummaryReportMassLynxParser.sniffFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
+    }
+
   }
 
 

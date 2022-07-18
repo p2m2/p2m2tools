@@ -5,8 +5,11 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSumm
 import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 
 import scala.io.Source
+import scala.util.{Success, Try}
 
-object QuantifyCompoundSummaryReportMassLynxParser extends Parser[OutputQuantifyCompoundSummaryReportMassLynx] {
+object QuantifyCompoundSummaryReportMassLynxParser
+  extends Parser[OutputQuantifyCompoundSummaryReportMassLynx]
+  with FormatSniffer {
   val separator = "\t"
 
   def parseHeader( toParse : Seq[String] ) : Header =
@@ -96,4 +99,24 @@ object QuantifyCompoundSummaryReportMassLynxParser extends Parser[OutputQuantify
     )
   }
 
+  override def extensionIsCompatible(filename: String): Boolean = {
+    filename.split("\\.").lastOption match {
+      case Some(a) if a.trim!="" => true
+      case _ => false
+    }
+  }
+
+  override def sniffFile(filename: String): Boolean = {
+    try {
+      val source =       Source.fromFile(filename)
+      val lines = source.getLines().slice(0,20).toList
+      source.close()
+      Try(parseHeader(lines)) match {
+        case Success(header) => header.dateStr.isDefined
+        case _ => false
+      }
+    } catch {
+      case _: Throwable => false
+    }
+  }
 }

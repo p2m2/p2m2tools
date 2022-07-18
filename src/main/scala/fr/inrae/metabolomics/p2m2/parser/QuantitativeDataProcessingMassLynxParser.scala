@@ -4,14 +4,31 @@ import fr.inrae.metabolomics.p2m2.tools.format.output.QuantitativeDataProcessing
 
 import scala.xml.XML
 
-object QuantitativeDataProcessingMassLynxParser extends Parser[QuantitativeDataProcessingMassLynx] {
+object QuantitativeDataProcessingMassLynxParser
+  extends Parser[QuantitativeDataProcessingMassLynx] with FormatSniffer {
 
   override def parse(filename: String): QuantitativeDataProcessingMassLynx = {
 
     val xml = XML.load(filename)
 
-    println(xml)
-
     QuantitativeDataProcessingMassLynx.fromXml(xml)
+  }
+
+  override def extensionIsCompatible(filename: String): Boolean = {
+    filename.split("\\.").lastOption match {
+      case Some(ext) if ext.trim.toLowerCase == "xml" => true 
+      case _ => false
+    }
+  }
+
+  override def sniffFile(filename: String): Boolean = {
+    try {
+      val xml = XML.load(filename)
+      QuantitativeDataProcessingMassLynx.fromXml(xml).dataset.version!=""
+    } catch {
+      case _: Throwable => {
+        false
+      }
+    }
   }
 }
