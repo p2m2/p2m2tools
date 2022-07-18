@@ -1,13 +1,13 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSParser
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
 
 import scala.util.{Failure, Success, Try}
 
 case class OpenLabCDS2CompilCsv(target_head : String ) {
 
-      def build(inputFiles : Seq[String]) : Seq[OutputOpenLabCDS] = {
+      def build(inputFiles : Seq[String]) : Seq[OpenLabCDS] = {
             println(inputFiles.mkString("\n"))
 
             inputFiles.map(
@@ -16,11 +16,11 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
       }
 
 
-      def header_name_compound(openLabCds : OutputOpenLabCDS) : List[String] = {
+      def header_name_compound(openLabCds : OpenLabCDS) : List[String] = {
             openLabCds.results.flatMap( (mapResults: Map[String, String]) => mapResults.get("Name"))
       }
 
-      def transform( openLabCds : OutputOpenLabCDS , header_name_compound : List[String] )
+      def transform(openLabCds : OpenLabCDS, header_name_compound : List[String] )
       : List[Serializable] = {
             //val sample = openLabCds.origin.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
 

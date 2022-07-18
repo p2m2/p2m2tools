@@ -1,12 +1,13 @@
 package fr.inrae.metabolomics.p2m2.parser
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.HeaderField
+
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField.HeaderField
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
+object GCMSParser extends Parser[GCMS] with FormatSniffer {
   val separator = "\t"
   /**
    *
@@ -88,15 +89,15 @@ object GCMSParser extends Parser[OutputGCMS] with FormatSniffer {
     }
   }
 
-  def get(filename : String, toParse : List[String]) : OutputGCMS = {
-    OutputGCMS(
+  def get(filename : String, toParse : List[String]) : GCMS = {
+    GCMS(
       origin = filename,
       header = parseHeader(toParse),
       ms_quantitative_results = parseMSQuantitativeResults(toParse)
     )
   }
 
-  def parse(filename : String) : OutputGCMS = {
+  def parse(filename : String) : GCMS = {
     val source =       Source.fromFile(filename)
     val lines = source.getLines()
     val ret = get(

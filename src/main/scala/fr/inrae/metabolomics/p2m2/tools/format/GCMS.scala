@@ -1,8 +1,8 @@
-package fr.inrae.metabolomics.p2m2.tools.format.output
+package fr.inrae.metabolomics.p2m2.tools.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField.HeaderField
 
-object OutputGCMS {
+object GCMS {
   object HeaderField extends Enumeration {
     type HeaderField = Value
     val Data_File_Name, Output_Date, Output_Time = Value
@@ -15,7 +15,7 @@ object OutputGCMS {
  * [MS_Quantitative_Results] Array of results
  */
 
-case class OutputGCMS(
+case class GCMS(
                       origin : String,
                       header : Map[HeaderField,String] = Map[HeaderField,String](),
                       ms_quantitative_results : List[Map[String, String]] = List()

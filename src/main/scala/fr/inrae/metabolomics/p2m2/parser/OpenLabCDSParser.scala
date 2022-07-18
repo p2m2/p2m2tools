@@ -1,13 +1,13 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField.HeaderField
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}
 
-object OpenLabCDSParser extends Parser[OutputOpenLabCDS] with FormatSniffer {
+object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
   val separator = " "
 
   def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =
@@ -51,15 +51,15 @@ object OpenLabCDSParser extends Parser[OutputOpenLabCDS] with FormatSniffer {
 
   }
 
-  def get(filename : String, toParse : List[String]) : OutputOpenLabCDS = {
-    OutputOpenLabCDS(
+  def get(filename : String, toParse : List[String]) : OpenLabCDS = {
+    OpenLabCDS(
       origin = filename,
       header = parseHeader(toParse),
       results = parseResults(toParse)
     )
   }
 
-  def parse(filename : String) : OutputOpenLabCDS = {
+  def parse(filename : String) : OpenLabCDS = {
     val source =       Source.fromFile(filename)
     val lines = source.getLines()
     val ret = get(

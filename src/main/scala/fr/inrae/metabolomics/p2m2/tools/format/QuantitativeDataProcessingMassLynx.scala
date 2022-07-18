@@ -1,6 +1,6 @@
-package fr.inrae.metabolomics.p2m2.tools.format.output
+package fr.inrae.metabolomics.p2m2.tools.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.QuantitativeDataProcessingMassLynx.QuanDataset
+import fr.inrae.metabolomics.p2m2.tools.format.QuantitativeDataProcessingMassLynx.QuanDataset
 
 import scala.util.{Failure, Success, Try}
 
@@ -35,8 +35,8 @@ object QuantitativeDataProcessingMassLynx {
   object XmlFile {
     def fromXml(node: scala.xml.Node):XmlFile = {
       val filename = node \@ "filename"
-      val modifiedDate = (node \@ "modifieddate")
-      val modifiedTime = (node \@ "modifiedtime")
+      val modifiedDate = node \@ "modifieddate"
+      val modifiedTime = node \@ "modifiedtime"
       XmlFile(filename, modifiedDate, modifiedTime)
     }
   }
@@ -45,9 +45,9 @@ object QuantitativeDataProcessingMassLynx {
 
   object Dataset {
     def fromXml(node: scala.xml.Node):Dataset = {
-      val filename = (node \@ "filename")
-      val modifiedDate = (node \@ "modifieddate")
-      val modifiedTime = (node \@ "modifiedtime")
+      val filename = node \@ "filename"
+      val modifiedDate = node \@ "modifieddate"
+      val modifiedTime = node \@ "modifiedtime"
       Dataset(filename, modifiedDate, modifiedTime)
     }
   }
@@ -56,8 +56,8 @@ object QuantitativeDataProcessingMassLynx {
 
   object Group {
     def fromXml(node: scala.xml.Node):Group = {
-      val id = (node \@ "id")
-      val name = (node \@ "name")
+      val id = node \@ "id"
+      val name = node \@ "name"
       val methodData = MethodData.fromXml((node \ "METHODDATA").head)
       val sampleListData = SampleListData.fromXml((node \ "SAMPLELISTDATA").head)
       val calibrationData = Try(CalibrationData.fromXml((node \ "CALIBRATIONDATA").head)) match {
@@ -78,10 +78,10 @@ object QuantitativeDataProcessingMassLynx {
 
   object MethodData {
     def fromXml(node: scala.xml.Node):MethodData = {
-      val id = (node \@ "id")
+      val id = node \@ "id"
       val filename = node \@ "filename"
-      val modifiedDate = (node \@ "modifieddate")
-      val modifiedTime = (node \@ "modifiedtime")
+      val modifiedDate = node \@ "modifieddate"
+      val modifiedTime = node \@ "modifiedtime"
       MethodData(id,filename,modifiedDate,modifiedTime)
     }
   }
@@ -95,9 +95,9 @@ object QuantitativeDataProcessingMassLynx {
 
   object SampleListData {
     def fromXml(node: scala.xml.Node):SampleListData = {
-      val filename = (node \@ "filename")
-      val modifiedDate = (node \@ "modifieddate")
-      val modifiedTime = (node \@ "modifiedtime")
+      val filename = node \@ "filename"
+      val modifiedDate = node \@ "modifieddate"
+      val modifiedTime = node \@ "modifiedtime"
       val samples = (node \ "SAMPLE").map( Sample.fromXml )
 
       SampleListData(filename,modifiedDate,modifiedTime,samples)
@@ -195,9 +195,9 @@ object QuantitativeDataProcessingMassLynx {
 
   object CalibrationData {
     def fromXml(node: scala.xml.Node):CalibrationData = {
-      val filename = (node \@ "filename")
-      val modifiedDate = (node \@ "modifieddate")
-      val modifiedTime = (node \@ "modifiedtime")
+      val filename = node \@ "filename"
+      val modifiedDate = node \@ "modifieddate"
+      val modifiedTime = node \@ "modifiedtime"
       CalibrationData(filename,modifiedDate,modifiedTime)
     }
   }
@@ -213,10 +213,10 @@ object QuantitativeDataProcessingMassLynx {
 
   object Compound {
     def fromXml(node: scala.xml.Node):Compound = {
-      val id = (node \@ "id")
-      val sampleId = (node \@ "sampleid")
-      val groupId = (node \@ "groupid")
-      val name = (node \@ "name")
+      val id = node \@ "id"
+      val sampleId = node \@ "sampleid"
+      val groupId = node \@ "groupid"
+      val name = node \@ "name"
       val peak = Peak.fromXml((node \ "PEAK").head)
       val secondaryPeaks = (node \ "SECONDARYPEAKS").map(SecondaryPeaks.fromXml)
       val method = Method.fromXml((node \ "METHOD").head)
@@ -616,11 +616,11 @@ object QuantitativeDataProcessingMassLynx {
 
   object SecondaryPeaks {
     def fromXml(node: scala.xml.Node):SecondaryPeaks = {
-      val secondarychromnoise = (node \@ "secondarychromnoise")
-      val actualIonRatio = (node \@ "actualionratio")
-      val irwinflag = (node \@ "irwinflag")
-      val area = (node \@ "area")
-      val heigth = (node \@ "heigth")
+      val secondarychromnoise = node \@ "secondarychromnoise"
+      val actualIonRatio = node \@ "actualionratio"
+      val irwinflag = node \@ "irwinflag"
+      val area = node \@ "area"
+      val heigth = node \@ "heigth"
 
       SecondaryPeaks(secondarychromnoise,actualIonRatio,irwinflag,area,heigth)
     }
@@ -635,9 +635,9 @@ object QuantitativeDataProcessingMassLynx {
 
   object ISPeak {
     def fromXml(node: scala.xml.Node):ISPeak = {
-      val area = (node \@ "area")
-      val heigth = (node \@ "heigth")
-      val foundrt = (node \@ "foundrt")
+      val area = node \@ "area"
+      val heigth = node \@ "heigth"
+      val foundrt = node \@ "foundrt"
       ISPeak(area,heigth,foundrt)
     }
   }
@@ -648,11 +648,11 @@ object QuantitativeDataProcessingMassLynx {
 
   object Method {
     def fromXml(node: scala.xml.Node):Method = {
-      val rref = (node \@ "rref")
-      val predrt = (node \@ "predrt")
-      val predrrt = (node \@ "predrrt")
-      val userfactor = (node \@ "userfactor")
-      val secondarytrace = (node \@ "secondarytrace")
+      val rref = node \@ "rref"
+      val predrt = node \@ "predrt"
+      val predrrt = node \@ "predrrt"
+      val userfactor = node \@ "userfactor"
+      val secondarytrace = node \@ "secondarytrace"
 
       Method(rref,predrt,predrrt,userfactor,secondarytrace)
     }

@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField
 import utest.{TestSuite, Tests, test}
 
 import scala.util.{Failure, Success, Try}

@@ -1,10 +1,9 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
-import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.{Isocor, QuantifyCompoundSummaryReportMassLynx}
+import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 
 case class MassLynxOutput2IsocorInput(
                                        derivatives : Map[String,String],
@@ -13,7 +12,7 @@ case class MassLynxOutput2IsocorInput(
                                        listSampleToRemove : Seq[String] = Seq("NH4")
                           ) {
 
-      def build(inputFiles : Seq[String]) : Seq[OutputQuantifyCompoundSummaryReportMassLynx] = {
+      def build(inputFiles : Seq[String]) : Seq[QuantifyCompoundSummaryReportMassLynx] = {
             println(inputFiles.mkString("\n"))
 
             inputFiles.map(
@@ -38,7 +37,7 @@ case class MassLynxOutput2IsocorInput(
       }
 
         //sample	metabolite	derivative	isotopologue	area	resolution
-      def transform( massLynx : OutputQuantifyCompoundSummaryReportMassLynx) : Seq[InputIsocor] = {
+      def transform( massLynx : QuantifyCompoundSummaryReportMassLynx) : Seq[Isocor] = {
 
             massLynx
               .results
@@ -55,11 +54,11 @@ case class MassLynxOutput2IsocorInput(
                                       compoundType match {
                                         case "M+H" =>
                                           Some(List(
-                                            InputIsocor(
+                                            Isocor(
                                               field.getOrElse(HeaderField.Name,"Unknown"),
                                               metabolite,fieldName,0,
                                               field.getOrElse(HeaderField.Area,"-1").toInt,resolution.toString)))//.mkString("\t")
-                                        case v if v.startsWith("M+") => Some(List(InputIsocor(
+                                        case v if v.startsWith("M+") => Some(List(Isocor(
                                           field.getOrElse(HeaderField.Name,"Unknown"),
                                           metabolite,
                                           fieldName,

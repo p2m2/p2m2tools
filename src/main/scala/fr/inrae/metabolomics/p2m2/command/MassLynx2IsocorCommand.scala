@@ -1,7 +1,7 @@
 package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.converter.MassLynxOutput2IsocorInput
-import fr.inrae.metabolomics.p2m2.tools.format.input.InputIsocor
+import fr.inrae.metabolomics.p2m2.tools.format.Isocor
 
 import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source
@@ -104,10 +104,10 @@ case object MassLynx2IsocorCommand extends App {
       System.err.println("exit with error.")
   }
   def build_results_element(pro: MassLynxOutput2IsocorInput,
-                            lists: Seq[InputIsocor],
-                            element : Char) : Seq[InputIsocor] = {
+                            lists: Seq[Isocor],
+                            element : Char) : Seq[Isocor] = {
 
-    lists.filter((in : InputIsocor) => {
+    lists.filter((in : Isocor) => {
             //println(in.metabolite,in.isotopologue, pro.getNumberElementFromFormula(in.metabolite,element))
             in.isotopologue <= pro.getNumberElementFromFormula(in.metabolite,element)
       })
@@ -151,7 +151,7 @@ case object MassLynx2IsocorCommand extends App {
     println(formula)
 
     val pro = MassLynxOutput2IsocorInput(correspondence,formula,resolution, listSampleToRemove)
-    val list:  Seq[InputIsocor] = pro.build(files.map(_.getPath)).map(pro.transform(_)).flatten
+    val list:  Seq[Isocor] = pro.build(files.map(_.getPath)).map(pro.transform(_)).flatten
 
     //======================================= output_13C =================================================
     val bw = new BufferedWriter(new FileWriter(new File(output_13C.getPath)))

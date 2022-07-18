@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField
 import utest.{TestSuite, Tests, test}
 
 object OpenLabCDSTest extends TestSuite{

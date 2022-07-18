@@ -1,12 +1,10 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParserTest.getClass
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
+import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.{HeaderField, HeaderSheetField}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
 import java.io.{File, FileInputStream}
-import scala.util.Try
 
 object XcaliburParserTest extends TestSuite {
 

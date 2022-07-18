@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.GCMSParser
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS
+import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField
 import utest.{TestSuite, Tests, test}
 
 object GCMSOutputFiles2IsocorInputTest extends TestSuite {
@@ -18,7 +18,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
       GCMS2Isocor(paths)
     }*/
     test("transform - nothing") {
-      val entry = OutputGCMS(
+      val entry = GCMS(
         origin = "file/SAMPLE",
         header = Map(
           HeaderField.Data_File_Name -> "Date File Name"
@@ -28,7 +28,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
     }
 
     test("transform - nothing 2") {
-      val entry = OutputGCMS(
+      val entry = GCMS(
         origin = "file/SAMPLE",
         header = Map(
           HeaderField.Data_File_Name -> "Date File Name",
@@ -46,7 +46,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
     }
 
     test("transform - nothing") {
-      val entry = OutputGCMS(
+      val entry = GCMS(
         origin = "file/SAMPLE",
         header = Map(
           HeaderField.Data_File_Name -> "Date File Name",
@@ -75,6 +75,9 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
 
     test("transform - 13CPROT2.txt") {
       val gcms_output = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT2.txt").getPath)
+      println("======================================================================")
+      println(GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length)
+
       assert(  GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 254 )
     }
   }

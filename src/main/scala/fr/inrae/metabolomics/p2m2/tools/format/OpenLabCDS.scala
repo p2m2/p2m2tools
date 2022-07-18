@@ -1,8 +1,8 @@
-package fr.inrae.metabolomics.p2m2.tools.format.output
+package fr.inrae.metabolomics.p2m2.tools.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField.HeaderField
 
-object OutputOpenLabCDS {
+object OpenLabCDS {
 
   object HeaderField extends Enumeration {
     type HeaderField = Value
@@ -12,7 +12,7 @@ object OutputOpenLabCDS {
 /**
  */
 
-case class OutputOpenLabCDS(
+case class OpenLabCDS(
                       origin : String,
                       header : Map[HeaderField,String] = Map[HeaderField,String](),
                       // list of Name Compound/ Area/etc....
