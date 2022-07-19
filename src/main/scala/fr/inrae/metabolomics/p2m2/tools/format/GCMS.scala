@@ -44,8 +44,7 @@ case class GCMS(
                  origin : String,
                  header : Map[HeaderFileField,String] = Map[HeaderFileField,String](),
                  ms_quantitative_results : List[Map[HeaderField, String]] = List()
-               )
-//List[Map[MS_Quantitative_ResultsField.MS_Quantitative_ResultsField, String]] = List()
+               ) extends MassSpectrometryResultSet
 
 
 

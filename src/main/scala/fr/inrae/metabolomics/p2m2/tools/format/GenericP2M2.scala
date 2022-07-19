@@ -7,4 +7,4 @@ object GenericP2M2 {
   }
 }
 
-case class GenericP2M2()
+case class GenericP2M2() extends MassSpectrometryResultSet

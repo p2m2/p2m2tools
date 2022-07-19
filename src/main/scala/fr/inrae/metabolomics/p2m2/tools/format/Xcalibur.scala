@@ -25,7 +25,4 @@ object Xcalibur {
                                     compoundByInjection: Seq[Map[HeaderField, String]] = Seq())
 }
 
-case class Xcalibur(
-                           origin : String,
-                           injections : Seq[CompoundSheetXcalibur]
-                         )
+case class Xcalibur(origin : String, results : Seq[CompoundSheetXcalibur]) extends MassSpectrometryResultSet

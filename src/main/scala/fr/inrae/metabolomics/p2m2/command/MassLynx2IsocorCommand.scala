@@ -2,9 +2,11 @@ package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.converter.MassLynxOutput2IsocorInput
 import fr.inrae.metabolomics.p2m2.tools.format.Isocor
+import fr.inrae.metabolomics.p2m2.tools.format.Isocor.{CompoundIsocor, HeaderField}
 
 import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
 case object MassLynx2IsocorCommand extends App {
 
@@ -104,13 +106,22 @@ case object MassLynx2IsocorCommand extends App {
       System.err.println("exit with error.")
   }
   def build_results_element(pro: MassLynxOutput2IsocorInput,
-                            lists: Seq[Isocor],
-                            element : Char) : Seq[Isocor] = {
+                            resultsSet: Seq[Isocor],
+                            element : Char) : Isocor = {
 
-    lists.filter((in : Isocor) => {
+    Isocor(
+      resultsSet.map(_.origin).mkString(","),
+      resultsSet
+      .flatMap(_.results)
+      .filter(
+        (in : CompoundIsocor) => {
             //println(in.metabolite,in.isotopologue, pro.getNumberElementFromFormula(in.metabolite,element))
-            in.isotopologue <= pro.getNumberElementFromFormula(in.metabolite,element)
-      })
+          Try(in.values(HeaderField.isotopologue).toInt <= pro.getNumberElementFromFormula(in.values(HeaderField.metabolite),element))
+          match {
+            case Success(r) => r
+            case Failure(_) => false
+          }
+      }))
   }
 
   def MassLynx2Isocor(files: Seq[File],
@@ -123,41 +134,50 @@ case object MassLynx2IsocorCommand extends App {
                       listSampleToRemove : Seq[String]
                      ): Unit = {
 
+
     /* reading tabular file with two colum COMPOUND / DERIVATIVE */
     val correspondence : Map[String,String] = derivatives match  {
-      case Some(f) =>  Source.fromFile(f)
-        .getLines()
-        .filter( _.trim.nonEmpty )
-        .map(_.split(separatorDerivativesFile))
-        .map( x => { if ( x.length != 2 ) {
-          System.err.println("bad definition of '"+f+"'\n------------------\n"+x.mkString(":")+"'\n------------------\n")
-          System.err.println("use [TABULATION] !\n")
-          throw new RuntimeException("Bad [Derivatives] definition file.")
-        }; x })
-        .map( x =>  (x(0), x(1))  ).toMap
+      case Some(f) =>
+        val s = Source.fromFile(f)
+        val lines = s.getLines()
+
+        lines
+          .filter( _.trim.nonEmpty )
+          .map(_.split(separatorDerivativesFile))
+          .map( x => { if ( x.length != 2 ) {
+            System.err.println("bad definition of '"+f+"'\n------------------\n"+x.mkString(":")+"'\n------------------\n")
+            System.err.println("use [TABULATION] !\n")
+            throw new RuntimeException("Bad [Derivatives] definition file.")
+          }; x })
+          .map( x =>  (x(0), x(1))  ).toMap
       case None => Map()
     }
 
     val formula : Map[String,String] = metabolites match  {
-      case Some(f) =>  Source.fromFile(f)
-        .getLines()
-        .drop(1)
-        .filter( _.trim.nonEmpty )
-        .map(_.split("\t"))
-        .map( x =>  (x(0), x(1))  ).toMap
+      case Some(f) =>
+        val s = Source.fromFile(f)
+        val lines = s.getLines()
+
+        lines
+          .drop(1)
+          .filter( _.trim.nonEmpty )
+          .map(_.split("\t"))
+          .map( x =>  (x(0), x(1))  ).toMap
+
       case None => Map()
     }
     println("=================FORMULA ==================")
     println(formula)
 
     val pro = MassLynxOutput2IsocorInput(correspondence,formula,resolution, listSampleToRemove)
-    val list:  Seq[Isocor] = pro.build(files.map(_.getPath)).map(pro.transform(_)).flatten
+    val list:  Seq[Isocor] = pro.build(files.map(_.getPath)).map(pro.transform)
 
     //======================================= output_13C =================================================
     val bw = new BufferedWriter(new FileWriter(new File(output_13C.getPath)))
 
     bw.write("sample\tmetabolite\tderivative\tisotopologue\tarea\tresolution\n")
    build_results_element(pro, list, 'C')
+     .results
     .foreach( l => {
       bw.write(l.string()); bw.write("\n")
     })
@@ -168,7 +188,9 @@ case object MassLynx2IsocorCommand extends App {
     //======================================= output_15N =================================================
     val bw2 = new BufferedWriter(new FileWriter(new File(output_15N.getPath)))
     bw2.write("sample\tmetabolite\tderivative\tisotopologue\tarea\tresolution\n")
-    build_results_element(pro, list, 'N').foreach( l => {
+    build_results_element(pro, list, 'N')
+      .results
+      .foreach( l => {
       bw2.write(l.string()); bw2.write("\n")
     })
     bw2.close()

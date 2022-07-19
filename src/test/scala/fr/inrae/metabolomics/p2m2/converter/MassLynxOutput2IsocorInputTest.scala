@@ -1,18 +1,19 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
-import fr.inrae.metabolomics.p2m2.tools.format.{Isocor, QuantifyCompoundSummaryReportMassLynx}
+import fr.inrae.metabolomics.p2m2.tools.format.Isocor.{CompoundIsocor, HeaderField}
+import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx
 import utest.{TestSuite, Tests, test}
 
 object  MassLynxOutput2IsocorInputTest extends TestSuite {
-  val tests = Tests {
+  val tests: Tests = Tests {
     test("nothing") {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=QuantifyCompoundSummaryReportMassLynx.Header(),
         results=List()
       )
-      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry) == List())
+      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry).results.isEmpty)
     }
     test("basic run with a sample to remove NH4") {
       val toParse =
@@ -27,7 +28,7 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
-      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry) == List())
+      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry).results.isEmpty)
     }
 
     test("basic run with unknown sample TOTO") {
@@ -43,7 +44,7 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
-      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry) == List())
+      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry).results.isEmpty)
     }
 
     test("basic run with a sample M+H inializing listSampleToRemove='M+H'") {
@@ -59,7 +60,7 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
-      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),listSampleToRemove=Seq("M+H")).transform(entry) == List())
+      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),listSampleToRemove=Seq("M+H")).transform(entry).results.isEmpty)
     }
 
     test("basic run with a sample His") {
@@ -76,7 +77,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       )
 
       assert(MassLynxOutput2IsocorInput(derivatives=Map("His"->"ACCQTAG"),formula=Map())
-        .transform(entry) == List(Isocor("GlyN15_A_3","His","ACCQTAG",0,96688,"2000")))
+        .transform(entry).results == List(CompoundIsocor(
+        Map(
+          HeaderField.sample -> "GlyN15_A_3", HeaderField.metabolite ->"His", HeaderField.derivative ->"ACCQTAG",
+        HeaderField.isotopologue -> "0", HeaderField.area -> "96688", HeaderField.resolution -> "2000"))))
     }
 
     test("basic run with a sample His, resolution=1000") {
@@ -91,8 +95,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         header=QuantifyCompoundSummaryReportMassLynx.Header(),
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
-      assert( MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map(),resolution=1000).transform(entry) ==
-        List(Isocor("GlyN15_A_3","His","ACCQTAG",0,96688,"1000")))
+      assert( MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map(),resolution=1000).transform(entry).results ==
+        List(CompoundIsocor(Map(HeaderField.sample ->"GlyN15_A_3",HeaderField.metabolite ->"His",
+          HeaderField.derivative ->"ACCQTAG",
+          HeaderField.isotopologue ->"0",HeaderField.area ->"96688",HeaderField.resolution -> "1000"))))
     }
     test("basic run with a sample His, resolution=1000") {
       val toParse =
@@ -107,7 +113,7 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
-      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),resolution=1000).transform(entry) == List())
+      assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),resolution=1000).transform(entry).results.isEmpty)
     }
 
     test("basic run with a sample His, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
@@ -123,8 +129,10 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
-      assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) ==
-        List(Isocor("GlyN15_A_3","His","TOTO",0,96688,"1000")))
+      assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry).results ==
+        List(CompoundIsocor(Map(HeaderField.sample ->"GlyN15_A_3",
+          HeaderField.metabolite ->"His",HeaderField.derivative ->"TOTO",
+          HeaderField.isotopologue->"0",HeaderField.area ->"96688",HeaderField.resolution -> "1000"))))
     }
 
     test("basic run with a sample M+H, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
@@ -140,8 +148,11 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
 
-      assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) ==
-        List(Isocor("GlyN15_A_3","His","TOTO",0,96688,"1000")))
+      assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000)
+        .transform(entry).results ==
+        List(CompoundIsocor(Map(HeaderField.sample ->"GlyN15_A_3",HeaderField.metabolite ->"His",
+          HeaderField.derivative ->"TOTO",HeaderField.isotopologue->"0",HeaderField.area ->"96688",
+          HeaderField.resolution ->"1000"))))
     }
 
     test("basic run with a sample M+H, resolution=1000, map( GlyN15_A_3 => 'TOTO')") {
@@ -156,11 +167,13 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
         header=QuantifyCompoundSummaryReportMassLynx.Header(),
         results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
       )
-      assert( MassLynxOutput2IsocorInput(derivatives=Map("TATA" -> "TOTO"),formula=Map(),resolution=1000).transform(entry) == List())
+      assert( MassLynxOutput2IsocorInput(derivatives=Map("TATA" -> "TOTO"),formula=Map(),resolution=1000)
+        .transform(entry).results.isEmpty)
     }
 
     test("getNumberElementFromFormula - None definition get 0") {
-      assert(MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).getNumberElementFromFormula("some",'C') == 0)
+      assert(MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map())
+        .getNumberElementFromFormula("some",'C') == 0)
     }
 
     test("getNumberElementFromFormula - CHN definition get 1 for Carbone element") {

@@ -35,7 +35,7 @@ case class OpenLabCDS(
                        header : Map[HeaderFileField,String] = Map[HeaderFileField,String](),
                        // list of Name Compound/ Area/etc....
                        results : List[Map[HeaderField, String]] = List()
-               )
+               ) extends MassSpectrometryResultSet
 
 
 

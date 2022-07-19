@@ -3,7 +3,8 @@ package fr.inrae.metabolomics.p2m2.command
 import fr.inrae.metabolomics.p2m2.command.MassLynx2IsocorCommand.build_results_element
 import fr.inrae.metabolomics.p2m2.converter.MassLynxOutput2IsocorInput
 import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
-import fr.inrae.metabolomics.p2m2.tools.format.{Isocor, QuantifyCompoundSummaryReportMassLynx}
+import fr.inrae.metabolomics.p2m2.tools.format.Isocor.{CompoundIsocor, HeaderField}
+import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx
 import utest.{TestSuite, Tests, test}
 
 import java.io.File
@@ -47,7 +48,10 @@ object MassLynx2IsocorCommandTest extends TestSuite {
           "--out_15N",tp2,
           "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives_empty.txt").getPath,
           "--metabolites",getClass.getResource("/MassLynx/Metabolites.dat").getPath))) match {
-        case Success(_) => assert(Source.fromFile(tp).getLines().length == 1)
+        case Success(_) =>
+          val s = Source.fromFile(tp)
+          val lines = s.getLines()
+          assert(lines.length == 1)
         case Failure(f) => f.printStackTrace();assert(false)
       }
     }
@@ -79,7 +83,10 @@ object MassLynx2IsocorCommandTest extends TestSuite {
           "--out_15N",tp2,
           "--derivatives",getClass.getResource("/MassLynx/correspondence_derivatives.txt").getPath,
           "--metabolites",getClass.getResource("/MassLynx/Metabolites.dat").getPath))) match {
-        case Success(_) => assert(Source.fromFile(tp).getLines().length > 1) // header and data
+        case Success(_) =>
+          val s = Source.fromFile(tp)
+          val lines = s.getLines()
+          assert(lines.length > 1) // header and data
         case Failure(f) => f.printStackTrace();assert(false)
       }
     }
@@ -100,13 +107,19 @@ object MassLynx2IsocorCommandTest extends TestSuite {
       assert(build_results_element(
         MassLynxOutput2IsocorInput(
           derivatives=Map("His"->"ACCQTAG"),
-          formula=Map("His"->"C6H9N3O2")), list, 'C') == List())
+          formula=Map("His"->"C6H9N3O2")), Seq(list), 'C').results.isEmpty)
 
       assert(build_results_element(
         MassLynxOutput2IsocorInput(
           derivatives=Map("His"->"ACCQTAG"),
-          formula=Map("His"->"C7H9N3O2")), list, 'C') ==
-        List(Isocor("GlyN15_A_3","His","ACCQTAG",7,96688,"2000")))
+          formula=Map("His"->"C7H9N3O2")), Seq(list), 'C').results ==
+        Seq(CompoundIsocor(Map(
+          HeaderField.sample ->"GlyN15_A_3",
+          HeaderField.metabolite ->"His",
+          HeaderField.derivative ->"ACCQTAG",
+          HeaderField.isotopologue->"7",
+          HeaderField.area -> "96688",
+          HeaderField.resolution ->"2000"))))
     }
   }
 }

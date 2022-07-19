@@ -48,7 +48,7 @@ case class QuantifyCompoundSummaryReportMassLynx(
                       header : Header,
                       // list of Name Compound/ Area/etc....
                       results : Seq[(String,Seq[Map[HeaderField,String]])] = List()
-               )
+               ) extends MassSpectrometryResultSet
 
 
 

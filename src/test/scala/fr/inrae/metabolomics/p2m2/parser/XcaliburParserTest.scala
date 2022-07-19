@@ -40,13 +40,13 @@ object XcaliburParserTest extends TestSuite {
     test("parse test xls file") {
       val out = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
       assert(out.origin == getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
-      assert(out.injections.length==6)
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT_MS")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC_MS")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ_MS")))
+      assert(out.results.length==6)
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT_MS")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC_MS")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ_MS")))
     }
 
     test("extensionIsCompatible") {

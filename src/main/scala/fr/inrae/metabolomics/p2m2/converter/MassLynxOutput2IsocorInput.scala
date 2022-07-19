@@ -1,6 +1,7 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
+import fr.inrae.metabolomics.p2m2.tools.format.Isocor.CompoundIsocor
 import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.HeaderField
 import fr.inrae.metabolomics.p2m2.tools.format.{Isocor, QuantifyCompoundSummaryReportMassLynx}
 import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
@@ -37,9 +38,10 @@ case class MassLynxOutput2IsocorInput(
       }
 
         //sample	metabolite	derivative	isotopologue	area	resolution
-      def transform( massLynx : QuantifyCompoundSummaryReportMassLynx) : Seq[Isocor] = {
-
-            massLynx
+      def transform( massLynx : QuantifyCompoundSummaryReportMassLynx) : Isocor = {
+            Isocor(
+              massLynx.origin,
+              massLynx
               .results
               .flatMap  {
                     case (sample_and_compType : String , listMetabolites : List[Map[HeaderField,String]])  =>
@@ -54,17 +56,24 @@ case class MassLynxOutput2IsocorInput(
                                       compoundType match {
                                         case "M+H" =>
                                           Some(List(
-                                            Isocor(
-                                              field.getOrElse(HeaderField.Name,"Unknown"),
-                                              metabolite,fieldName,0,
-                                              field.getOrElse(HeaderField.Area,"-1").toInt,resolution.toString)))//.mkString("\t")
-                                        case v if v.startsWith("M+") => Some(List(Isocor(
-                                          field.getOrElse(HeaderField.Name,"Unknown"),
-                                          metabolite,
-                                          fieldName,
-                                          v.replace("M+", "").toInt,
-                                          field.getOrElse(HeaderField.Area,"-1").toInt,
-                                          resolution.toString
+                                            CompoundIsocor(
+                                              Map(
+                                                Isocor.HeaderField.sample -> field.getOrElse(HeaderField.Name,"Unknown"),
+                                                Isocor.HeaderField.metabolite -> metabolite,
+                                                Isocor.HeaderField.derivative-> fieldName,
+                                                Isocor.HeaderField.isotopologue -> "0",
+                                                Isocor.HeaderField.area -> field.getOrElse(HeaderField.Area,"-1"),
+                                                Isocor.HeaderField.resolution -> resolution.toString))
+                                              )
+                                             )//.mkString("\t")
+                                        case v if v.startsWith("M+") => Some(List(CompoundIsocor(
+                                          Map(
+                                            Isocor.HeaderField.sample -> field.getOrElse(HeaderField.Name,"Unknown"),
+                                            Isocor.HeaderField.metabolite -> metabolite,
+                                            Isocor.HeaderField.derivative-> fieldName,
+                                            Isocor.HeaderField.isotopologue-> v.replace("M+", ""),
+                                            Isocor.HeaderField.area -> field.getOrElse(HeaderField.Area,"-1"),
+                                            Isocor.HeaderField.resolution -> resolution.toString)
                                         ))) //.mkString("\t")
                                         case _ => None
                                       }
@@ -74,6 +83,6 @@ case class MassLynxOutput2IsocorInput(
                                 })
                       else List()
               }
-              .fold(List()) { (l1, l2) =>  l1 ++ l2  }
+              .fold(List()) { (l1, l2) =>  l1 ++ l2  })
       }
 }
