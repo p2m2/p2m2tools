@@ -20,18 +20,6 @@ object GCMS {
     `Ref.Ion4 Height`, `Ref.Ion4 Set Ratio`, `Ref.Ion4 Ratio`, `Ref.Ion5 m/z`, `Ref.Ion5 Area`, `Ref.Ion5 Height`,
     `Ref.Ion5 Set Ratio`, `Ref.Ion5 Ratio`,	`Ret. Index`,	`S/N`, `Unit`, Description, Threshold = Value
   }
-
-  def getHeaderField(token : String) : Option[HeaderField] =
-    HeaderField
-      .values
-      .find( _
-        .toString
-        .replace("$percent","%")
-        .replace("$u002E",".")
-        .replace("$u0020"," ")
-        .replace("$div","/")
-        .replace("$hash","#")
-        .equalsIgnoreCase(token))
 }
 
 /**

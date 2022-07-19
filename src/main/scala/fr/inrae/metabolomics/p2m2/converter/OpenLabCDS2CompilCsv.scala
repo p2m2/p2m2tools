@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.converter
 
-import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSParser
+import fr.inrae.metabolomics.p2m2.parser.{OpenLabCDSParser, ParserUtils}
 import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
 import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField
 import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField.HeaderField
@@ -35,7 +35,7 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
 
                         Try(l1.head.get(HeaderField.Name) match {
                               case Some(nameCompound) if nameCompound == compound
-                                    => OpenLabCDS.getHeaderField(target_head) match {
+                                    => ParserUtils.getHeaderField(OpenLabCDS.HeaderField,target_head) match {
                                     case Some(r) => l1.head.get(r)
                                     case _ => None
                               }

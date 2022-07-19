@@ -15,10 +15,10 @@ object XcaliburParserTest extends TestSuite {
 
     test("getHeaderSheet") {
       val r = XcaliburXlsParser.getHeaderSheet(res)
-      assert(r.contains(HeaderSheetField.Component_Name))
-      assert(r.contains(HeaderSheetField.Full_Name))
-      assert(r.contains(HeaderSheetField.User_Name))
-      assert(r.contains(HeaderSheetField.Origin_Index))
+      assert(r.contains(HeaderSheetField.`Component Name`))
+      assert(r.contains(HeaderSheetField.`Full Name`))
+      assert(r.contains(HeaderSheetField.`User Name`))
+      assert(r.contains(HeaderSheetField.`Origin Index`))
       assert(r.contains(HeaderSheetField.Equation))
     }
 
@@ -33,7 +33,7 @@ object XcaliburParserTest extends TestSuite {
       val r = XcaliburXlsParser.getResults(workbook.getSheetAt(0))
       assert(r.length == 1)
       assert(r.head.get(HeaderField.Filename).contains("020622_Std_290920_106_inj1_220603204908"))
-      assert(r.head.get(HeaderField.Proc_Method)
+      assert(r.head.get(HeaderField.`Proc Method`)
         .contains("P:\\bia-prp_partage\\Projets_Interne_PRP\\PRP_Bia_partage\\DosagePolyphenols\\Reprocess_Methode\\050422_QC_Std290920"))
     }
 
@@ -41,12 +41,12 @@ object XcaliburParserTest extends TestSuite {
       val out = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
       assert(out.origin == getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
       assert(out.results.length==6)
-      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT")))
-      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT_MS")))
-      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC")))
-      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC_MS")))
-      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ")))
-      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ_MS")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("CAT")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("CAT_MS")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("EC")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("EC_MS")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ_MS")))
     }
 
     test("extensionIsCompatible") {

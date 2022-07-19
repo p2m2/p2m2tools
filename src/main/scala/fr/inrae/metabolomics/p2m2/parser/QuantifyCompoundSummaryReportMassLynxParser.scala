@@ -67,7 +67,7 @@ object QuantifyCompoundSummaryReportMassLynxParser
             .map( mapLine => {
               mapLine
                 .zipWithIndex.flatMap {  case (value, index) =>
-                QuantifyCompoundSummaryReportMassLynx.getHeaderField(header(index)) match {
+                ParserUtils.getHeaderField(QuantifyCompoundSummaryReportMassLynx.HeaderField,header(index)) match {
                   case Some(k) if value.nonEmpty => Some(k -> value)
                   case _ => None
                 }

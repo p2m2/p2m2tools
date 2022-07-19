@@ -14,18 +14,6 @@ object OpenLabCDS {
     type HeaderField = Value
     val  RetTime, Type, ISTD, Area, used, `Amt/Area`, Amount, Grp, Name = Value
   }
-
-  def getHeaderField(token : String) : Option[HeaderField] =
-    HeaderField
-      .values
-      .find( _
-        .toString
-        .replace("$percent","%")
-        .replace("$u002E",".")
-        .replace("$u0020"," ")
-        .replace("$div","/")
-        .replace("$hash","#")
-        .equalsIgnoreCase(token))
 }
 /**
  */

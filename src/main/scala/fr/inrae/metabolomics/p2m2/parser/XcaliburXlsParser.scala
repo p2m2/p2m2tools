@@ -15,8 +15,7 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
       mapping flatMap {
           case ( key, value)  =>
             /** check key in HeaderSheetField  */
-            HeaderSheetField.values.find(_.toString.toLowerCase() ==
-              key.replace(" ","_").toLowerCase()) match {
+            ParserUtils.getHeaderField(Xcalibur.HeaderSheetField,key) match {
               case Some(keyT) => Some(keyT-> value)
               case _ => None
             }
@@ -56,10 +55,7 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
         seq.zipWithIndex.flatMap {
           case (value, idx) =>
 
-            /** check key in HeaderSheetField */
-            HeaderField.values
-              .find(_.toString.toLowerCase() == header(idx).replace(" ", "_")
-                .toLowerCase()) match {
+            ParserUtils.getHeaderField(Xcalibur.HeaderField,header(idx)) match {
               case Some(keyT) => Some(keyT -> value)
               case _ => None
             }

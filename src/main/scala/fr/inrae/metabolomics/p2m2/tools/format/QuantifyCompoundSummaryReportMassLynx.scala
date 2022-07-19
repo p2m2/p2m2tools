@@ -26,18 +26,6 @@ object QuantifyCompoundSummaryReportMassLynx {
     Name, `Inj. Vol`, `Acq.Date`, `Acq.Time`, Type, `Conc.`, `Mod.Time`, `Std. Conc`,
     Trace, RT, Area, uM, `%Dev`, `S/N`, `Vial`, `Height/Area`, Height = Value
   }
-
-  def getHeaderField(token : String) : Option[HeaderField] =
-    HeaderField
-      .values
-      .find( _
-          .toString
-          .replace("$percent","%")
-          .replace("$u002E",".")
-          .replace("$u0020"," ")
-          .replace("$div","/")
-          .replace("$hash","#")
-          .equalsIgnoreCase(token))
 }
 
 /**

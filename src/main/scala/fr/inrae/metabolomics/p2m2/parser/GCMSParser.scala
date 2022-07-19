@@ -84,7 +84,7 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
               .zipWithIndex
               .flatMap {
                 case (value, index) =>
-                  GCMS.getHeaderField(header(index).trim) match {
+                  ParserUtils.getHeaderField(GCMS.HeaderField,header(index).trim) match {
                     case Some(keyT) => Some(keyT -> value)
                     case _ => println("NO MATCH:"+header(index)); None
                   }
