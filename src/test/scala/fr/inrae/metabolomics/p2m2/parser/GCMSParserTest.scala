@@ -6,7 +6,7 @@ import utest.{TestSuite, Tests, test}
 
 import scala.util.{Failure, Success, Try}
 
-object GCMSParserTest extends TestSuite{
+object GCMSParserTest extends TestSuite {
   val tests: Tests = Tests{
     test("getIndexLinesByCategories empty") {
       val toParse = ""

@@ -9,7 +9,7 @@ import scala.language.implicitConversions
 
 object XcaliburToGenericP2M2 {
 
-  implicit def QuantifyCompoundSummaryReportMassLynxToGenericP2M2(x: Xcalibur) : GenericP2M2 =
+  implicit def XcaliburToGenericP2M2(x: Xcalibur) : GenericP2M2 =
     GenericP2M2(
       x.results
         .flatMap(
@@ -17,14 +17,17 @@ object XcaliburToGenericP2M2 {
             injections.compoundByInjection.map(
               ( values : Map[Xcalibur.HeaderField.HeaderField, String]) => {
                 Map(
-                  GenericP2M2.HeaderField.metabolite -> injections.compoundInformationHeader.getOrElse(Xcalibur.HeaderSheetField.`Component Name`,""),
-                  GenericP2M2.HeaderField.sample -> values.getOrElse(Xcalibur.HeaderField.`Sample Name`,""),
-                  GenericP2M2.HeaderField.retTime -> values.getOrElse(Xcalibur.HeaderField.RT,""),
-                  GenericP2M2.HeaderField.area -> values.getOrElse(Xcalibur.HeaderField.Area,""),
-                  GenericP2M2.HeaderField.height -> values.getOrElse(Xcalibur.HeaderField.Height,""),
-                  GenericP2M2.HeaderField.acquisitionDate -> values.getOrElse(Xcalibur.HeaderField.`Acq Date`,""),
-                  GenericP2M2.HeaderField.injectedVolume -> values.getOrElse(Xcalibur.HeaderField.`Inj Vol`,"")
-                )
+                  GenericP2M2.HeaderField.metabolite -> injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.`Component Name`),
+                  GenericP2M2.HeaderField.sample -> values.get(Xcalibur.HeaderField.`Sample Name`),
+                  GenericP2M2.HeaderField.retTime -> values.get(Xcalibur.HeaderField.RT),
+                  GenericP2M2.HeaderField.area -> values.get(Xcalibur.HeaderField.Area),
+                  GenericP2M2.HeaderField.height -> values.get(Xcalibur.HeaderField.Height),
+                  GenericP2M2.HeaderField.acquisitionDate -> values.get(Xcalibur.HeaderField.`Acq Date`),
+                  GenericP2M2.HeaderField.injectedVolume -> values.get(Xcalibur.HeaderField.`Inj Vol`)
+                ).flatMap {
+                  case (k,Some(v)) => Some(k,v)
+                  case _ => None
+                }
               }
             )
           }
