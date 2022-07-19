@@ -1,8 +1,9 @@
-package fr.inrae.metabolomics.p2m2.tools.format.conversions
+package fr.inrae.metabolomics.p2m2.format.conversions
 
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.{GenericP2M2, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
+import fr.inrae.metabolomics.p2m2.format.{GenericP2M2, Xcalibur}
+import Xcalibur.CompoundSheetXcalibur
+import Xcalibur.HeaderField.HeaderField
 
 import scala.language.implicitConversions
 

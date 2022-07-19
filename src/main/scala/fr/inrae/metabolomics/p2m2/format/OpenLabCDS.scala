@@ -1,7 +1,7 @@
-package fr.inrae.metabolomics.p2m2.tools.format
+package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderFileField.HeaderFileField
+import OpenLabCDS.HeaderField.HeaderField
+import OpenLabCDS.HeaderFileField.HeaderFileField
 
 object OpenLabCDS {
 

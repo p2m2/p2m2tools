@@ -1,9 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format
-import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.Header
-import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx
+import QuantifyCompoundSummaryReportMassLynx.Header
+import QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2
 
 import scala.io.Source
 import scala.util.{Success, Try}
@@ -78,7 +78,7 @@ object QuantifyCompoundSummaryReportMassLynxParser
   }
 
   def get(filename : String, toParse : Seq[String]) : QuantifyCompoundSummaryReportMassLynx = {
-    format.QuantifyCompoundSummaryReportMassLynx(
+    p2m2.format.QuantifyCompoundSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
       results = parseResults(toParse)

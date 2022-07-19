@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.converter
 
+import fr.inrae.metabolomics.p2m2.format.GCMS
 import fr.inrae.metabolomics.p2m2.parser.GCMSParser
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.{HeaderField, HeaderFileField}
+import GCMS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
 object GCMSOutputFiles2IsocorInputTest extends TestSuite {

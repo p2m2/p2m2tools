@@ -1,9 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderFileField
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.HeaderFileField.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
+import OpenLabCDS.HeaderField.HeaderField
+import OpenLabCDS.HeaderFileField
+import OpenLabCDS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
 import scala.util.{Failure, Success, Try}

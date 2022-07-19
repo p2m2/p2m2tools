@@ -1,9 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.{HeaderField, HeaderFileField}
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderFileField.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.GCMS
+import GCMS.HeaderField.HeaderField
+import GCMS.{HeaderField, HeaderFileField}
+import GCMS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
 import scala.util.{Success, Try}

@@ -1,9 +1,9 @@
 package fr.inrae.metabolomics.p2m2.converter
 
+import fr.inrae.metabolomics.p2m2.format.GCMS
+import fr.inrae.metabolomics.p2m2.format.GCMS.{HeaderField, HeaderFileField}
+import fr.inrae.metabolomics.p2m2.format.GCMS.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.parser.GCMSParser
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.{HeaderField, HeaderFileField}
 
 case class GCMSOutputFiles2IsocorInput( resolution : Int = 2000, separator_name : String = "_" ) {
 

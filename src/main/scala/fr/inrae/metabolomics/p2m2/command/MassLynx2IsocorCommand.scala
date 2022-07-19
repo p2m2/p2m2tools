@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.converter.MassLynxOutput2IsocorInput
-import fr.inrae.metabolomics.p2m2.tools.format.Isocor
-import fr.inrae.metabolomics.p2m2.tools.format.Isocor.{CompoundIsocor, HeaderField}
+import fr.inrae.metabolomics.p2m2.format.Isocor
+import fr.inrae.metabolomics.p2m2.format.Isocor.{CompoundIsocor, HeaderField}
 
 import java.io.{BufferedWriter, File, FileWriter}
 import scala.io.Source

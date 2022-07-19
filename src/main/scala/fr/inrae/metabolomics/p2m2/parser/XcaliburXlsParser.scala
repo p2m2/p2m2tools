@@ -1,9 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.{CompoundSheetXcalibur, HeaderField, HeaderSheetField}
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.HeaderSheetField.HeaderSheetField
+import fr.inrae.metabolomics.p2m2.format.Xcalibur
+import Xcalibur.HeaderField.HeaderField
+import Xcalibur.{CompoundSheetXcalibur, HeaderField, HeaderSheetField}
+import Xcalibur.HeaderSheetField.HeaderSheetField
 import org.apache.poi.hssf.usermodel.{HSSFSheet, HSSFWorkbook}
 
 import java.io.{File, FileInputStream}

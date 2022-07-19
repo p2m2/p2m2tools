@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.converter
 
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
 import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSParser
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS
-import fr.inrae.metabolomics.p2m2.tools.format.OpenLabCDS.{HeaderField, HeaderFileField}
+import OpenLabCDS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
 object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {

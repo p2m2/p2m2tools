@@ -1,7 +1,7 @@
-package fr.inrae.metabolomics.p2m2.tools.format
+package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.GCMS.HeaderFileField.HeaderFileField
+import GCMS.HeaderField.HeaderField
+import GCMS.HeaderFileField.HeaderFileField
 
 object GCMS {
   object HeaderFileField extends Enumeration {

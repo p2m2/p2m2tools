@@ -1,7 +1,7 @@
-package fr.inrae.metabolomics.p2m2.tools.format
+package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.Header
-import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import QuantifyCompoundSummaryReportMassLynx.Header
+import QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}

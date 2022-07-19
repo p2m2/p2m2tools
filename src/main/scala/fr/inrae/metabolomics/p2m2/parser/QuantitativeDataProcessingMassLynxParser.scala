@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.XMLQuantitativeDataProcessingMassLynx
+import fr.inrae.metabolomics.p2m2.format.XMLQuantitativeDataProcessingMassLynx
 import scala.xml.XML
 
 object QuantitativeDataProcessingMassLynxParser

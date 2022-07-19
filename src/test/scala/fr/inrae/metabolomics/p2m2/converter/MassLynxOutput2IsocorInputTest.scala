@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.converter
 
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx
 import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
-import fr.inrae.metabolomics.p2m2.tools.format.Isocor.{CompoundIsocor, HeaderField}
-import fr.inrae.metabolomics.p2m2.tools.format.QuantifyCompoundSummaryReportMassLynx
+import fr.inrae.metabolomics.p2m2.format.Isocor.{CompoundIsocor, HeaderField}
 import utest.{TestSuite, Tests, test}
 
 object  MassLynxOutput2IsocorInputTest extends TestSuite {

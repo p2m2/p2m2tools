@@ -1,6 +1,6 @@
-package fr.inrae.metabolomics.p2m2.tools.format
+package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.GenericP2M2.HeaderField.HeaderField
+import GenericP2M2.HeaderField.HeaderField
 
 object GenericP2M2 {
   object HeaderField extends Enumeration {

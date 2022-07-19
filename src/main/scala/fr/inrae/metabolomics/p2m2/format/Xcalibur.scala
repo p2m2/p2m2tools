@@ -1,8 +1,8 @@
-package fr.inrae.metabolomics.p2m2.tools.format
+package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.Xcalibur.HeaderSheetField.HeaderSheetField
+import Xcalibur.CompoundSheetXcalibur
+import Xcalibur.HeaderField.HeaderField
+import Xcalibur.HeaderSheetField.HeaderSheetField
 
 object Xcalibur {
 

@@ -1,7 +1,7 @@
-package fr.inrae.metabolomics.p2m2.tools.format
+package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.tools.format.Isocor.HeaderField.HeaderField
+import Isocor.CompoundIsocor
+import Isocor.HeaderField.HeaderField
 
 import scala.collection.immutable.Map
 

@@ -1,6 +1,6 @@
-package fr.inrae.metabolomics.p2m2.tools.format
+package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.tools.format.XMLQuantitativeDataProcessingMassLynx.QuanDataset
+import XMLQuantitativeDataProcessingMassLynx.QuanDataset
 
 import scala.util.{Failure, Success, Try}
 
