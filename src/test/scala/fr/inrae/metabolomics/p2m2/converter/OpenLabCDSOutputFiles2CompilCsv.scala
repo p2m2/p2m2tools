@@ -39,18 +39,22 @@ object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
         results = List(
           Map(
             HeaderField.Name -> "CompoundX",
+            HeaderField.RetTime -> "5",
+            HeaderField.Area -> "10"
           ),
           Map(
             HeaderField.Name -> "CompoundY",
+            HeaderField.RetTime -> "8"
           )
         )
       )
       /* Name should be [Metabolite]_[Derivative]_[Isotopologue] */
-      println(OpenLabCDS2CompilCsv("X").transform(entry,List("CompoundX","CompoundY","badCompound")))
-      assert(OpenLabCDS2CompilCsv("X").transform(entry,List("CompoundX","CompoundY","badCompound"))
+      assert(OpenLabCDS2CompilCsv("RetTime").transform(entry,List("CompoundX","CompoundY","badCompound"))
         == List(Some("5"),Some("8"),None))
-      assert(OpenLabCDS2CompilCsv("X").transform(entry,List("CompoundX","badCompound","CompoundY"))
+      assert(OpenLabCDS2CompilCsv("RetTime").transform(entry,List("CompoundX","badCompound","CompoundY"))
         == List(Some("5"),None,Some("8")))
+      assert(OpenLabCDS2CompilCsv("Area").transform(entry,List("CompoundX","CompoundY","badCompound"))
+        == List(Some("10"),None,None))
     }
 
     test("transform - Report.txt") {
