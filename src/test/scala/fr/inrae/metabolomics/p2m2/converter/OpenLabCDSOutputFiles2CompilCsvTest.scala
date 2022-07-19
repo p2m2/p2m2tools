@@ -5,14 +5,14 @@ import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSParser
 import OpenLabCDS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
-object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
-  val tests = Tests {
+object OpenLabCDSOutputFiles2CompilCsvTest extends TestSuite {
+  val tests: Tests = Tests {
 
     test("transform - nothing") {
       val entry = OpenLabCDS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderFileField.Sample_Name -> "Sample Name 1"
+          HeaderFileField.`Sample Name` -> "Sample Name 1"
         )
       )
       assert(OpenLabCDS2CompilCsv("").transform(entry,List()) == List())
@@ -22,7 +22,7 @@ object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
       val entry = OpenLabCDS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderFileField.Sample_Name -> "Sample Name 1",
+          HeaderFileField.`Sample Name` -> "Sample Name 1",
         ),
         results = List(Map())
       )
@@ -34,7 +34,7 @@ object OpenLabCDSOutputFiles2CompilCsv extends TestSuite {
       val entry = OpenLabCDS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderFileField.Sample_Name -> "Sample Name 1",
+          HeaderFileField.`Sample Name` -> "Sample Name 1",
         ),
         results = List(
           Map(

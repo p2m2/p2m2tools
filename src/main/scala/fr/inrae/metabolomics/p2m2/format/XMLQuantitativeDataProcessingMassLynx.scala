@@ -670,6 +670,6 @@ object XMLQuantitativeDataProcessingMassLynx {
 
 }
 
-case class XMLQuantitativeDataProcessingMassLynx(dataset:QuanDataset) extends MassSpectrometryResultSet
 
 
+case class XMLQuantitativeDataProcessingMassLynx(dataset:QuanDataset)

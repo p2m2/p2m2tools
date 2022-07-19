@@ -2,7 +2,7 @@ package fr.inrae.metabolomics.p2m2.format.conversions
 
 import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GenericP2M2, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
 import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 
@@ -115,6 +115,27 @@ object FormatConversionsTest extends TestSuite {
             )))))
 
       checkBasic(o)
+    }
+    test("GCMS empty object to convert") {
+      val o : GenericP2M2 =
+        GCMS(origin = "none")
+
+      assert(o.values.isEmpty)
+    }
+
+    test("Xcalibur basic partial object to convert") {
+      val o : GenericP2M2 =
+        GCMS(
+          origin = "none",
+          header=Map(),
+          ms_quantitative_results = Seq(Map(
+            GCMS.HeaderField.Name -> "sample",
+            GCMS.HeaderField.Area -> "area"))
+        )
+
+      assert(o.values.nonEmpty)
+      assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
+      assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
     }
   }
 }

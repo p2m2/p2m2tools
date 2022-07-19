@@ -6,23 +6,65 @@ import OpenLabCDS.HeaderFileField
 import OpenLabCDS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
+import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
 object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
   val separator = " "
 
-  def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
-    {
-          toParse
-            .flatMap {
-              case s : String if s.startsWith("""Sample""") =>
-                """Sample\sName:\s+(.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderFileField.Sample_Name -> v.group(1))
-                  case None => None
-                }
-              case _ => None
-            }.toMap
+  def setHeaderValue(toParse : Seq[String],
+                     containString : String,
+                     regexGroup : Regex) : Option[(OpenLabCDS.HeaderFileField.HeaderFileField,String)] =
+
+    Try(toParse
+      .flatMap {
+        case s: String if s.contains(containString) =>
+          regexGroup.findFirstMatchIn(s) match {
+            case Some(v) =>
+              ParserUtils.getHeaderField(OpenLabCDS.HeaderFileField,v.group(1)) match {
+                case Some(k) => Some(k -> v.group(2).trim)
+                case None => None
+              }
+            case None => None
+          }
+        case _ => None
+      }.head) match {
+      case Success(v) => Some(v)
+      case Failure(_) => None
     }
+
+  def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
+      Seq(
+        ("Sample Name","""(Sample\sName)\s*:\s*(.*)""".r),
+        ("Acq. Operator","""(Acq.\sOperator)\s*:\s*(\w+)""".r),
+        ("Seq. Line","""(Seq.\sLine)\s*:\s*(\w+)$""".r),
+        ("Sample Operator","""(Sample\sOperator)\s*:\s*(\w+)""".r),
+        ("Acq. Instrument","""(Acq.\sInstrument)\s*:\s*(.*)\s+Location""".r),
+          ("Location","""(Location)\s*:\s*(.*)$""".r),
+        ("Injection Date","""(Injection\sDate)\s*:\s*(.*)\s+Inj""".r),
+        ("Inj","""(Inj)\s*:\s*(\w+)$""".r),
+        ("Inj Volume","""(Inj\sVolume)\s*:\s*(.*)$""".r),
+        ("Additional Info","""(Additional\sInfo)\s*:\s*(.*)\s*$""".r),
+      )
+        .flatMap{
+          case (containsString:String,regex:Regex) => setHeaderValue(toParse,containsString,regex)
+        }.toMap ++ ( """Acq.\sMethod\s*:\s*(.*)""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("")) match {
+        case Some(v) =>
+          val acq_method = v.group(1).trim.split("Last changed").head
+          val date = v.group(1).trim.split("Last changed").last
+          Map(HeaderFileField.`Acq. Method` -> acq_method, HeaderFileField.`Last changed Acq. Method`->date )
+        case None => Map()
+      }) ++ ( """Analysis\sMethod\s*:\s*(.*)""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("")) match {
+        case Some(v) =>
+          val analyse_method = v.group(1).trim.split("Last changed").head
+          val date = v.group(1).trim.split("Last changed").last
+          Map(HeaderFileField.`Analysis Method` -> analyse_method, HeaderFileField.`Last changed Analysis Method` -> date)
+        case None => Map()
+      })
+/*
+ ("Acq. Method","""(Acq.\sMethod)\s*:\s*(.*)$""".r),
+        ("Analysis Method","""(Analysis.\sMethod)\s*:\s*(.*)$""".r),
+ */
 
   def parseResults( toParse : List[String] ) : List[Map[HeaderField,String]] = {
     // Grp ?????     val header_7 = List("RetTime","Type","used","Area","Amt/Area","Amount","Grp","Name")

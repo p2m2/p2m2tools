@@ -23,8 +23,31 @@ object OpenLabCDSTest extends TestSuite{
           |Acq. Instrument : MPSr-GCFID                      Location :   6  (F)
           |Injection Date  : 10/11/2021 11:03:47 PM               Inj :   1
           |                                                Inj Volume : 1 µl
+          |Acq. Method     : C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\190314_
+          |                  Glucides_prep_12-110.M
+          |Last changed    : 2/25/2021 3:02:59 PM by SYSTEM
+          |Analysis Method : C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\190314_
+          |                  Glucides_retraitement.M
+          |Last changed    : 10/19/2021 2:39:30 PM by SYSTEM
+          |                  (modified after loading)
+          |Additional Info : Peak(s) manually integrated
           |""".stripMargin
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.Sample_Name).last == "Std 500")
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Sample Name`).contains("Std 500"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Acq. Operator`).contains("SYSTEM"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Seq. Line`).contains("8"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Sample Operator`).contains("SYSTEM"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Acq. Instrument`).contains("MPSr-GCFID"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Injection Date`).contains("10/11/2021 11:03:47 PM"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.Location).contains("6  (F)"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.Inj).contains("1"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Inj Volume`).contains("1 µl"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Additional Info`).contains("Peak(s) manually integrated"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Acq. Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_prep_12-110.M"))
+      println(OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Acq. Method`))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Acq. Method`).contains("2/25/2021 3:02:59 PM by SYSTEM"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Analysis Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_retraitement.M"))
+      println(OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Analysis Method`))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Analysis Method`).contains("10/19/2021 2:39:30 PM by SYSTEM"))
     }
 
     test("parse results") {
