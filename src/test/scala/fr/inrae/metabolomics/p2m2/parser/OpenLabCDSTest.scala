@@ -3,14 +3,35 @@ package fr.inrae.metabolomics.p2m2.parser
 import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
+import scala.util.Try
+
 object OpenLabCDSTest extends TestSuite{
-  val tests = Tests{
+  val tests: Tests = Tests{
     test("file empty") {
       val toParse = ""
       assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList) == Map() )
     }
+    test("setHeaderValue new def") {
+      val toParse =
+        """
+      |Data File C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\Std 500.D
+      |New Header : Std
+      """
+      assert(Try(OpenLabCDSParser.setHeaderValue(toParse.split("\n").toList,
+        "New Header","""(New\sHeader)\s*:\s*(.*)""".r)).isFailure)
+    }
 
     test("sample name") {
+      val toParse =
+        """
+          |Data File C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\Std 500.D
+          |Sample Name: Std 500
+      """
+      assert(OpenLabCDSParser.setHeaderValue(toParse.split("\n").toList,
+        "Sample Name", """(Sample\sName)\s*:\s*(.*)""".r).contains(HeaderFileField.`Sample Name` -> "Std 500") )
+    }
+
+    test("header file") {
       val toParse =
         """
           |Data File C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\Std 500.D
@@ -32,22 +53,24 @@ object OpenLabCDSTest extends TestSuite{
           |                  (modified after loading)
           |Additional Info : Peak(s) manually integrated
           |""".stripMargin
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Sample Name`).contains("Std 500"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Acq. Operator`).contains("SYSTEM"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Seq. Line`).contains("8"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Sample Operator`).contains("SYSTEM"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Acq. Instrument`).contains("MPSr-GCFID"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Injection Date`).contains("10/11/2021 11:03:47 PM"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.Location).contains("6  (F)"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.Inj).contains("1"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Inj Volume`).contains("1 µl"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Additional Info`).contains("Peak(s) manually integrated"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Acq. Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_prep_12-110.M"))
-      println(OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Acq. Method`))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Acq. Method`).contains("2/25/2021 3:02:59 PM"))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Analysis Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_retraitement.M"))
-      println(OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Analysis Method`))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Analysis Method`).contains("10/19/2021 2:39:30 PM"))
+      val parseHeader = OpenLabCDSParser.parseHeader(toParse.split("\n").toList)
+        println("=====")
+      println(parseHeader)
+      println("=====")
+      assert( parseHeader.get(HeaderFileField.`Sample Name`).contains("Std 500"))
+      assert( parseHeader.get(HeaderFileField.`Acq. Operator`).contains("SYSTEM"))
+      assert( parseHeader.get(HeaderFileField.`Seq. Line`).contains("8"))
+      assert( parseHeader.get(HeaderFileField.`Sample Operator`).contains("SYSTEM"))
+      assert( parseHeader.get(HeaderFileField.`Acq. Instrument`).contains("MPSr-GCFID"))
+      assert( parseHeader.get(HeaderFileField.`Injection Date`).contains("10/11/2021 11:03:47 PM"))
+      assert( parseHeader.get(HeaderFileField.Location).contains("6  (F)"))
+      assert( parseHeader.get(HeaderFileField.Inj).contains("1"))
+      assert( parseHeader.get(HeaderFileField.`Inj Volume`).contains("1 µl"))
+      assert( parseHeader.get(HeaderFileField.`Additional Info`).contains("Peak(s) manually integrated"))
+      assert( parseHeader.get(HeaderFileField.`Acq. Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_prep_12-110.M"))
+      assert( parseHeader.get(HeaderFileField.`Last changed Acq. Method`).contains("2/25/2021 3:02:59 PM"))
+      assert( parseHeader.get(HeaderFileField.`Analysis Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_retraitement.M"))
+      assert( parseHeader.get(HeaderFileField.`Last changed Analysis Method`).contains("10/19/2021 2:39:30 PM"))
     }
 
     test("parse results") {

@@ -17,22 +17,20 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
                      containString : String,
                      regexGroup : Regex) : Option[(OpenLabCDS.HeaderFileField.HeaderFileField,String)] =
 
-    Try(toParse
-      .flatMap {
+    toParse
+      .map {
         case s: String if s.contains(containString) =>
+          println("OK")
           regexGroup.findFirstMatchIn(s) match {
             case Some(v) =>
               ParserUtils.getHeaderField(OpenLabCDS.HeaderFileField,v.group(1)) match {
                 case Some(k) => Some(k -> v.group(2).trim)
-                case None => None
+                case None => throw new Exception(s"Unknown column header name : ${v.group(1)}")
               }
             case None => None
           }
         case _ => None
-      }.head) match {
-      case Success(v) => Some(v)
-      case Failure(_) => None
-    }
+      }.head
 
   def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
       Seq(
