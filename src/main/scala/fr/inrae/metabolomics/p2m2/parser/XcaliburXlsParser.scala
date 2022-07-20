@@ -44,9 +44,12 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
           .filter(sheet.getRow(_) != null)
           .map(rowIndex => {
             cell.to(sheet.getRow(rowIndex).getLastCellNum)
-              .map(cellIndex => Try(sheet.getRow(rowIndex).getCell(cellIndex).toString.trim) match {
+              .map(cellIndex => Try(sheet.getRow(rowIndex).getCell(cellIndex).getDateCellValue.toString) match {
                 case Success(value) => value
-                case _ => ""
+                case _ => Try(sheet.getRow(rowIndex).getCell(cellIndex).toString) match {
+                  case Success(value) => value
+                  case _ => ""
+                }
               })
           })
       case _ => Seq()

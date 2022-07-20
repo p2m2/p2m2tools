@@ -1,5 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
+import fr.inrae.metabolomics.p2m2.format.Xcalibur
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.{HeaderField, HeaderSheetField}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
@@ -47,6 +48,10 @@ object XcaliburParserTest extends TestSuite {
       assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("EC_MS")))
       assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ")))
       assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ_MS")))
+
+      println(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.`Acq Date`))
+      println(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.Duration))
+      println(out.results(0).compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date))
     }
 
     test("extensionIsCompatible") {

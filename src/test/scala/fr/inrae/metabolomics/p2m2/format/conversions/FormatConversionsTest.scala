@@ -15,7 +15,7 @@ object FormatConversionsTest extends TestSuite {
     assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
     assert(!o.values.head.contains(GenericP2M2.HeaderField.height))
     assert(!o.values.head.contains(GenericP2M2.HeaderField.retTime))
-    assert(!o.values.head.contains(GenericP2M2.HeaderField.acquisitionDate))
+ //   assert(!o.values.head.contains(GenericP2M2.HeaderField.acquisitionDate))
     assert(!o.values.head.contains(GenericP2M2.HeaderField.injectedVolume))
   }
 
@@ -26,7 +26,7 @@ object FormatConversionsTest extends TestSuite {
     assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
     assert(o.values.head.get(GenericP2M2.HeaderField.height).contains("height"))
     assert(o.values.head.get(GenericP2M2.HeaderField.retTime).contains("retTime"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("acquisitionDate"))
+   // assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("acquisitionDate"))
     assert(o.values.head.get(GenericP2M2.HeaderField.injectedVolume).contains("injectedVolume"))
   }
 
@@ -67,10 +67,10 @@ object FormatConversionsTest extends TestSuite {
               QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "area",
               QuantifyCompoundSummaryReportMassLynx.HeaderField.Height -> "height",
               QuantifyCompoundSummaryReportMassLynx.HeaderField.RT -> "retTime",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date` -> "acquisitionDate",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19",
               QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol` -> "injectedVolume"
             ))) ) )
-
+      assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
       checkBasic(o)
     }
 
@@ -165,6 +165,17 @@ object FormatConversionsTest extends TestSuite {
       assert(o.values.nonEmpty)
       assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
       assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
+    }
+
+    test("formatDateWithLocalDate") {
+      assert(FormatConversions.formatDateWithLocalDate(Some("13-May-22"),FormatConversions.formatMassLynxTxt).isDefined)
+      assert(FormatConversions.formatDateWithLocalDate(Some("13-May-22"),FormatConversions.formatMassLynxTxt).contains("2022-05-13 00:00:00.0000"))
+      assert(FormatConversions.formatDateWithLocalDate(Some("23/08/2021"),FormatConversions.formatGCMS).isDefined)
+      assert(FormatConversions.formatDateWithLocalDate(Some("23/08/2021"),FormatConversions.formatGCMS).contains("2021-08-23 00:00:00.0000"))
+    }
+    test("formatDateWithLocalDate") {
+      assert(FormatConversions.formatDateWithLocalDateTime(Some("2/25/2021 3:02:59 PM"),FormatConversions.formatOpenLabCDS).isDefined)
+      assert(FormatConversions.formatDateWithLocalDateTime(Some("2/25/2021 3:02:59 PM"),FormatConversions.formatOpenLabCDS).contains("2021-02-25 15:02:59.0000"))
     }
   }
 }
