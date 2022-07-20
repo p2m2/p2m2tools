@@ -2,7 +2,7 @@ package fr.inrae.metabolomics.p2m2.format.conversions
 
 import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
 import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 
@@ -131,6 +131,35 @@ object FormatConversionsTest extends TestSuite {
           ms_quantitative_results = Seq(Map(
             GCMS.HeaderField.Name -> "sample",
             GCMS.HeaderField.Area -> "area"))
+        )
+
+      assert(o.values.nonEmpty)
+      assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
+      assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
+    }
+    test("OpenlabCDS empty object to convert") {
+      val o : GenericP2M2 =
+        OpenLabCDS(origin = "none")
+
+      assert(o.values.isEmpty)
+    }
+
+    test("Xcalibur basic partial object to convert") {
+      val o : GenericP2M2 =
+        OpenLabCDS(
+          origin = "none",
+          header=Map(
+            OpenLabCDS.HeaderFileField.`Sample Name` -> "sample",
+            OpenLabCDS.HeaderFileField.`Inj Volume` -> "0.1",
+            OpenLabCDS.HeaderFileField.`Last changed Acq. Method` -> "12/12/2022"
+          )
+          ,
+          results = Seq(Map(
+            OpenLabCDS.HeaderField.RetTime -> "0.1",
+            OpenLabCDS.HeaderField.Name -> "metabolite",
+            OpenLabCDS.HeaderField.Area -> "area",
+            OpenLabCDS.HeaderField.Amount -> "10",
+          ))
         )
 
       assert(o.values.nonEmpty)

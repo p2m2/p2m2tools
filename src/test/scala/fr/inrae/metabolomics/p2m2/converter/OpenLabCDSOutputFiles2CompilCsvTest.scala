@@ -55,6 +55,26 @@ object OpenLabCDSOutputFiles2CompilCsvTest extends TestSuite {
         == List(Some("5"),None,Some("8")))
       assert(OpenLabCDS2CompilCsv("Area").transform(entry,List("CompoundX","CompoundY","badCompound"))
         == List(Some("10"),None,None))
+      assert(OpenLabCDS2CompilCsv("NoHeaderColumnExist").transform(entry,List("CompoundX","CompoundY","badCompound"))
+        == List(None,None,None))
+    }
+
+    test("transform - uname compound") {
+      val entry = OpenLabCDS(
+        origin = "file/SAMPLE",
+        header = Map(
+          HeaderFileField.`Sample Name` -> "Sample Name 1",
+        ),
+        results = List(
+          Map(
+            HeaderField.Name -> "",
+            HeaderField.Area -> "10"
+          )
+        )
+      )
+      /* Name should be [Metabolite]_[Derivative]_[Isotopologue] */
+      assert(OpenLabCDS2CompilCsv("RetTime").transform(entry,List("CompoundX"))
+        == List(None))
     }
 
     test("transform - Report.txt") {

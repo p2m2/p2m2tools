@@ -18,7 +18,7 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
       }
 
 
-      def header_name_compound(openLabCds : OpenLabCDS) : List[String] = {
+      def header_name_compound(openLabCds : OpenLabCDS) : Seq[String] = {
             openLabCds.results.flatMap( (mapResults: Map[HeaderField, String]) => mapResults.get(HeaderField.Name))
       }
 
@@ -32,14 +32,11 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
                               openLabCds.
                                 results.
                                 filter((mapResults: Map[HeaderField, String]) => mapResults.getOrElse(HeaderField.Name,"") == compound)
-
-                        Try(l1.head.get(HeaderField.Name) match {
-                              case Some(nameCompound) if nameCompound == compound
-                                    => ParserUtils.getHeaderField(OpenLabCDS.HeaderField,target_head) match {
-                                    case Some(r) => l1.head.get(r)
-                                    case _ => None
+                        Try({
+                              ParserUtils.getHeaderField(OpenLabCDS.HeaderField,target_head) match {
+                                          case Some(r) => l1.head.get(r)
+                                          case _ => None
                               }
-                              case _ => None
                         }) match {
                               case Success(v) => v
                               case Failure(_) => None

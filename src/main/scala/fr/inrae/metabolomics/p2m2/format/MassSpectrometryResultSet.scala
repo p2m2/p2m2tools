@@ -80,7 +80,7 @@ case class OpenLabCDS(
                        header : Map[OpenLabCDS.HeaderFileField.HeaderFileField,String] =
                        Map[OpenLabCDS.HeaderFileField.HeaderFileField,String](),
                        // list of Name Compound/ Area/etc....
-                       results : List[Map[OpenLabCDS.HeaderField.HeaderField, String]] = List()
+                       results : Seq[Map[OpenLabCDS.HeaderField.HeaderField, String]] = List()
                      ) extends MassSpectrometryResultSet
 
 
