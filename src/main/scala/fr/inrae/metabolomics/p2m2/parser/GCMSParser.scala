@@ -83,11 +83,13 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
               .split(separator)
               .zipWithIndex
               .flatMap {
-                case (value, index) =>
+                case (value, index) if index < header.length =>
                   ParserUtils.getHeaderField(GCMS.HeaderField,header(index).trim) match {
                     case Some(keyT) => Some(keyT -> value)
-                    case _ => println("NO MATCH:"+header(index)); None
+                    case _ => throw new Exception(s"Unknown column header name : ${header(index).trim}")
                   }
+                case (_, index) => throw new Exception(s"bad column index [$index] header length:${header.length} " +
+                  s"\n**header**\n${header.mkString(",")}\n**line**\n$line")
               }.toMap
           })
       case None => throw new Exception(s"Category [$category] does not exist !")
