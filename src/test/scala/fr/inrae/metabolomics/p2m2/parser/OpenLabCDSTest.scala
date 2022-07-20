@@ -16,7 +16,7 @@ object OpenLabCDSTest extends TestSuite{
         """
       |Data File C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\Std 500.D
       |New Header : Std
-      """
+      """.stripMargin
       assert(Try(OpenLabCDSParser.setHeaderValue(toParse.split("\n").toList,
         "New Header","""(New\sHeader)\s*:\s*(.*)""".r)).isFailure)
     }
@@ -26,7 +26,7 @@ object OpenLabCDSTest extends TestSuite{
         """
           |Data File C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\Std 500.D
           |Sample Name: Std 500
-      """
+      """.stripMargin
       assert(OpenLabCDSParser.setHeaderValue(toParse.split("\n").toList,
         "Sample Name", """(Sample\sName)\s*:\s*(.*)""".r).contains(HeaderFileField.`Sample Name` -> "Std 500") )
     }
@@ -54,9 +54,7 @@ object OpenLabCDSTest extends TestSuite{
           |Additional Info : Peak(s) manually integrated
           |""".stripMargin
       val parseHeader = OpenLabCDSParser.parseHeader(toParse.split("\n").toList)
-        println("=====")
-      println(parseHeader)
-      println("=====")
+
       assert( parseHeader.get(HeaderFileField.`Sample Name`).contains("Std 500"))
       assert( parseHeader.get(HeaderFileField.`Acq. Operator`).contains("SYSTEM"))
       assert( parseHeader.get(HeaderFileField.`Seq. Line`).contains("8"))

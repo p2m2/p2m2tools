@@ -1,11 +1,10 @@
 package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
-import OpenLabCDS.HeaderField.HeaderField
-import OpenLabCDS.HeaderFileField
-import OpenLabCDS.HeaderFileField.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField.HeaderFileField
 
-import scala.collection.immutable.Map
 import scala.io.Source
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
@@ -16,21 +15,25 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
   def setHeaderValue(toParse : Seq[String],
                      containString : String,
                      regexGroup : Regex) : Option[(OpenLabCDS.HeaderFileField.HeaderFileField,String)] =
-
-    toParse
-      .map {
-        case s: String if s.contains(containString) =>
-          println("OK")
-          regexGroup.findFirstMatchIn(s) match {
-            case Some(v) =>
-              ParserUtils.getHeaderField(OpenLabCDS.HeaderFileField,v.group(1)) match {
-                case Some(k) => Some(k -> v.group(2).trim)
-                case None => throw new Exception(s"Unknown column header name : ${v.group(1)}")
-              }
-            case None => None
-          }
-        case _ => None
-      }.head
+    {
+      val res = toParse
+        .flatMap {
+          case s: String if s.contains(containString) =>
+            regexGroup.findFirstMatchIn(s) match {
+              case Some(v) =>
+                ParserUtils.getHeaderField(OpenLabCDS.HeaderFileField,v.group(1)) match {
+                  case Some(k) => Some(k -> v.group(2).trim)
+                  case None => throw new Exception(s"Unknown column header name : ${v.group(1)}")
+                }
+              case None =>  None
+            }
+          case _=>None
+        }
+      Try(res.head) match {
+        case Success(v) => Some(v)
+        case Failure(_) => None
+      }
+    }
 
   def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
       Seq(
@@ -54,7 +57,7 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
             case Failure(_) => None
           }
 
-          val date = Try("""([0-9].*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
+          val date = Try("""(\d.*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
           {
             case Success(res) => res match {
               case Some(k) => Some(HeaderFileField.`Last changed Acq. Method`->k.group(1).trim)
@@ -71,7 +74,7 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
             case Failure(_) => None
           }
 
-          val date = Try("""([0-9].*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
+          val date = Try("""(\d.*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
           {
             case Success(res) => res match {
               case Some(k) => Some(HeaderFileField.`Last changed Analysis Method`->k.group(1).trim)
