@@ -41,7 +41,7 @@ cell.setCellStyle(cellStyle)
     /**
      *values
      */
-    resultsSet.values.zipWithIndex.foreach {
+    resultsSet.values.toList.sortBy(_.get(GenericP2M2.HeaderField.sample)).zipWithIndex.foreach {
       case (acquisition: Map[GenericP2M2.HeaderField.HeaderField,String], idx : Int) =>
         val row = results.createRow(idx+1)
         GenericP2M2.HeaderField.values.zipWithIndex.foreach {

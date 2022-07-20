@@ -1,6 +1,11 @@
 package fr.inrae.metabolomics.p2m2.stream
 
-import fr.inrae.metabolomics.p2m2.format.GenericP2M2
+import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2}
+import fr.inrae.metabolomics.p2m2.parser.{GCMSParser, OpenLabCDSParser, QuantifyCompoundSummaryReportMassLynxParser, XcaliburXlsParser}
+import fr.inrae.metabolomics.p2m2.parser.GCMSParserTest.getClass
+import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSTest.getClass
+import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParserTest.getClass
+import fr.inrae.metabolomics.p2m2.parser.XcaliburParserTest.getClass
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
@@ -52,7 +57,23 @@ object ExportDataTest extends TestSuite {
       assert(workbook.getSheetAt(0).getRow(1).getCell(4).toString == "0.101")
       assert(workbook.getSheetAt(0).getRow(1).getCell(5).toString == "0.1")
       assert(workbook.getSheetAt(0).getRow(1).getCell(6).toString == "12/12/2022")
+
+      /* samples : 1 */
+      assert(workbook.getSheetAt(1).getRow(0).getLastCellNum == 1)
+      /* metabolites : 1 */
+      assert(workbook.getSheetAt(2).getRow(0).getLastCellNum == 1)
     }
 
+    test("xlsP2M2 merge different format") {
+      val mergeAllAcquisition : GenericP2M2 = Seq(
+        GCMSParser.parse(getClass.getResource("/GCMS/13CPROT4.txt").getPath),
+        OpenLabCDSParser.parse(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath),
+        QuantifyCompoundSummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath),
+        XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+      ).foldLeft(GenericP2M2(Seq()))( (accumulator,v) => accumulator +v)
+
+      val out : ByteArrayOutputStream = ExportData.xlsP2M2(mergeAllAcquisition)
+      saveAsXls("xlsP2M2",out)
+    }
   }
 }

@@ -6,8 +6,12 @@ import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
 import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
+import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 
-sealed abstract class MassSpectrometryResultSet
+
+sealed abstract class MassSpectrometryResultSet {
+  def toGenericP2M2 : GenericP2M2
+}
 
 object GenericP2M2 {
   object HeaderField extends Enumeration {
@@ -23,7 +27,12 @@ object GenericP2M2 {
   }
 }
 
-case class GenericP2M2(values : Seq[Map[GenericP2M2.HeaderField.HeaderField,String]]) extends MassSpectrometryResultSet
+case class GenericP2M2(values : Seq[Map[GenericP2M2.HeaderField.HeaderField,String]]) extends MassSpectrometryResultSet {
+  def +(that: GenericP2M2): GenericP2M2 = GenericP2M2(this.values++that.values)
+  def +(that: MassSpectrometryResultSet): GenericP2M2 = this+that.toGenericP2M2
+
+  override def toGenericP2M2: GenericP2M2 = GenericP2M2(this.values)
+}
 
 
 object GCMS {
@@ -56,7 +65,10 @@ case class GCMS (
                   header : Map[GCMS.HeaderFileField.HeaderFileField,String] =
                   Map[GCMS.HeaderFileField.HeaderFileField,String](),
                   ms_quantitative_results : Seq[Map[GCMS.HeaderField.HeaderField, String]] = Seq()
-                ) extends MassSpectrometryResultSet
+                ) extends MassSpectrometryResultSet {
+
+  override def toGenericP2M2: GenericP2M2 = this
+}
 
 object OpenLabCDS {
 
@@ -81,7 +93,9 @@ case class OpenLabCDS(
                        Map[OpenLabCDS.HeaderFileField.HeaderFileField,String](),
                        // list of Name Compound/ Area/etc....
                        results : Seq[Map[OpenLabCDS.HeaderField.HeaderField, String]] = List()
-                     ) extends MassSpectrometryResultSet
+                     ) extends MassSpectrometryResultSet {
+  override def toGenericP2M2: GenericP2M2 = this
+}
 
 
 
@@ -114,7 +128,9 @@ case class QuantifyCompoundSummaryReportMassLynx(
                                                   header : QuantifyCompoundSummaryReportMassLynx.Header,
                                                   // list of Name Compound/ Area/etc....
                                                   results : Seq[(String,Seq[Map[QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
-                                                ) extends MassSpectrometryResultSet
+                                                ) extends MassSpectrometryResultSet {
+  override def toGenericP2M2: GenericP2M2 = this
+}
 
 object Xcalibur {
 
@@ -138,7 +154,9 @@ object Xcalibur {
                                     compoundByInjection: Seq[Map[Xcalibur.HeaderField.HeaderField, String]] = Seq())
 }
 
-case class Xcalibur(origin : String, results : Seq[CompoundSheetXcalibur]) extends MassSpectrometryResultSet
+case class Xcalibur(origin : String, results : Seq[CompoundSheetXcalibur]) extends MassSpectrometryResultSet {
+  override def toGenericP2M2: GenericP2M2 = this
+}
 
 
 object Isocor {
@@ -158,4 +176,6 @@ object Isocor {
   }
 }
 
-case class Isocor(origin : String, results : Seq[CompoundIsocor] = List()) extends MassSpectrometryResultSet
+case class Isocor(origin : String, results : Seq[CompoundIsocor] = List()) extends MassSpectrometryResultSet {
+  override def toGenericP2M2: GenericP2M2 = GenericP2M2(Seq()) /* None conversion available */
+}
