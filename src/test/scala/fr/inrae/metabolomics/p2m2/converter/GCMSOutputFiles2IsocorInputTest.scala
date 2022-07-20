@@ -5,6 +5,8 @@ import fr.inrae.metabolomics.p2m2.parser.GCMSParser
 import GCMS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
+import scala.util.{Success, Try}
+
 object GCMSOutputFiles2IsocorInputTest extends TestSuite {
   val tests: Tests = Tests {
 
@@ -16,6 +18,31 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
         )
       )
       assert( GCMSOutputFiles2IsocorInput().transform(entry) == List() )
+    }
+
+    test("transform - missing Data_File_Name") {
+      val entry = GCMS(
+        origin = "file/SAMPLE",
+        header = Map(
+        )
+      )
+      assert(Try( GCMSOutputFiles2IsocorInput().transform(entry) == List() ).isFailure)
+    }
+
+    test("transform - Name missing") {
+      val entry = GCMS(
+        origin = "file/SAMPLE",
+        header = Map(
+          HeaderFileField.Data_File_Name -> "Date File Name",
+        ),
+        ms_quantitative_results = List(
+          Map(
+            HeaderField.`ID#` -> "1",
+            HeaderField.Area -> "area1"
+          )
+        )
+      )
+      assert(Try( GCMSOutputFiles2IsocorInput().transform(entry) == List() ).isFailure)
     }
 
     test("transform - nothing 2") {

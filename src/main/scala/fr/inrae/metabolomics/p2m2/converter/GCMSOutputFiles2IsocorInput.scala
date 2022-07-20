@@ -19,7 +19,7 @@ case class GCMSOutputFiles2IsocorInput(resolution : Int = 2000, separator_name :
       def transform( gcms : GCMS ) : Seq[String] = {
             val sample =gcms.header.get(HeaderFileField.Data_File_Name) match {
                   case Some(value) => value.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
-                  case None => throw new Exception("Can not retrieve sample (end of 'Data File Name' value) origin:"+gcms.origin)
+                  case None => throw new Exception("'Data File Name' missing:"+gcms.origin)
             }
 
             gcms.ms_quantitative_results
