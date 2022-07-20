@@ -5,6 +5,7 @@ import OpenLabCDS.HeaderField.HeaderField
 import OpenLabCDS.HeaderFileField
 import OpenLabCDS.HeaderFileField.HeaderFileField
 
+import scala.collection.immutable.Map
 import scala.io.Source
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
@@ -50,15 +51,37 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
           case (containsString:String,regex:Regex) => setHeaderValue(toParse,containsString,regex)
         }.toMap ++ ( """Acq.\sMethod\s*:\s*(.*)""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("")) match {
         case Some(v) =>
-          val acq_method = v.group(1).trim.split("Last changed").head
-          val date = v.group(1).trim.split("Last changed").last
-          Map(HeaderFileField.`Acq. Method` -> acq_method, HeaderFileField.`Last changed Acq. Method`->date )
+          val acq_method = Try(v.group(1).trim.split("Last changed").head) match {
+            case Success(v) => Some(HeaderFileField.`Acq. Method` ->v)
+            case Failure(_) => None
+          }
+
+          val date = Try("""([0-9].*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
+          {
+            case Success(res) => res match {
+              case Some(k) => Some(HeaderFileField.`Last changed Acq. Method`->k.group(1).trim)
+              case None => None
+              }
+            case Failure(_) => None
+          }
+          Seq(acq_method,date).flatten.toMap
         case None => Map()
       }) ++ ( """Analysis\sMethod\s*:\s*(.*)""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("")) match {
         case Some(v) =>
-          val analyse_method = v.group(1).trim.split("Last changed").head
-          val date = v.group(1).trim.split("Last changed").last
-          Map(HeaderFileField.`Analysis Method` -> analyse_method, HeaderFileField.`Last changed Analysis Method` -> date)
+          val acq_method = Try(v.group(1).trim.split("Last changed").head) match {
+            case Success(v) => Some(HeaderFileField.`Analysis Method` ->v)
+            case Failure(_) => None
+          }
+
+          val date = Try("""([0-9].*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
+          {
+            case Success(res) => res match {
+              case Some(k) => Some(HeaderFileField.`Last changed Analysis Method`->k.group(1).trim)
+              case None => None
+            }
+            case Failure(_) => None
+          }
+          Seq(acq_method,date).flatten.toMap
         case None => Map()
       })
 /*

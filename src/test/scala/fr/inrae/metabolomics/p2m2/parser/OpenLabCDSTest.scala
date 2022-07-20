@@ -44,10 +44,10 @@ object OpenLabCDSTest extends TestSuite{
       assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Additional Info`).contains("Peak(s) manually integrated"))
       assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Acq. Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_prep_12-110.M"))
       println(OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Acq. Method`))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Acq. Method`).contains("2/25/2021 3:02:59 PM by SYSTEM"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Acq. Method`).contains("2/25/2021 3:02:59 PM"))
       assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Analysis Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_retraitement.M"))
       println(OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Analysis Method`))
-      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Analysis Method`).contains("10/19/2021 2:39:30 PM by SYSTEM"))
+      assert( OpenLabCDSParser.parseHeader(toParse.split("\n").toList).get(HeaderFileField.`Last changed Analysis Method`).contains("10/19/2021 2:39:30 PM"))
     }
 
     test("parse results") {

@@ -87,13 +87,13 @@ object FormatConversions {
       x.results.map(
         (res : Map[OpenLabCDS.HeaderField.HeaderField, String]) => {
           Map(
-            GenericP2M2.HeaderField.metabolite -> None,
-            GenericP2M2.HeaderField.sample -> res.get(OpenLabCDS.HeaderField.Name),
+            GenericP2M2.HeaderField.metabolite -> res.get(OpenLabCDS.HeaderField.Name),
+            GenericP2M2.HeaderField.sample -> x.header.get(OpenLabCDS.HeaderFileField.`Sample Name`),
             GenericP2M2.HeaderField.retTime -> res.get(OpenLabCDS.HeaderField.RetTime),
             GenericP2M2.HeaderField.area -> res.get(OpenLabCDS.HeaderField.Area),
             GenericP2M2.HeaderField.height -> res.get(OpenLabCDS.HeaderField.Amount),
-            GenericP2M2.HeaderField.acquisitionDate -> None,
-            GenericP2M2.HeaderField.injectedVolume -> None
+            GenericP2M2.HeaderField.acquisitionDate -> x.header.get(OpenLabCDS.HeaderFileField.`Last changed Acq. Method`),
+            GenericP2M2.HeaderField.injectedVolume -> x.header.get(OpenLabCDS.HeaderFileField.`Inj Volume`)
           ).flatMap {
             case (k,Some(v)) => Some(k,v)
             case _ => None
