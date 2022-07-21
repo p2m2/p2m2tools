@@ -48,7 +48,7 @@ object XcaliburParserTest extends TestSuite {
       assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("EC_MS")))
       assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ")))
       assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ_MS")))
-
+      println(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.`Acq Date`))
       assert(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.`Acq Date`).contains("Fri Jun 03 20:49:08 CEST 2022"))
       assert(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.Duration).contains("70.0"))
       assert(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.`Response Type`).contains("NA"))
