@@ -15,7 +15,7 @@ scmInfo := Some(
 )
 
 versionScheme := Some("early-semver")
-val static_version      = "0.1.8"
+val static_version      = "0.2.0"
 val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_version )
 
 version :=  version_build
@@ -26,7 +26,7 @@ libraryDependencies ++= Seq(
   "org.slf4j" % "slf4j-simple" % "2.0.0-alpha7" % Test,
   "org.apache.poi" % "poi-ooxml" % "5.2.2",
   "com.github.scopt" %% "scopt" % "4.0.1",
-  "org.scala-lang.modules" %% "scala-xml" % "2.1.0",
+  "org.scala-lang.modules" %% "scala-xml" % "1.2.0",
 )
 
 // Coverage
