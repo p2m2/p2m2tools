@@ -73,8 +73,15 @@ publishConfiguration := publishConfiguration.value.withOverwrite(true)
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
 pomIncludeRepository := { _ => false }
 publishMavenStyle := true
-
 assembly / target := file("assembly")
+assembly / logLevel := Level.Info
+assembly / assemblyMergeStrategy := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.last
+  case x =>
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+    oldStrategy(x)
+}
+
 
 testFrameworks += new TestFramework("utest.runner.Framework")
 Global / onChangedBuildSource := ReloadOnSourceChanges
