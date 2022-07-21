@@ -35,7 +35,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
         header = Map(
           HeaderFileField.Data_File_Name -> "Date File Name",
         ),
-        ms_quantitative_results = List(
+        msQuantitativeResults = List(
           Map(
             HeaderField.`ID#` -> "1",
             HeaderField.Area -> "area1"
@@ -51,7 +51,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
         header = Map(
           HeaderFileField.Data_File_Name -> "Date File Name",
         ),
-        ms_quantitative_results = List(
+        msQuantitativeResults = List(
           Map(
             HeaderField.`ID#` -> "1",
             HeaderField.Name -> "name1",
@@ -69,7 +69,7 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
         header = Map(
           HeaderFileField.Data_File_Name -> "Date File Name",
         ),
-        ms_quantitative_results = List(
+        msQuantitativeResults = List(
           Map(
             HeaderField.Name -> "metabolite1_derivative1_isotopologue1",
             HeaderField.Area -> "area1"

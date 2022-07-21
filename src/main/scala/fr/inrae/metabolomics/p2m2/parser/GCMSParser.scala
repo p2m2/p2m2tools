@@ -6,7 +6,7 @@ import GCMS.{HeaderField, HeaderFileField}
 import GCMS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 object GCMSParser extends Parser[GCMS] with FormatSniffer {
   val separator = "\t"
@@ -100,7 +100,7 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
     GCMS(
       origin = filename,
       header = parseHeader(toParse),
-      ms_quantitative_results = parseMSQuantitativeResults(toParse)
+      msQuantitativeResults = parseMSQuantitativeResults(toParse)
     )
   }
 
@@ -126,7 +126,7 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
   }
 
   override def sniffFile(filename: String): Boolean = {
-    try {
+    Try({
       val source =       Source.fromFile(filename)
       val lines = source.getLines().slice(0,20).toList
       source.close()
@@ -134,9 +134,9 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
         case Success(m) if m.nonEmpty => true
         case _ => false
       }
-    } catch {
-      case _: Throwable => false
+    }) match {
+      case Success(v) => v
+      case Failure(_) => false
     }
-
   }
 }

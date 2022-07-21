@@ -79,8 +79,8 @@ object OpenLabCDSOutputFiles2CompilCsvTest extends TestSuite {
 
     test("transform - Report.txt") {
 
-      val openlabs_output = OpenLabCDSParser.parse(getClass.getResource("/OpenLabCDS/Report.txt").getPath)
-      val r = OpenLabCDS2CompilCsv("Area").transform(openlabs_output,List("Glyoxylate","Xylose2","CompoundY"))
+      val openLabsOutput = OpenLabCDSParser.parse(getClass.getResource("/OpenLabCDS/Report.txt").getPath)
+      val r = OpenLabCDS2CompilCsv("Area").transform(openLabsOutput,List("Glyoxylate","Xylose2","CompoundY"))
       assert( r.length == 3 )
       assert( r.contains(None))
     }

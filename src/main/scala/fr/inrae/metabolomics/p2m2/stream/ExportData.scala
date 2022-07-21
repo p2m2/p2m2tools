@@ -1,5 +1,6 @@
 package fr.inrae.metabolomics.p2m2.stream
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import fr.inrae.metabolomics.p2m2.format.GenericP2M2
 import fr.inrae.metabolomics.p2m2.parser.ParserUtils
 import org.apache.poi.ss.usermodel.Cell
@@ -10,7 +11,7 @@ case object ExportData {
 
   def xlsP2M2(resultsSet : GenericP2M2): ByteArrayOutputStream = {
 
-    import org.apache.poi.hssf.usermodel.HSSFWorkbook
+
 
     val wb = new HSSFWorkbook
     val results = wb.createSheet("RESULTS")

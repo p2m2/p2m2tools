@@ -22,11 +22,11 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
             openLabCds.results.flatMap( (mapResults: Map[HeaderField, String]) => mapResults.get(HeaderField.Name))
       }
 
-      def transform(openLabCds : OpenLabCDS, header_name_compound : List[String] )
+      def transform(openLabCds : OpenLabCDS, headerNameCompound : List[String] )
       : List[Serializable] = {
             //val sample = openLabCds.origin.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
 
-            header_name_compound.map(
+            headerNameCompound.map(
                   compound => {
                         val l1 =
                               openLabCds.

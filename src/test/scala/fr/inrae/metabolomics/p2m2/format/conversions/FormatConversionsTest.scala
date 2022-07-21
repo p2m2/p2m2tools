@@ -130,7 +130,7 @@ object FormatConversionsTest extends TestSuite {
         GCMS(
           origin = "none",
           header=Map(),
-          ms_quantitative_results = Seq(Map(
+          msQuantitativeResults = Seq(Map(
             GCMS.HeaderField.Name -> "sample",
             GCMS.HeaderField.Area -> "area"))
         )

@@ -22,7 +22,7 @@ case class GCMSOutputFiles2IsocorInput(resolution : Int = 2000, separator_name :
                   case None => throw new Exception("'Data File Name' missing:"+gcms.origin)
             }
 
-            gcms.ms_quantitative_results
+            gcms.msQuantitativeResults
               .flatMap {
                     mapResults: Map[HeaderField, String] =>
                           val id = mapResults.get(HeaderField.`ID#`) match {

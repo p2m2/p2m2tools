@@ -1,11 +1,8 @@
 package fr.inrae.metabolomics.p2m2.stream
 
-import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2}
+import fr.inrae.metabolomics.p2m2.format.GenericP2M2
 import fr.inrae.metabolomics.p2m2.parser.{GCMSParser, OpenLabCDSParser, QuantifyCompoundSummaryReportMassLynxParser, XcaliburXlsParser}
-import fr.inrae.metabolomics.p2m2.parser.GCMSParserTest.getClass
-import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSTest.getClass
-import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParserTest.getClass
-import fr.inrae.metabolomics.p2m2.parser.XcaliburParserTest.getClass
+import java.io.FileOutputStream
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
@@ -14,7 +11,7 @@ import java.io.{ByteArrayInputStream, ByteArrayOutputStream, File}
 object ExportDataTest extends TestSuite {
 
   def saveAsXls(filename : String, out : ByteArrayOutputStream): Unit = {
-    import java.io.FileOutputStream
+
     val path = File.createTempFile(filename,".xls").getPath
     println(s" *** $path ***")
     val outputStream = new FileOutputStream(path)

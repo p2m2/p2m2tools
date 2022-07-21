@@ -53,23 +53,23 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
         }.toMap ++ ( """Acq.\sMethod\s*:\s*(.*\s+.*)\n""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
         case Some(v) =>
 
-          val acq_method = Some(HeaderFileField.`Acq. Method` ->v.group(1).replace("\n","").trim)
+          val acqMethod = Some(HeaderFileField.`Acq. Method` ->v.group(1).replace("\n","").trim)
           val date = """Acq.\sMethod\s*:\s*.*\s+.*\nLast changed\s*:\s*(\d.*)\s+by"""
             .r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
               case Some(k) => Some(HeaderFileField.`Last changed Acq. Method`->k.group(1).trim)
               case None => None
           }
-          Seq(acq_method,date).flatten.toMap
+          Seq(acqMethod,date).flatten.toMap
         case None => Map()
       }) ++ ( """Analysis\sMethod\s*:\s*(.*\s+.*)\n""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
         case Some(v) =>
-          val acq_method =  Some(HeaderFileField.`Analysis Method` ->v.group(1).replace("\n","").trim)
+          val analysisMethod =  Some(HeaderFileField.`Analysis Method` ->v.group(1).replace("\n","").trim)
           val date = """Analysis\sMethod\s*:\s*.*\s+.*\nLast changed\s*:\s*(\d.*)\s+by""".r
             .findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
               case Some(k) => Some(HeaderFileField.`Last changed Analysis Method`->k.group(1).trim)
               case None => None
           }
-          Seq(acq_method,date).flatten.toMap
+          Seq(analysisMethod,date).flatten.toMap
         case None => Map()
       })
 /*
@@ -137,7 +137,7 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
   }
 
   override def sniffFile(filename: String): Boolean = {
-    try {
+    Try({
       val source =       Source.fromFile(filename)
       val lines = source.getLines().slice(0,20).toList
       source.close()
@@ -145,8 +145,9 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
         case Success(m) if m.nonEmpty => true
         case _ => false
       }
-    } catch {
-      case _: Throwable => false
+    }) match {
+      case Success(v) => v
+      case Failure(_) => false
     }
   }
 }

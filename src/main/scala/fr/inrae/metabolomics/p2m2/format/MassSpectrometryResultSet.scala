@@ -64,7 +64,7 @@ case class GCMS (
                   origin : String,
                   header : Map[GCMS.HeaderFileField.HeaderFileField,String] =
                   Map[GCMS.HeaderFileField.HeaderFileField,String](),
-                  ms_quantitative_results : Seq[Map[GCMS.HeaderField.HeaderField, String]] = Seq()
+                  msQuantitativeResults : Seq[Map[GCMS.HeaderField.HeaderField, String]] = Seq()
                 ) extends MassSpectrometryResultSet {
 
   override def toGenericP2M2: GenericP2M2 = this
@@ -106,7 +106,7 @@ object QuantifyCompoundSummaryReportMassLynx {
       .appendPattern("E MMM dd HH:mm:ss yyyy")
       .toFormatter(Locale.US)
 
-    val PrintedDate: LocalDate = dateStr match {
+    val printedDate: LocalDate = dateStr match {
       case Some(d) => LocalDate.parse(d.trim, formatter)
       case None => LocalDate.now()
     }

@@ -218,7 +218,7 @@ object GCMSParserTest extends TestSuite {
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT1.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:08:03")
-      assert (v.ms_quantitative_results.length == 259 )
+      assert (v.msQuantitativeResults.length == 259 )
     }
 
     test("parse 13CPROT2") {
@@ -226,7 +226,7 @@ object GCMSParserTest extends TestSuite {
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT2.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:09:36")
-      assert (v.ms_quantitative_results.length == 262 )
+      assert (v.msQuantitativeResults.length == 262 )
     }
 
     test("parse 13CPROT3") {
@@ -234,7 +234,7 @@ object GCMSParserTest extends TestSuite {
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT3.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:09:49")
-      assert (v.ms_quantitative_results.length == 262 )
+      assert (v.msQuantitativeResults.length == 262 )
     }
 
     test("parse 13CPROT4") {
@@ -242,7 +242,7 @@ object GCMSParserTest extends TestSuite {
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT4.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:10:14")
-      assert (v.ms_quantitative_results.length == 262 )
+      assert (v.msQuantitativeResults.length == 262 )
     }
 
     test("extensionIsCompatible") {

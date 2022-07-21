@@ -20,18 +20,11 @@ object XMLQuantitativeDataProcessingMassLynx {
     }
   }
 
-  case class QuanDataset(
-                          description : String,
+  case class QuanDataset(description : String,
                           version : String,
                           xmlFile : XmlFile,
                           dataset: Dataset,
-                          groupData: Seq[Group]) {
-    /*
-    override def toString =
-      s"description: $description, version: $version\n xmlFile: $xmlFile \n dataset $dataset \n groupData $groupData"
-      */
-  }
-
+                          groupData: Seq[Group])
   object XmlFile {
     def fromXml(node: scala.xml.Node):XmlFile = {
       val filename = node \@ "filename"
@@ -672,4 +665,4 @@ object XMLQuantitativeDataProcessingMassLynx {
 
 
 
-case class XMLQuantitativeDataProcessingMassLynx(dataset:QuanDataset)
+case class  XMLQuantitativeDataProcessingMassLynx(dataset:QuanDataset)

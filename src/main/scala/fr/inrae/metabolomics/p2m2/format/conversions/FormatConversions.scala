@@ -145,7 +145,7 @@ object FormatConversions {
 
   implicit def GCMSToGenericP2M2(x: GCMS) :  GenericP2M2 =
     GenericP2M2(
-      x.ms_quantitative_results.map(
+      x.msQuantitativeResults.map(
         (res : Map[HeaderField, String]) => {
           Map(
             GenericP2M2.HeaderField.metabolite -> None,
