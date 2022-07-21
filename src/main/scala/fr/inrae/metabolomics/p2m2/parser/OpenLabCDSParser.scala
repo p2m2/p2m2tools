@@ -102,8 +102,7 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
                 case (value, index) if length == 8 => ParserUtils.getHeaderField(OpenLabCDS.HeaderField,header_8(index)) -> value
               }.
                 flatMap {
-                case k->v if k.isDefined=> Some(k.get -> v)
-                case _ => None
+                case k->v => Some(k.get -> v)
               }.toMap
           })
 

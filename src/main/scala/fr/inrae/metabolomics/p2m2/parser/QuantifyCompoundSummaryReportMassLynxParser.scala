@@ -111,10 +111,7 @@ object QuantifyCompoundSummaryReportMassLynxParser
       val source =       Source.fromFile(filename)
       val lines = source.getLines().slice(0,20).toList
       source.close()
-      Try(parseHeader(lines)) match {
-        case Success(header) => header.dateStr.isDefined
-        case _ => false
-      }
+      parseHeader(lines).dateStr.isDefined
     } catch {
       case _: Throwable => false
     }
