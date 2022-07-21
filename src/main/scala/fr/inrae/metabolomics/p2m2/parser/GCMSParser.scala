@@ -1,11 +1,14 @@
 package fr.inrae.metabolomics.p2m2.parser
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField.HeaderField
+
+import fr.inrae.metabolomics.p2m2.format.GCMS
+import GCMS.HeaderField.HeaderField
+import GCMS.{HeaderField, HeaderFileField}
+import GCMS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
+import scala.util.{Failure, Success, Try}
 
-object GCMSParser {
+object GCMSParser extends Parser[GCMS] with FormatSniffer {
   val separator = "\t"
   /**
    *
@@ -15,26 +18,25 @@ object GCMSParser {
   def getIndexLinesByCategories( toParse : List[String]  ) : Map[String,(Int,Int)] = {
     val base = toParse.zipWithIndex.flatMap {
       case (element, index) =>
-        val pattern = """\[([a-zA-Z ]+)\]""".r
-        (pattern.findFirstMatchIn(element)) match {
+        val pattern = """\[([a-zA-Z ]+)""".r
+        pattern.findFirstMatchIn(element) match {
           case Some(elt) => Some(elt.group(1) -> (index, index))
           case None => None
         }
     }
 
     base.zipWithIndex.map {
-      case (element, index) => {
+      case (element, index) =>
         element match {
           case s -> d if index < ( base.length - 1 ) => s -> (d._1,base(index+1)._2._1)
           case lastCategory -> d => lastCategory -> (d._1,toParse.length)
         }
-      }
     }.toMap
   }
 
 
 
-  def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =
+  def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
     {
       val category = "Header"
 
@@ -46,17 +48,17 @@ object GCMSParser {
             .flatMap {
               case s : String if s.startsWith("""Data File Name""") =>
                 """Data\sFile\sName(\s+.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Data_File_Name -> v.group(1).trim)
+                  case Some(v) => Some(HeaderFileField.Data_File_Name -> v.group(1).trim)
                   case None => throw new Exception (s"Can not capture [$category]/Data File Name value")
                 }
               case s : String if s.startsWith("""Output Date""") =>
                 """Output\sDate(\s+.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Output_Date -> v.group(1).trim)
+                  case Some(v) => Some(HeaderFileField.Output_Date -> v.group(1).trim)
                   case None => throw new Exception(s"Can not capture [$category]/Output Date value")
                 }
               case s : String if s.startsWith("""Output Time""") =>
                 """Output\sTime(\s+.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Output_Time -> v.group(1).trim)
+                  case Some(v) => Some(HeaderFileField.Output_Time -> v.group(1).trim)
                   case None => throw new Exception(s"Can not capture [$category]/Output Time value")
                 }
               case _ => None
@@ -65,12 +67,12 @@ object GCMSParser {
       }
     }
 
-  def parseMSQuantitativeResults( toParse : List[String] ) : List[Map[String,String]] = {
+  def parseMSQuantitativeResults( toParse : List[String] ) : List[Map[HeaderField,String]] = {
     val category = "MS Quantitative Results"
 
     getIndexLinesByCategories(toParse)
       .get(category) match {
-      case Some(lMin_lMax) => {
+      case Some(lMin_lMax) =>
         /* header */
         val header = toParse(lMin_lMax._1 + 1).split(separator)
         /* values */
@@ -80,31 +82,61 @@ object GCMSParser {
             line
               .split(separator)
               .zipWithIndex
-              .map {
-                case (value, index) => header(index) -> value
+              .flatMap {
+                case (value, index) if index < header.length =>
+                  ParserUtils.getHeaderField(GCMS.HeaderField,header(index).trim) match {
+                    case Some(keyT) => Some(keyT -> value)
+                    case _ => throw new Exception(s"Unknown column header name : ${header(index).trim}")
+                  }
+                case (_, index) => throw new Exception(s"bad column index [$index] header length:${header.length} " +
+                  s"\n**header**\n${header.mkString(",")}\n**line**\n$line")
               }.toMap
           })
-      }
       case None => throw new Exception(s"Category [$category] does not exist !")
     }
   }
 
-  def get(filename : String, toParse : List[String]) : OutputGCMS = {
-    OutputGCMS(
+  def get(filename : String, toParse : List[String]) : GCMS = {
+    GCMS(
       origin = filename,
       header = parseHeader(toParse),
-      ms_quantitative_results = parseMSQuantitativeResults(toParse)
+      msQuantitativeResults = parseMSQuantitativeResults(toParse)
     )
   }
 
-  def parse(filename : String) : OutputGCMS = get(
-    filename,
-    Source.fromFile(filename)
-      .getLines()
-      .toList
-      .map( _.trim )
-      .filter( _.nonEmpty)
-      .filter( ! _.startsWith("#") )
-  )
+  def parse(filename : String) : GCMS = {
+    val source =       Source.fromFile(filename)
+    val lines = source.getLines()
+    val ret = get(
+      filename,
+      lines.toList
+        .map( _.trim )
+        .filter( _.nonEmpty)
+        .filter( ! _.startsWith("#") )
+    )
+    source.close()
+    ret
+  }
 
+  override def extensionIsCompatible(filename: String): Boolean = {
+    filename.split("\\.").lastOption match {
+      case Some(a) if a.trim!="" => true
+      case _ => false
+    }
+  }
+
+  override def sniffFile(filename: String): Boolean = {
+    Try({
+      val source =       Source.fromFile(filename)
+      val lines = source.getLines().slice(0,20).toList
+      source.close()
+      Try(parseHeader(lines)) match {
+        case Success(m) if m.nonEmpty => true
+        case _ => false
+      }
+    }) match {
+      case Success(v) => v
+      case Failure(_) => false
+    }
+  }
 }

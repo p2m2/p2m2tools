@@ -1,4 +1,4 @@
-scalaVersion := "2.13.6"
+scalaVersion := "2.13.8"
 
 name := "P2M2Tools"
 organizationName := "p2m2"
@@ -15,20 +15,26 @@ scmInfo := Some(
 )
 
 versionScheme := Some("early-semver")
-val static_version      = "0.1.8"
+val static_version      = "0.2.0"
 val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_version )
 
 version :=  version_build
 
-libraryDependencies += "com.lihaoyi" %% "utest" % "0.7.11" % "test"
-libraryDependencies += "com.github.scopt" %% "scopt" % "4.0.1"
+libraryDependencies ++= Seq(
+  "com.lihaoyi" %% "utest" % "0.7.11" % Test,
+  "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.18.0" % Test,
+  "org.slf4j" % "slf4j-simple" % "2.0.0-alpha7" % Test,
+  "org.apache.poi" % "poi-ooxml" % "5.2.2",
+  "com.github.scopt" %% "scopt" % "4.0.1",
+  "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % Provided,
+)
 
 // Coverage
 
-coverageMinimumStmtTotal := 97
-coverageMinimumBranchTotal := 93
-coverageMinimumStmtPerPackage := 93
-coverageMinimumBranchPerPackage := 93
+coverageMinimumStmtTotal := 98
+coverageMinimumBranchTotal := 98
+coverageMinimumStmtPerPackage := 95
+coverageMinimumBranchPerPackage := 95
 coverageMinimumStmtPerFile := 93
 coverageMinimumBranchPerFile := 93
 coverageFailOnMinimum := true
@@ -67,8 +73,15 @@ publishConfiguration := publishConfiguration.value.withOverwrite(true)
 publishLocalConfiguration := publishLocalConfiguration.value.withOverwrite(true)
 pomIncludeRepository := { _ => false }
 publishMavenStyle := true
-
 assembly / target := file("assembly")
+assembly / logLevel := Level.Info
+assembly / assemblyMergeStrategy := {
+  case PathList("META-INF", xs @ _*) => MergeStrategy.last
+  case x =>
+    val oldStrategy = (ThisBuild / assemblyMergeStrategy).value
+    oldStrategy(x)
+}
+
 
 testFrameworks += new TestFramework("utest.runner.Framework")
 Global / onChangedBuildSource := ReloadOnSourceChanges
