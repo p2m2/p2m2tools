@@ -27,7 +27,7 @@ object GenericP2M2 {
   }
 }
 
-case class GenericP2M2(values : Seq[Map[GenericP2M2.HeaderField.HeaderField,String]]) extends MassSpectrometryResultSet {
+case class GenericP2M2(values : Seq[Map[GenericP2M2.HeaderField.HeaderField,String]]=Seq()) extends MassSpectrometryResultSet {
   def +(that: GenericP2M2): GenericP2M2 = GenericP2M2(this.values++that.values)
   def +(that: MassSpectrometryResultSet): GenericP2M2 = this+that.toGenericP2M2
 

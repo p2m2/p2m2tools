@@ -2,7 +2,7 @@ package fr.inrae.metabolomics.p2m2.format.conversions
 
 import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
 import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 
@@ -91,7 +91,7 @@ object FormatConversionsTest extends TestSuite {
               Xcalibur.HeaderSheetField.`Component Name` -> "metabolite"
             ),
             compoundByInjection = Seq(Map(
-              Xcalibur.HeaderField.`Sample Name` -> "sample",
+              Xcalibur.HeaderField.Filename -> "sample",
               Xcalibur.HeaderField.Area -> "area",
             )))))
 
@@ -106,16 +106,18 @@ object FormatConversionsTest extends TestSuite {
               Xcalibur.HeaderSheetField.`Component Name` -> "metabolite"
             ),
             compoundByInjection = Seq(Map(
-              Xcalibur.HeaderField.`Sample Name` -> "sample",
+              Xcalibur.HeaderField.Filename -> "sample",
               Xcalibur.HeaderField.Area -> "area",
               Xcalibur.HeaderField.Height -> "height",
               Xcalibur.HeaderField.RT -> "retTime",
-              Xcalibur.HeaderField.`Acq Date` -> "acquisitionDate",
+              Xcalibur.HeaderField.`Acq Date` -> "Tue Jun 20 14:53:08 CEST 2017",
               Xcalibur.HeaderField.`Inj Vol` -> "injectedVolume"
             )))))
 
       checkBasic(o)
+      assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2017-06-20 14:53:08.0000"))
     }
+
     test("GCMS empty object to convert") {
       val o : GenericP2M2 =
         GCMS(origin = "none")
@@ -151,7 +153,7 @@ object FormatConversionsTest extends TestSuite {
           header=Map(
             OpenLabCDS.HeaderFileField.`Sample Name` -> "sample",
             OpenLabCDS.HeaderFileField.`Inj Volume` -> "0.1",
-            OpenLabCDS.HeaderFileField.`Last changed Acq. Method` -> "12/12/2022"
+            OpenLabCDS.HeaderFileField.`Last changed Acq. Method` -> "2/25/2021 3:02:59 PM"
           )
           ,
           results = Seq(Map(
@@ -169,13 +171,23 @@ object FormatConversionsTest extends TestSuite {
 
     test("formatDateWithLocalDate") {
       assert(FormatConversions.formatDateWithLocalDate(Some("13-May-22"),FormatConversions.formatMassLynxTxt).isDefined)
+      assert(FormatConversions.formatDateWithLocalDate(Some("ERROR"),FormatConversions.formatMassLynxTxt).contains("ERROR"))
       assert(FormatConversions.formatDateWithLocalDate(Some("13-May-22"),FormatConversions.formatMassLynxTxt).contains("2022-05-13 00:00:00.0000"))
       assert(FormatConversions.formatDateWithLocalDate(Some("23/08/2021"),FormatConversions.formatGCMS).isDefined)
       assert(FormatConversions.formatDateWithLocalDate(Some("23/08/2021"),FormatConversions.formatGCMS).contains("2021-08-23 00:00:00.0000"))
     }
     test("formatDateWithLocalDate") {
       assert(FormatConversions.formatDateWithLocalDateTime(Some("2/25/2021 3:02:59 PM"),FormatConversions.formatOpenLabCDS).isDefined)
+      assert(FormatConversions.formatDateWithLocalDateTime(Some("ERROR"),FormatConversions.formatMassLynxTxt).contains("ERROR"))
       assert(FormatConversions.formatDateWithLocalDateTime(Some("2/25/2021 3:02:59 PM"),FormatConversions.formatOpenLabCDS).contains("2021-02-25 15:02:59.0000"))
+    }
+    test("Isocor toGenericP2M2") {
+      val g : GenericP2M2 = Isocor(origin="").toGenericP2M2
+      assert(g.values==Seq())
+    }
+    test("GenericP2M2 toGenericP2M2") {
+      val g : GenericP2M2 = GenericP2M2().toGenericP2M2
+      assert(g.values==Seq())
     }
   }
 }

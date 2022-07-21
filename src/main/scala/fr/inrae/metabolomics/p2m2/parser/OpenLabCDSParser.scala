@@ -50,37 +50,24 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
       )
         .flatMap{
           case (containsString:String,regex:Regex) => setHeaderValue(toParse,containsString,regex)
-        }.toMap ++ ( """Acq.\sMethod\s*:\s*(.*)""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("")) match {
+        }.toMap ++ ( """Acq.\sMethod\s*:\s*(.*\s+.*)\n""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
         case Some(v) =>
-          val acq_method = Try(v.group(1).trim.split("Last changed").head) match {
-            case Success(v) => Some(HeaderFileField.`Acq. Method` ->v)
-            case Failure(_) => None
-          }
 
-          val date = Try("""(\d.*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
-          {
-            case Success(res) => res match {
+          val acq_method = Some(HeaderFileField.`Acq. Method` ->v.group(1).replace("\n","").trim)
+          val date = """Acq.\sMethod\s*:\s*.*\s+.*\nLast changed\s*:\s*(\d.*)\s+by"""
+            .r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
               case Some(k) => Some(HeaderFileField.`Last changed Acq. Method`->k.group(1).trim)
               case None => None
-              }
-            case Failure(_) => None
           }
           Seq(acq_method,date).flatten.toMap
         case None => Map()
-      }) ++ ( """Analysis\sMethod\s*:\s*(.*)""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("")) match {
+      }) ++ ( """Analysis\sMethod\s*:\s*(.*\s+.*)\n""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
         case Some(v) =>
-          val acq_method = Try(v.group(1).trim.split("Last changed").head) match {
-            case Success(v) => Some(HeaderFileField.`Analysis Method` ->v)
-            case Failure(_) => None
-          }
-
-          val date = Try("""(\d.*)\s+by""".r.findFirstMatchIn(v.group(1).trim.split("Last changed")(1))) match
-          {
-            case Success(res) => res match {
+          val acq_method =  Some(HeaderFileField.`Analysis Method` ->v.group(1).replace("\n","").trim)
+          val date = """Analysis\sMethod\s*:\s*.*\s+.*\nLast changed\s*:\s*(\d.*)\s+by""".r
+            .findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
               case Some(k) => Some(HeaderFileField.`Last changed Analysis Method`->k.group(1).trim)
               case None => None
-            }
-            case Failure(_) => None
           }
           Seq(acq_method,date).flatten.toMap
         case None => Map()

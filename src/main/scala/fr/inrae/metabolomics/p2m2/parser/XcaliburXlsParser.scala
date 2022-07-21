@@ -5,9 +5,10 @@ import Xcalibur.HeaderField.HeaderField
 import Xcalibur.{CompoundSheetXcalibur, HeaderField, HeaderSheetField}
 import Xcalibur.HeaderSheetField.HeaderSheetField
 import org.apache.poi.hssf.usermodel.{HSSFSheet, HSSFWorkbook}
+import org.apache.poi.ss.usermodel.{CellType, DateUtil}
 
 import java.io.{File, FileInputStream}
-import scala.util.{Success, Try}
+import scala.util.{Failure, Success, Try}
 
 object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
 
@@ -44,14 +45,22 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
           .filter(sheet.getRow(_) != null)
           .map(rowIndex => {
             cell.to(sheet.getRow(rowIndex).getLastCellNum)
-              .map(cellIndex => Try(sheet.getRow(rowIndex).getCell(cellIndex).getDateCellValue.toString) match {
-                case Success(value) => value
-                case _ => Try(sheet.getRow(rowIndex).getCell(cellIndex).toString) match {
-                  case Success(value) => value
-                  case _ => ""
-                }
-              })
-          })
+              .map{
+                case cellIndex =>
+                val cell = sheet.getRow(rowIndex).getCell(cellIndex)
+               // println(cell.getCellStyle.getDataFormatString,cell.getRichStringCellValue,cell.getCellType,cell.getStringCellValue)
+                  //println(cell.getStringCellValue)
+                  Try(cell.getCellType) match {
+                    case Success(CellType.NUMERIC) =>
+                      if (DateUtil.isCellDateFormatted(cell)) {
+                        cell.getDateCellValue.toString
+                        } else {
+                        cell.getNumericCellValue.toString
+                      }
+                    case Success(_) => cell.getRichStringCellValue.toString
+                    case Failure(_) => ""
+                  }
+          }})
       case _ => Seq()
     }) takeWhile( _.mkString("")!="") map {
       (seq: Seq[String]) =>
@@ -90,10 +99,7 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
   }
 
   override def extensionIsCompatible(filename: String): Boolean = {
-    filename.split("\\.").lastOption match {
-      case Some(ext) => ext.trim.toLowerCase == "xls"
-      case None => false
-    }
+    filename.split("\\.").last.trim.toLowerCase == "xls"
   }
 
   override def sniffFile(filename: String): Boolean = {

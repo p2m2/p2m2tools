@@ -1,17 +1,15 @@
 package fr.inrae.metabolomics.p2m2.format.conversions
 
-import fr.inrae.metabolomics.p2m2.converter.GCMSOutputFiles2IsocorInput
 import fr.inrae.metabolomics.p2m2.format.GCMS.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format._
 
 import java.text.SimpleDateFormat
-import java.time.{LocalDate, LocalDateTime}
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
+import java.time.{LocalDate, LocalDateTime, ZonedDateTime}
 import java.util.{Date, Locale}
 import scala.language.implicitConversions
 import scala.util.{Failure, Success, Try}
-import scala.util.matching.UnanchoredRegex
 
 object FormatConversions {
 
@@ -68,8 +66,8 @@ object FormatConversions {
       format._1.r.findFirstMatchIn(date) match {
         case Some(v) =>
           val toParse : String = format._3.foldLeft(v.group(1).trim)( (acc : String,rule : (String,String) ) => acc.replace(rule._1,rule._2))
-          val v2 =
-            LocalDateTime.parse(toParse,new DateTimeFormatterBuilder()
+          val v2: LocalDateTime =
+            LocalDateTime.parse(toParse, new DateTimeFormatterBuilder()
               .appendPattern(format._2).toFormatter(Locale.US))
 
           Some(v2.format(DateTimeFormatter.ofPattern(formatGenericP2M2)))
@@ -118,16 +116,18 @@ object FormatConversions {
               ( values : Map[Xcalibur.HeaderField.HeaderField, String]) => {
                 Map(
                   GenericP2M2.HeaderField.metabolite -> injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.`Component Name`),
-                  GenericP2M2.HeaderField.sample -> values.get(Xcalibur.HeaderField.`Sample Name`),
+                  GenericP2M2.HeaderField.sample -> values.get(Xcalibur.HeaderField.Filename),
                   GenericP2M2.HeaderField.retTime -> values.get(Xcalibur.HeaderField.RT),
                   GenericP2M2.HeaderField.area -> values.get(Xcalibur.HeaderField.Area),
                   GenericP2M2.HeaderField.height -> values.get(Xcalibur.HeaderField.Height),
                   GenericP2M2.HeaderField.acquisitionDate -> (values.get(Xcalibur.HeaderField.`Acq Date`) match {
                     case Some(d) =>
                       Try({
-                      val u = new SimpleDateFormat(formatGenericP2M2).parse(d)
-                      new SimpleDateFormat(formatGenericP2M2).format(u)}) match {
-                        case Success(v) => Some(v)
+                        val dtf = DateTimeFormatter.ofPattern("E MMM d H:m:s z u", Locale.ENGLISH)
+                        //Fri Jun 03 20:49:08 CEST 2022
+                        //Tue Jun 20 14:53:08 CEST 2017
+                        ZonedDateTime.parse(d, dtf) }) match {
+                        case Success(v) => Some(v.format(DateTimeFormatter.ofPattern(formatGenericP2M2)))
                         case Failure(_) => System.err.println(s"Can't not apply conversion with FormatConversions.formatDate1 [$d]") ; Some(d)
                   }
                     case _ => None

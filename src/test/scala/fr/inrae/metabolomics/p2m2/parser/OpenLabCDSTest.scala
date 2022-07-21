@@ -70,6 +70,32 @@ object OpenLabCDSTest extends TestSuite{
       assert( parseHeader.get(HeaderFileField.`Analysis Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_retraitement.M"))
       assert( parseHeader.get(HeaderFileField.`Last changed Analysis Method`).contains("10/19/2021 2:39:30 PM"))
     }
+    test("parseHeader file malformed [Last changed not present]") {
+      val toParse =
+        """
+          |Data File C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\Std 500.D
+          |Sample Name: Std 500
+          |MPSr-GCFID 10/19/2021 2:39:33 PM SYSTEM
+          |
+          |=====================================================================
+          |Acq. Operator   : SYSTEM                         Seq. Line :   8
+          |Sample Operator : SYSTEM
+          |Acq. Instrument : MPSr-GCFID                      Location :   6  (F)
+          |Injection Date  : 10/11/2021 11:03:47 PM               Inj :   1
+          |                                                Inj Volume : 1 µl
+          |Acq. Method     : C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\190314_
+          |                  Glucides_prep_12-110.M
+          |Analysis Method : C:\Chemstation\1\Data\211011_Corentin-Younes 2021-10-11 15-56-48\190314_
+          |                  Glucides_retraitement.M
+          |                  (modified after loading)
+          |Additional Info : Peak(s) manually integrated
+          |""".stripMargin
+      val parseHeader = OpenLabCDSParser.parseHeader(toParse.split("\n").toList)
+      assert( parseHeader.get(HeaderFileField.`Acq. Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_prep_12-110.M"))
+      assert( !parseHeader.contains(HeaderFileField.`Last changed Acq. Method`))
+      assert( parseHeader.get(HeaderFileField.`Analysis Method`).contains("C:\\Chemstation\\1\\Data\\211011_Corentin-Younes 2021-10-11 15-56-48\\190314_Glucides_retraitement.M"))
+      assert( !parseHeader.contains(HeaderFileField.`Last changed Analysis Method`))
+    }
 
     test("parse results") {
       val toParse =

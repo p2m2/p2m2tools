@@ -60,7 +60,7 @@ cell.setCellStyle(cellStyle)
       .createCell(0)
       .setCellValue(createHelper.createRichTextString("SAMPLE"))
 
-    resultsSet.values.flatMap {
+    resultsSet.values.toList.sortBy(_.get(GenericP2M2.HeaderField.sample)).flatMap {
       acquisition: Map[GenericP2M2.HeaderField.HeaderField, String] =>
         acquisition.get(GenericP2M2.HeaderField.sample)
     }.distinct.zipWithIndex.foreach {
@@ -78,7 +78,7 @@ cell.setCellStyle(cellStyle)
       .createCell(0)
       .setCellValue(createHelper.createRichTextString("METABOLITE"))
 
-    resultsSet.values.flatMap {
+    resultsSet.values.toList.sortBy(_.get(GenericP2M2.HeaderField.metabolite)).flatMap {
       acquisition: Map[GenericP2M2.HeaderField.HeaderField, String] =>
         acquisition.get(GenericP2M2.HeaderField.metabolite)
     }.distinct.zipWithIndex.foreach {
