@@ -1,60 +1,78 @@
 package fr.inrae.metabolomics.p2m2.converter
 
+import fr.inrae.metabolomics.p2m2.format.GCMS
 import fr.inrae.metabolomics.p2m2.parser.GCMSParser
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputGCMS.HeaderField
+import GCMS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
-object GCMSOutputFiles2IsocorInputTest extends TestSuite {
-  val tests = Tests {
-    /*
-    test("test1"){
-      val paths = Array(
-        getClass.getResource("/13CPROT1.txt").getPath,
-        getClass.getResource("/13CPROT2.txt").getPath,
-        getClass.getResource("/13CPROT3.txt").getPath,
-        getClass.getResource("/13CPROT4.txt").getPath)
+import scala.util.{Success, Try}
 
-      GCMS2Isocor(paths)
-    }*/
+object GCMSOutputFiles2IsocorInputTest extends TestSuite {
+  val tests: Tests = Tests {
+
     test("transform - nothing") {
-      val entry = OutputGCMS(
+      val entry = GCMS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderField.Data_File_Name -> "Date File Name"
+          HeaderFileField.Data_File_Name -> "Date File Name"
         )
       )
-      assert( GCMSOutputFiles2IsocorInput(2000).transform(entry) == List() )
+      assert( GCMSOutputFiles2IsocorInput().transform(entry) == List() )
     }
 
-    test("transform - nothing 2") {
-      val entry = OutputGCMS(
+    test("transform - missing Data_File_Name") {
+      val entry = GCMS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderField.Data_File_Name -> "Date File Name",
+        )
+      )
+      assert(Try( GCMSOutputFiles2IsocorInput().transform(entry) == List() ).isFailure)
+    }
+
+    test("transform - Name missing") {
+      val entry = GCMS(
+        origin = "file/SAMPLE",
+        header = Map(
+          HeaderFileField.Data_File_Name -> "Date File Name",
         ),
         ms_quantitative_results = List(
           Map(
-            "ID#" -> "1",
-            "Name" -> "name1",
-            "Area" -> "area1"
+            HeaderField.`ID#` -> "1",
+            HeaderField.Area -> "area1"
+          )
+        )
+      )
+      assert(Try( GCMSOutputFiles2IsocorInput().transform(entry) == List() ).isFailure)
+    }
+
+    test("transform - nothing 2") {
+      val entry = GCMS(
+        origin = "file/SAMPLE",
+        header = Map(
+          HeaderFileField.Data_File_Name -> "Date File Name",
+        ),
+        ms_quantitative_results = List(
+          Map(
+            HeaderField.`ID#` -> "1",
+            HeaderField.Name -> "name1",
+            HeaderField.Area -> "area1"
           )
         )
       )
       /* Name should be [Metabolite]_[Derivative]_[Isotopologue] */
-      assert( GCMSOutputFiles2IsocorInput(2000).transform(entry).length == 0 )
+      assert( GCMSOutputFiles2IsocorInput().transform(entry).isEmpty )
     }
 
     test("transform - nothing") {
-      val entry = OutputGCMS(
+      val entry = GCMS(
         origin = "file/SAMPLE",
         header = Map(
-          HeaderField.Data_File_Name -> "Date File Name",
+          HeaderFileField.Data_File_Name -> "Date File Name",
         ),
         ms_quantitative_results = List(
           Map(
-            "Name" -> "metabolite1_derivative1_isotopologue1",
-            "Area" -> "area1"
+            HeaderField.Name -> "metabolite1_derivative1_isotopologue1",
+            HeaderField.Area -> "area1"
           )
         )
       )
@@ -70,12 +88,15 @@ object GCMSOutputFiles2IsocorInputTest extends TestSuite {
 
     test("transform - 13CPROT1.txt") {
       val gcms_output = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT1.txt").getPath)
-      assert( GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 247 )
+      assert( GCMSOutputFiles2IsocorInput().transform(gcms_output).length == 247 )
     }
 
     test("transform - 13CPROT2.txt") {
       val gcms_output = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT2.txt").getPath)
-      assert(  GCMSOutputFiles2IsocorInput(2000).transform(gcms_output).length == 254 )
+      println("======================================================================")
+      println(GCMSOutputFiles2IsocorInput().transform(gcms_output).length)
+
+      assert(  GCMSOutputFiles2IsocorInput().transform(gcms_output).length == 254 )
     }
   }
 }

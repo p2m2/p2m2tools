@@ -1,13 +1,15 @@
 package fr.inrae.metabolomics.p2m2.converter
 
-import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSParser
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.parser.{OpenLabCDSParser, ParserUtils}
 
 import scala.util.{Failure, Success, Try}
 
 case class OpenLabCDS2CompilCsv(target_head : String ) {
 
-      def build(inputFiles : Seq[String]) : Seq[OutputOpenLabCDS] = {
+      def build(inputFiles : Seq[String]) : Seq[OpenLabCDS] = {
             println(inputFiles.mkString("\n"))
 
             inputFiles.map(
@@ -16,11 +18,11 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
       }
 
 
-      def header_name_compound(openLabCds : OutputOpenLabCDS) : List[String] = {
-            openLabCds.results.flatMap( (mapResults: Map[String, String]) => mapResults.get("Name"))
+      def header_name_compound(openLabCds : OpenLabCDS) : Seq[String] = {
+            openLabCds.results.flatMap( (mapResults: Map[HeaderField, String]) => mapResults.get(HeaderField.Name))
       }
 
-      def transform( openLabCds : OutputOpenLabCDS , header_name_compound : List[String] )
+      def transform(openLabCds : OpenLabCDS, header_name_compound : List[String] )
       : List[Serializable] = {
             //val sample = openLabCds.origin.split("[/\\\\]").last.split("\\.[a-zA-Z]+$").head
 
@@ -29,12 +31,12 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
                         val l1 =
                               openLabCds.
                                 results.
-                                filter((mapResults: Map[String, String]) => mapResults.getOrElse("Name","") == compound)
-
-                        Try(l1.head.get("Name") match {
-                              case Some(nameCompound) if nameCompound == compound
-                              => l1.head.get(target_head)
-                              case _ => None
+                                filter((mapResults: Map[HeaderField, String]) => mapResults.getOrElse(HeaderField.Name,"") == compound)
+                        Try({
+                              ParserUtils.getHeaderField(OpenLabCDS.HeaderField,target_head) match {
+                                          case Some(r) => l1.head.get(r)
+                                          case _ => None
+                              }
                         }) match {
                               case Success(v) => v
                               case Failure(_) => None

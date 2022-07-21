@@ -1,29 +1,83 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderField
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputOpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField.HeaderFileField
 
 import scala.io.Source
+import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
-object OpenLabCDSParser extends Parser[OutputOpenLabCDS] with FormatSniffer {
+object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
   val separator = " "
 
-  def parseHeader( toParse : List[String] ) : Map[HeaderField,String] =
+  def setHeaderValue(toParse : Seq[String],
+                     containString : String,
+                     regexGroup : Regex) : Option[(OpenLabCDS.HeaderFileField.HeaderFileField,String)] =
     {
-          toParse
-            .flatMap {
-              case s : String if s.startsWith("""Sample""") =>
-                """Sample\sName:\s+(.*)""".r.findFirstMatchIn(s) match {
-                  case Some(v) => Some(HeaderField.Sample_Name -> v.group(1))
-                  case None => None
+      val res = toParse
+        .flatMap {
+          case s: String if s.contains(containString) =>
+            regexGroup.findFirstMatchIn(s) match {
+              case Some(v) =>
+                ParserUtils.getHeaderField(OpenLabCDS.HeaderFileField,v.group(1)) match {
+                  case Some(k) => Some(k -> v.group(2).trim)
+                  case None => throw new Exception(s"Unknown column header name : ${v.group(1)}")
                 }
-              case _ => None
-            }.toMap
+              case None =>  None
+            }
+          case _=>None
+        }
+      Try(res.head) match {
+        case Success(v) => Some(v)
+        case Failure(_) => None
+      }
     }
 
-  def parseResults( toParse : List[String] ) : List[Map[String,String]] = {
+  def parseHeader( toParse : List[String] ) : Map[HeaderFileField,String] =
+      Seq(
+        ("Sample Name","""(Sample\sName)\s*:\s*(.*)""".r),
+        ("Acq. Operator","""(Acq.\sOperator)\s*:\s*(\w+)""".r),
+        ("Seq. Line","""(Seq.\sLine)\s*:\s*(\w+)$""".r),
+        ("Sample Operator","""(Sample\sOperator)\s*:\s*(\w+)""".r),
+        ("Acq. Instrument","""(Acq.\sInstrument)\s*:\s*(.*)\s+Location""".r),
+          ("Location","""(Location)\s*:\s*(.*)$""".r),
+        ("Injection Date","""(Injection\sDate)\s*:\s*(.*)\s+Inj""".r),
+        ("Inj","""(Inj)\s*:\s*(\w+)$""".r),
+        ("Inj Volume","""(Inj\sVolume)\s*:\s*(.*)$""".r),
+        ("Additional Info","""(Additional\sInfo)\s*:\s*(.*)\s*$""".r),
+      )
+        .flatMap{
+          case (containsString:String,regex:Regex) => setHeaderValue(toParse,containsString,regex)
+        }.toMap ++ ( """Acq.\sMethod\s*:\s*(.*\s+.*)\n""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
+        case Some(v) =>
+
+          val acq_method = Some(HeaderFileField.`Acq. Method` ->v.group(1).replace("\n","").trim)
+          val date = """Acq.\sMethod\s*:\s*.*\s+.*\nLast changed\s*:\s*(\d.*)\s+by"""
+            .r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
+              case Some(k) => Some(HeaderFileField.`Last changed Acq. Method`->k.group(1).trim)
+              case None => None
+          }
+          Seq(acq_method,date).flatten.toMap
+        case None => Map()
+      }) ++ ( """Analysis\sMethod\s*:\s*(.*\s+.*)\n""".r.findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
+        case Some(v) =>
+          val acq_method =  Some(HeaderFileField.`Analysis Method` ->v.group(1).replace("\n","").trim)
+          val date = """Analysis\sMethod\s*:\s*.*\s+.*\nLast changed\s*:\s*(\d.*)\s+by""".r
+            .findFirstMatchIn(toParse.slice(0,100).map(_.trim).mkString("\n")) match {
+              case Some(k) => Some(HeaderFileField.`Last changed Analysis Method`->k.group(1).trim)
+              case None => None
+          }
+          Seq(acq_method,date).flatten.toMap
+        case None => Map()
+      })
+/*
+ ("Acq. Method","""(Acq.\sMethod)\s*:\s*(.*)$""".r),
+        ("Analysis Method","""(Analysis.\sMethod)\s*:\s*(.*)$""".r),
+ */
+
+  def parseResults( toParse : List[String] ) : List[Map[HeaderField,String]] = {
     // Grp ?????     val header_7 = List("RetTime","Type","used","Area","Amt/Area","Amount","Grp","Name")
     val header_7 = List("RetTime","Type","used","Area","Amt/Area","Amount","Name")
     val header_8 = List("RetTime","Type","ISTD","used","Area","Amt/Area","Amount","Name")
@@ -44,22 +98,25 @@ object OpenLabCDSParser extends Parser[OutputOpenLabCDS] with FormatSniffer {
               mapLine
               .zipWithIndex
               .map {
-                case (value, index) if length == 7 => header_7(index) -> value
-                case (value, index) if length == 8 => header_8(index) -> value
+                case (value, index) if length == 7 => ParserUtils.getHeaderField(OpenLabCDS.HeaderField,header_7(index)) -> value
+                case (value, index) if length == 8 => ParserUtils.getHeaderField(OpenLabCDS.HeaderField,header_8(index)) -> value
+              }.
+                flatMap {
+                case k->v => Some(k.get -> v)
               }.toMap
           })
 
   }
 
-  def get(filename : String, toParse : List[String]) : OutputOpenLabCDS = {
-    OutputOpenLabCDS(
+  def get(filename : String, toParse : List[String]) : OpenLabCDS = {
+    OpenLabCDS(
       origin = filename,
       header = parseHeader(toParse),
       results = parseResults(toParse)
     )
   }
 
-  def parse(filename : String) : OutputOpenLabCDS = {
+  def parse(filename : String) : OpenLabCDS = {
     val source =       Source.fromFile(filename)
     val lines = source.getLines()
     val ret = get(

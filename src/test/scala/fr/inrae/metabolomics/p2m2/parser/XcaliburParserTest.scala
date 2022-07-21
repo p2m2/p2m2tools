@@ -1,12 +1,11 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParserTest.getClass
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputXcalibur.{HeaderField, HeaderSheetField}
+import fr.inrae.metabolomics.p2m2.format.Xcalibur
+import fr.inrae.metabolomics.p2m2.format.Xcalibur.{HeaderField, HeaderSheetField}
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
 import java.io.{File, FileInputStream}
-import scala.util.Try
 
 object XcaliburParserTest extends TestSuite {
 
@@ -17,10 +16,10 @@ object XcaliburParserTest extends TestSuite {
 
     test("getHeaderSheet") {
       val r = XcaliburXlsParser.getHeaderSheet(res)
-      assert(r.contains(HeaderSheetField.Component_Name))
-      assert(r.contains(HeaderSheetField.Full_Name))
-      assert(r.contains(HeaderSheetField.User_Name))
-      assert(r.contains(HeaderSheetField.Origin_Index))
+      assert(r.contains(HeaderSheetField.`Component Name`))
+      assert(r.contains(HeaderSheetField.`Full Name`))
+      assert(r.contains(HeaderSheetField.`User Name`))
+      assert(r.contains(HeaderSheetField.`Origin Index`))
       assert(r.contains(HeaderSheetField.Equation))
     }
 
@@ -35,20 +34,26 @@ object XcaliburParserTest extends TestSuite {
       val r = XcaliburXlsParser.getResults(workbook.getSheetAt(0))
       assert(r.length == 1)
       assert(r.head.get(HeaderField.Filename).contains("020622_Std_290920_106_inj1_220603204908"))
-      assert(r.head.get(HeaderField.Proc_Method)
+      assert(r.head.get(HeaderField.`Proc Method`)
         .contains("P:\\bia-prp_partage\\Projets_Interne_PRP\\PRP_Bia_partage\\DosagePolyphenols\\Reprocess_Methode\\050422_QC_Std290920"))
     }
 
     test("parse test xls file") {
       val out = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
       assert(out.origin == getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
-      assert(out.injections.length==6)
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("CAT_MS")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("EC_MS")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ")))
-      assert(out.injections.exists(_.compoundInformationHeader.get(HeaderSheetField.Component_Name).contains("PLZ_MS")))
+      assert(out.results.length==6)
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("CAT")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("CAT_MS")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("EC")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("EC_MS")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ")))
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("PLZ_MS")))
+      assert(out.results(0).compoundByInjection(0).contains(Xcalibur.HeaderField.`Acq Date`))
+      assert(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.Duration).contains("70.0"))
+      assert(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.`Response Type`).contains("NA"))
+      assert(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.Area).contains("757255.68677067"))
+      assert(out.results(0).compoundByInjection(0).get(Xcalibur.HeaderField.Height).contains("61223.3957790595"))
+      assert(out.results(0).compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date).contains("07/06/2022 08:57:12"))
     }
 
     test("extensionIsCompatible") {

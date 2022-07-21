@@ -1,14 +1,15 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.Header
-import fr.inrae.metabolomics.p2m2.tools.format.output.OutputQuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx
+import QuantifyCompoundSummaryReportMassLynx.Header
+import QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2
 
 import scala.io.Source
 import scala.util.{Success, Try}
 
 object QuantifyCompoundSummaryReportMassLynxParser
-  extends Parser[OutputQuantifyCompoundSummaryReportMassLynx]
+  extends Parser[QuantifyCompoundSummaryReportMassLynx]
   with FormatSniffer {
   val separator = "\t"
 
@@ -54,7 +55,7 @@ object QuantifyCompoundSummaryReportMassLynxParser
 
   def parseArrayCompound( toParse : Seq[String] ) :Seq[Map[HeaderField,String]] = {
       toParse.filter(_.trim.nonEmpty).find(_.trim.startsWith("Name")) match {
-        case Some(headerString) => {
+        case Some(headerString) =>
           /* first value of array in the number corresponding to the injection*/
           val header :Seq[String] = "Num. Injection" +: headerString.trim.split(separator)
           toParse
@@ -66,26 +67,25 @@ object QuantifyCompoundSummaryReportMassLynxParser
             .map( mapLine => {
               mapLine
                 .zipWithIndex.flatMap {  case (value, index) =>
-                OutputQuantifyCompoundSummaryReportMassLynx.getHeaderField(header(index)) match {
+                ParserUtils.getHeaderField(QuantifyCompoundSummaryReportMassLynx.HeaderField,header(index)) match {
                   case Some(k) if value.nonEmpty => Some(k -> value)
                   case _ => None
                 }
               }.toMap
             })
-        }
         case None => Seq()
       }
   }
 
-  def get(filename : String, toParse : Seq[String]) : OutputQuantifyCompoundSummaryReportMassLynx = {
-    OutputQuantifyCompoundSummaryReportMassLynx(
+  def get(filename : String, toParse : Seq[String]) : QuantifyCompoundSummaryReportMassLynx = {
+    p2m2.format.QuantifyCompoundSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
       results = parseResults(toParse)
     )
   }
 
-  def parse(filename : String) : OutputQuantifyCompoundSummaryReportMassLynx = {
+  def parse(filename : String) : QuantifyCompoundSummaryReportMassLynx = {
 
     val s = Source.fromFile(filename)
     val lines = s.getLines().toList
@@ -111,10 +111,7 @@ object QuantifyCompoundSummaryReportMassLynxParser
       val source =       Source.fromFile(filename)
       val lines = source.getLines().slice(0,20).toList
       source.close()
-      Try(parseHeader(lines)) match {
-        case Success(header) => header.dateStr.isDefined
-        case _ => false
-      }
+      parseHeader(lines).dateStr.isDefined
     } catch {
       case _: Throwable => false
     }
