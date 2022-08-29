@@ -12,6 +12,7 @@ case object MassSpectrometryResultSetFactory {
     case _ if stringObj.contains("Isocor") => Some(read[Isocor](stringObj))
     case _ => None
   }
+
   def stringify(o : MassSpectrometryResultSet) : String = o match {
     case a : GenericP2M2 => write(a)
     case a : GCMS => write(a)
@@ -19,6 +20,5 @@ case object MassSpectrometryResultSetFactory {
     case a : QuantifyCompoundSummaryReportMassLynx => write(a)
     case a : Xcalibur => write(a)
     case a : Isocor => write(a)
-
   }
 }
