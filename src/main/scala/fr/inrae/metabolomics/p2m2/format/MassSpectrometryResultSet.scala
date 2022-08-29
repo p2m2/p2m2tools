@@ -1,11 +1,6 @@
 package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.format.GCMS.HeaderFileField.HeaderFileField
-import fr.inrae.metabolomics.p2m2.format.GenericP2M2.HeaderField
-import fr.inrae.metabolomics.p2m2.format.GenericP2M2.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.{Header, HeaderField}
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
 
 import java.time.LocalDate
