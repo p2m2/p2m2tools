@@ -38,5 +38,9 @@ object MassSpectrometryResultSetFactoryTest extends TestSuite {
         MassSpectrometryResultSetFactory.build(
           MassSpectrometryResultSetFactory.stringify(Isocor("origin"))).contains(Isocor("origin")))
     }
+
+    test("None") {
+      assert(MassSpectrometryResultSetFactory.build("something").isEmpty)
+    }
   }
 }
