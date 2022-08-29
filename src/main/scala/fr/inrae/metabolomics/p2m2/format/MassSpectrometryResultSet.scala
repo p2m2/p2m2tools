@@ -10,6 +10,15 @@ import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 import upickle.default._
 
 sealed abstract class MassSpectrometryResultSet {
+  val rw : ReadWriter[MassSpectrometryResultSet]  =
+    ReadWriter.merge(
+      GenericP2M2.rw,
+      GCMS.rw,
+      OpenLabCDS.rw,
+      QuantifyCompoundSummaryReportMassLynx.rw,
+      Xcalibur.rw,
+      Isocor.rw
+    )
   def toGenericP2M2 : GenericP2M2
 }
 

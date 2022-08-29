@@ -13,11 +13,12 @@ case object MassSpectrometryResultSetFactory {
     case _ => None
   }
 
-  def stringify(o : GenericP2M2) : String = write(o)
-  def stringify(o : GCMS) : String = write(o)
-  def stringify(o : OpenLabCDS) : String = write(o)
-  def stringify(o : QuantifyCompoundSummaryReportMassLynx) : String = write(o)
-  def stringify(o : Xcalibur) : String = write(o)
-  def stringify(o : Isocor) : String = write(o)
-
+  def stringify(o : MassSpectrometryResultSet) : String = o match {
+    case a : GenericP2M2 => write(a)
+    case a : GCMS => write(a)
+    case a : OpenLabCDS => write(a)
+    case a : QuantifyCompoundSummaryReportMassLynx => write(a)
+    case a : Xcalibur => write(a)
+    case a : Isocor => write(a)
+  }
 }
