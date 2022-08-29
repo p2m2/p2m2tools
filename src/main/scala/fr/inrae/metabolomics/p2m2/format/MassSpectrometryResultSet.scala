@@ -7,14 +7,16 @@ import java.time.LocalDate
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
-
+import upickle.default._
 
 sealed abstract class MassSpectrometryResultSet {
   def toGenericP2M2 : GenericP2M2
 }
 
 object GenericP2M2 {
-  object HeaderField extends Enumeration {
+ implicit val rw: ReadWriter[GenericP2M2] = macroRW
+   object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val
     sample,
@@ -36,12 +38,15 @@ case class GenericP2M2(values : Seq[Map[GenericP2M2.HeaderField.HeaderField,Stri
 
 
 object GCMS {
+  implicit val rw: ReadWriter[GCMS] = macroRW
   object HeaderFileField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderFileField] = readwriter[Int].bimap[HeaderFileField](x => x.id, HeaderFileField(_))
     type HeaderFileField = Value
     val Data_File_Name, Output_Date, Output_Time = Value
   }
 
   object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val `ID#`,Name, `Type`, `ISTD Group#`, Mass, `Ret.Time`, `Start Time`, `End Time`,
     `A/H`, Area, Height, `Conc.`, Mode, `Peak#`, `Std.Ret.Time`, `Calibration Curve`, `3rd`, `2nd`, `1st`,
@@ -71,8 +76,9 @@ case class GCMS (
 }
 
 object OpenLabCDS {
-
+  implicit val rw: ReadWriter[OpenLabCDS] = macroRW
   object HeaderFileField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderFileField] = readwriter[Int].bimap[HeaderFileField](x => x.id, HeaderFileField(_))
     type HeaderFileField = Value
     val `Sample Name`, `Acq. Operator`,`Sample Operator`,`Seq. Line`,`Acq. Instrument`,Location,
     `Injection Date`,Inj, `Inj Volume`, `Acq. Method`,`Last changed Acq. Method`,
@@ -80,6 +86,7 @@ object OpenLabCDS {
   }
 
   object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val  RetTime, Type, ISTD, Area, used, `Amt/Area`, Amount, Grp, Name = Value
   }
@@ -100,7 +107,7 @@ case class OpenLabCDS(
 
 
 object QuantifyCompoundSummaryReportMassLynx {
-
+  implicit val rw: ReadWriter[QuantifyCompoundSummaryReportMassLynx] = macroRW
   case class  Header(dateStr : Option[String] = None)  {
     val formatter: DateTimeFormatter = new DateTimeFormatterBuilder()
       .appendPattern("E MMM dd HH:mm:ss yyyy")
@@ -110,9 +117,14 @@ object QuantifyCompoundSummaryReportMassLynx {
       case Some(d) => LocalDate.parse(d.trim, formatter)
       case None => LocalDate.now()
     }
-
   }
+
+  object Header {
+    implicit val rw: ReadWriter[Header] = macroRW
+  }
+
   object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val `Num. Injection`, /* Build artificial (Column namle does not exist in the Quantify Compound Summary Report) */
     Name, `Inj. Vol`, `Acq.Date`, `Acq.Time`, Type, `Conc.`, `Mod.Time`, `Std. Conc`,
@@ -133,13 +145,15 @@ case class QuantifyCompoundSummaryReportMassLynx(
 }
 
 object Xcalibur {
-
+  implicit val rw: ReadWriter[Xcalibur] = macroRW
   object HeaderSheetField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderSheetField] = readwriter[Int].bimap[HeaderSheetField](x => x.id, HeaderSheetField(_))
     type HeaderSheetField = Value
     val `Component Name`, `Curve Index`, `Weighting Index`, `Origin Index`, Equation, `User Name`, `Full Name`, Date = Value
   }
 
   object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val Filename, `Sample Type`,`Sample Name`, `Sample ID`, `Exp Amt`, `Calc Amt Units`, `%Diff`, Level,
     `%RSD-AMT`,`Peak Status`, Response,	`Response Type`, Equation, Area,	Height,`ISTD Area`, `ISTD Ht`,
@@ -152,15 +166,20 @@ object Xcalibur {
                                     compoundInformationHeader: Map[Xcalibur.HeaderSheetField.HeaderSheetField, String]
                                     = Map[Xcalibur.HeaderSheetField.HeaderSheetField, String](),
                                     compoundByInjection: Seq[Map[Xcalibur.HeaderField.HeaderField, String]] = Seq())
+  object CompoundSheetXcalibur {
+    implicit val rw: ReadWriter[CompoundSheetXcalibur] = macroRW
+  }
 }
 
-case class Xcalibur(origin : String, results : Seq[CompoundSheetXcalibur]) extends MassSpectrometryResultSet {
+case class Xcalibur(origin : String, results : Seq[CompoundSheetXcalibur]=Seq()) extends MassSpectrometryResultSet {
   override def toGenericP2M2: GenericP2M2 = this
 }
 
 
 object Isocor {
+  implicit val rw: ReadWriter[Isocor] = macroRW
   object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val sample, metabolite, derivative, isotopologue, area, resolution = Value
   }
@@ -173,6 +192,10 @@ object Isocor {
         values.getOrElse(HeaderField.isotopologue,"") + sep +
         values.getOrElse(HeaderField.area,"") + sep +
         values.getOrElse(HeaderField.resolution,"")
+  }
+
+  object CompoundIsocor{
+    implicit val rw: ReadWriter[CompoundIsocor] = macroRW
   }
 }
 
