@@ -26,7 +26,7 @@ object ExportDataTest extends TestSuite {
       val in : ByteArrayInputStream = new ByteArrayInputStream(out.toByteArray)
       val workbook : HSSFWorkbook = new HSSFWorkbook(in)
 //      saveAsXls("xlsP2M2",out)
-      assert(workbook.getNumberOfSheets == 3)
+      assert(workbook.getNumberOfSheets == 4)
       assert(workbook.getSheetAt(0).getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size)
     }
     test("xlsP2M2 basic export") {
@@ -37,14 +37,14 @@ object ExportDataTest extends TestSuite {
           GenericP2M2.HeaderField.retTime -> "0.1",
           GenericP2M2.HeaderField.height -> "0.101",
           GenericP2M2.HeaderField.area -> "198",
-          GenericP2M2.HeaderField.acquisitionDate -> "12/12/2022",
-          GenericP2M2.HeaderField.exportDate -> "13/12/2022",
+          GenericP2M2.HeaderField.acquisitionDate -> "2017-06-20 14:53:08.0000",
+          GenericP2M2.HeaderField.exportDate -> "2017-06-21 14:53:08.0000",
           GenericP2M2.HeaderField.injectedVolume -> "0.1",
         ))))
       val in : ByteArrayInputStream = new ByteArrayInputStream(out.toByteArray)
       val workbook : HSSFWorkbook = new HSSFWorkbook(in)
       //saveAsXls("xlsP2M2",out)
-      assert(workbook.getNumberOfSheets == 3)
+      assert(workbook.getNumberOfSheets == 4)
       assert(workbook.getSheetAt(0).getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size)
       assert(workbook.getSheetAt(0).getLastRowNum == 1)
       assert(workbook.getSheetAt(0).getRow(1).getLastCellNum == GenericP2M2.HeaderField.values.size)
@@ -54,8 +54,8 @@ object ExportDataTest extends TestSuite {
       assert(workbook.getSheetAt(0).getRow(1).getCell(3).toString == "198")
       assert(workbook.getSheetAt(0).getRow(1).getCell(4).toString == "0.101")
       assert(workbook.getSheetAt(0).getRow(1).getCell(5).toString == "0.1")
-      assert(workbook.getSheetAt(0).getRow(1).getCell(6).toString == "12/12/2022")
-      assert(workbook.getSheetAt(0).getRow(1).getCell(7).toString == "13/12/2022")
+      assert(workbook.getSheetAt(0).getRow(1).getCell(6).toString == "2017-06-20 14:53:08.0000")
+      assert(workbook.getSheetAt(0).getRow(1).getCell(7).toString == "2017-06-21 14:53:08.0000")
 
       /* samples : 1 */
       assert(workbook.getSheetAt(1).getRow(0).getLastCellNum == 1)
