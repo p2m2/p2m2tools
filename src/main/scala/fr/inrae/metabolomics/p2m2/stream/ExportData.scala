@@ -11,8 +11,6 @@ case object ExportData {
 
   def xlsP2M2(resultsSet : GenericP2M2): ByteArrayOutputStream = {
 
-
-
     val wb = new HSSFWorkbook
     val results = wb.createSheet("RESULTS")
     val samples = wb.createSheet("SAMPLES")
@@ -40,7 +38,7 @@ cell.setCellStyle(cellStyle)
      */
 
     /**
-     *values
+     * values
      */
     resultsSet.values.toList.sortBy(_.get(GenericP2M2.HeaderField.sample)).zipWithIndex.foreach {
       case (acquisition: Map[GenericP2M2.HeaderField.HeaderField,String], idx : Int) =>
@@ -88,6 +86,10 @@ cell.setCellStyle(cellStyle)
         val cell : Cell = row.createCell(0)
         cell.setCellValue(createHelper.createRichTextString(metabolite))
     }
+
+    /**
+     * Injection / Chromatogram
+     */
 
     val baos = new ByteArrayOutputStream
     wb.write(baos)

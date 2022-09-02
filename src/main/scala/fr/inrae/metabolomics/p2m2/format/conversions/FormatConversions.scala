@@ -17,7 +17,7 @@ object FormatConversions {
 
   /**
    * (String, String, Seq[(String,String)]
-   *  - pattern to test exitence
+   *  - pattern to test existence
    *  - LocalDate or LocalDateTime parser expression
    *  - rules to transform capture group expression before parsing
    */
@@ -41,6 +41,13 @@ object FormatConversions {
   val formatOpenLabCDS: (String, String,Seq[(String,String)]) = (
     """(\d+/\d{2}/\d{4}\s+\d+:\d+:\d+ PM)""",
     "M/dd/yyyy h:mm:ss a",
+    Seq()
+  )
+
+  /** 07/06/2022 08:57:12 */
+  val formatDateXcalibur: (String, String, Seq[(String, String)]) = (
+    """(\d{2}/\d{2}/\d{4}\s+\d+:\d+:\d+)""",
+    "dd/MM/yyyy H:mm:ss",
     Seq()
   )
 
@@ -96,6 +103,7 @@ object FormatConversions {
                     GenericP2M2.HeaderField.height -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Height),
                     GenericP2M2.HeaderField.acquisitionDate ->
                       formatDateWithLocalDate(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date`),formatMassLynxTxt) ,
+                    GenericP2M2.HeaderField.exportDate ->  Some(x.header.printedDate.format(DateTimeFormatter.ofPattern(formatGenericP2M2))),
                     GenericP2M2.HeaderField.injectedVolume -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol`)
                   ).flatMap {
                     case (k,Some(v)) => Some(k,v)
@@ -132,6 +140,8 @@ object FormatConversions {
                   }
                     case _ => None
                   }) ,
+                  GenericP2M2.HeaderField.exportDate ->
+                    formatDateWithLocalDateTime(injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date),formatDateXcalibur),
                   GenericP2M2.HeaderField.injectedVolume -> values.get(Xcalibur.HeaderField.`Inj Vol`)
                 ).flatMap {
                   case (k,Some(v)) => Some(k,v)
@@ -153,7 +163,9 @@ object FormatConversions {
             GenericP2M2.HeaderField.retTime -> res.get(GCMS.HeaderField.`Ret.Time`),
             GenericP2M2.HeaderField.area -> res.get(GCMS.HeaderField.Area),
             GenericP2M2.HeaderField.height -> res.get(GCMS.HeaderField.Height),
-            GenericP2M2.HeaderField.acquisitionDate ->
+            GenericP2M2.HeaderField.exportDate ->
+              formatDateWithLocalDate(x.header.get(GCMS.HeaderFileField.Output_Date), formatGCMS),
+            GenericP2M2.HeaderField.exportDate ->
               formatDateWithLocalDate(x.header.get(GCMS.HeaderFileField.Output_Date),formatGCMS),
             GenericP2M2.HeaderField.injectedVolume -> None
           ).flatMap {
@@ -176,6 +188,8 @@ object FormatConversions {
             GenericP2M2.HeaderField.height -> res.get(OpenLabCDS.HeaderField.Amount),
             GenericP2M2.HeaderField.acquisitionDate ->
               formatDateWithLocalDateTime(x.header.get(OpenLabCDS.HeaderFileField.`Last changed Acq. Method`),formatOpenLabCDS),
+            GenericP2M2.HeaderField.exportDate ->
+              formatDateWithLocalDateTime(x.header.get(OpenLabCDS.HeaderFileField.`Last changed Analysis Method`), formatOpenLabCDS),
             GenericP2M2.HeaderField.injectedVolume -> x.header.get(OpenLabCDS.HeaderFileField.`Inj Volume`)
           ).flatMap {
             case (k,Some(v)) => Some(k,v)

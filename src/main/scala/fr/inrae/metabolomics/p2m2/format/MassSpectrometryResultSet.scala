@@ -3,7 +3,7 @@ package fr.inrae.metabolomics.p2m2.format
 import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
@@ -34,7 +34,8 @@ object GenericP2M2 {
     area,
     height,
     injectedVolume,
-    acquisitionDate = Value
+    acquisitionDate,
+    exportDate = Value
   }
 }
 
@@ -122,9 +123,9 @@ object QuantifyCompoundSummaryReportMassLynx {
       .appendPattern("E MMM dd HH:mm:ss yyyy")
       .toFormatter(Locale.US)
 
-    val printedDate: LocalDate = dateStr match {
-      case Some(d) => LocalDate.parse(d.trim, formatter)
-      case None => LocalDate.now()
+    val printedDate: LocalDateTime = dateStr match {
+      case Some(d) => LocalDateTime.parse(d.trim, formatter)
+      case None => LocalDateTime.now()
     }
   }
 

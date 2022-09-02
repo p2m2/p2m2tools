@@ -60,7 +60,7 @@ object FormatConversionsTest extends TestSuite {
       val o : GenericP2M2 =
         QuantifyCompoundSummaryReportMassLynx(
           origin = "none",
-          header = Header(None),
+          header = Header(Some("Fri Sep 20 14:23:33 2019")),
           results = Seq(("metabolite", Seq(
             Map(
               QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "sample",
@@ -71,6 +71,7 @@ object FormatConversionsTest extends TestSuite {
               QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol` -> "injectedVolume"
             ))) ) )
       assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
+      assert(o.values.head.get(GenericP2M2.HeaderField.exportDate).contains("2019-09-20 14:23:33.0000"))
       checkBasic(o)
     }
 
@@ -88,13 +89,15 @@ object FormatConversionsTest extends TestSuite {
           origin = "none",
           results = Seq(CompoundSheetXcalibur(
             compoundInformationHeader = Map(
-              Xcalibur.HeaderSheetField.`Component Name` -> "metabolite"
+              Xcalibur.HeaderSheetField.`Component Name` -> "metabolite",
+              Xcalibur.HeaderSheetField.Date -> "07/06/2022 08:57:12",
             ),
             compoundByInjection = Seq(Map(
               Xcalibur.HeaderField.Filename -> "sample",
               Xcalibur.HeaderField.Area -> "area",
             )))))
 
+      assert(o.values.head.get(GenericP2M2.HeaderField.exportDate).contains("2022-06-07 08:57:12.0000"))
       checkPartialBasic(o)
     }
     test("Xcalibur basic object to convert") {
@@ -132,7 +135,8 @@ object FormatConversionsTest extends TestSuite {
           header=Map(),
           msQuantitativeResults = Seq(Map(
             GCMS.HeaderField.Name -> "sample",
-            GCMS.HeaderField.Area -> "area"))
+            GCMS.HeaderField.Area -> "area"
+          ))
         )
 
       assert(o.values.nonEmpty)
@@ -153,7 +157,8 @@ object FormatConversionsTest extends TestSuite {
           header=Map(
             OpenLabCDS.HeaderFileField.`Sample Name` -> "sample",
             OpenLabCDS.HeaderFileField.`Inj Volume` -> "0.1",
-            OpenLabCDS.HeaderFileField.`Last changed Acq. Method` -> "2/25/2021 3:02:59 PM"
+            OpenLabCDS.HeaderFileField.`Last changed Acq. Method` -> "2/25/2021 3:02:59 PM",
+            OpenLabCDS.HeaderFileField.`Last changed Analysis Method` -> "2/26/2021 3:03:00 PM"
           )
           ,
           results = Seq(Map(
@@ -167,6 +172,8 @@ object FormatConversionsTest extends TestSuite {
       assert(o.values.nonEmpty)
       assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
       assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
+      assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2021-02-25 15:02:59.0000"))
+      assert(o.values.head.get(GenericP2M2.HeaderField.exportDate).contains("2021-02-26 15:03:00.0000"))
     }
 
     test("formatDateWithLocalDate") {
