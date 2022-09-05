@@ -43,11 +43,20 @@ case object ExportData {
      * header
      */
     val row = results.createRow(0)
+
+
+   // Artefact ID creation using chromatographInjectionId.
+    row.createCell(0)
+      .setCellValue(createHelper.createRichTextString("ID"))
+
+    val idColumnStart = 1
+
     GenericP2M2.HeaderField.values.zipWithIndex.foreach {
       case (headName,idx) =>
-        row.createCell(idx).setCellValue(createHelper.createRichTextString(ParserUtils.toString(headName)))
+        row.createCell(idx+idColumnStart).setCellValue(createHelper.createRichTextString(ParserUtils.toString(headName)))
     }
-    row.createCell(GenericP2M2.HeaderField.values.size)
+    // Artefact - chromatographInjectionId
+    row.createCell(GenericP2M2.HeaderField.values.size+idColumnStart)
       .setCellValue(createHelper.createRichTextString("chromatographInjectionId"))
 
     /*TODO manage format
@@ -66,17 +75,23 @@ cell.setCellStyle(cellStyle)
     resultsSet.values.toList.sortBy(_.get(GenericP2M2.HeaderField.sample)).zipWithIndex.foreach {
       case (acquisition: Map[GenericP2M2.HeaderField.HeaderField,String], idx : Int) =>
         val row = results.createRow(idx+1)
+
+        val chromatographInjectionId = getIdChromatograph(
+          acquisition.get(GenericP2M2.HeaderField.acquisitionDate),
+          acquisition.get(GenericP2M2.HeaderField.exportDate))
+
+        // Artefact - chromatographInjectionId
+        row.createCell(0)
+          .setCellValue(createHelper.createRichTextString(idx+"_"+chromatographInjectionId))
+
         GenericP2M2.HeaderField.values.zipWithIndex.foreach {
           case (headName,idxCell) =>
-            val cell : Cell = row.createCell(idxCell)
+            val cell : Cell = row.createCell(idxCell+idColumnStart)
             cell.setCellValue(createHelper.createRichTextString(acquisition.getOrElse(headName,"")))
         }
-        row.createCell(GenericP2M2.HeaderField.values.size)
-          .setCellValue(createHelper.createRichTextString(
-            getIdChromatograph(
-              acquisition.get(GenericP2M2.HeaderField.acquisitionDate),
-              acquisition.get(GenericP2M2.HeaderField.exportDate)))
-          )
+        // Artefact - chromatographInjectionId
+        row.createCell(GenericP2M2.HeaderField.values.size+idColumnStart)
+          .setCellValue(createHelper.createRichTextString(chromatographInjectionId))
     }
 
     /**
