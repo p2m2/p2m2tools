@@ -2,7 +2,7 @@ package fr.inrae.metabolomics.p2m2.format.conversions
 
 import fr.inrae.metabolomics.p2m2.format.GCMS.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format._
+import fr.inrae.metabolomics.p2m2.format.{GenericP2M2, _}
 
 import java.text.SimpleDateFormat
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
@@ -17,7 +17,7 @@ object FormatConversions {
 
   /**
    * (String, String, Seq[(String,String)]
-   *  - pattern to test exitence
+   *  - pattern to test existence
    *  - LocalDate or LocalDateTime parser expression
    *  - rules to transform capture group expression before parsing
    */
@@ -41,6 +41,13 @@ object FormatConversions {
   val formatOpenLabCDS: (String, String,Seq[(String,String)]) = (
     """(\d+/\d{2}/\d{4}\s+\d+:\d+:\d+ PM)""",
     "M/dd/yyyy h:mm:ss a",
+    Seq()
+  )
+
+  /** 07/06/2022 08:57:12 */
+  val formatDateXcalibur: (String, String, Seq[(String, String)]) = (
+    """(\d{2}/\d{2}/\d{4}\s+\d+:\d+:\d+)""",
+    "dd/MM/yyyy H:mm:ss",
     Seq()
   )
 
@@ -77,9 +84,18 @@ object FormatConversions {
     case None => None
   }
 
+  def formatAsDouble(s: Option[String]): Option[String] = s match {
+    case Some(s2) =>  """([0-9.]+)""".r.findFirstMatchIn (s2) match {
+                    case Some (v) => Some(v.group (0).toDouble.toString)
+                    case None => None
+                  }
+    case None => None
+  }
+
   implicit def QuantifyCompoundSummaryReportMassLynxToGenericP2M2(x: QuantifyCompoundSummaryReportMassLynx) : GenericP2M2 = {
+
     GenericP2M2(
-      x.results
+      samples = x.results
         .flatMap {
           case (
             compound : String,
@@ -91,11 +107,13 @@ object FormatConversions {
                   Map(
                     GenericP2M2.HeaderField.metabolite -> Some(compound),
                     GenericP2M2.HeaderField.sample -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Name),
-                    GenericP2M2.HeaderField.retTime -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.RT),
-                    GenericP2M2.HeaderField.area -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Area),
-                    GenericP2M2.HeaderField.height -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Height),
-                    GenericP2M2.HeaderField.acquisitionDate ->
+                    GenericP2M2.HeaderField.retTime -> formatAsDouble(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.RT)),
+                    GenericP2M2.HeaderField.area -> formatAsDouble(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Area)),
+                    GenericP2M2.HeaderField.height -> formatAsDouble(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Height)),
+                    GenericP2M2.HeaderField.vial -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Vial`),
+                      GenericP2M2.HeaderField.acquisitionDate ->
                       formatDateWithLocalDate(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date`),formatMassLynxTxt) ,
+                    GenericP2M2.HeaderField.exportDate ->  Some(x.header.printedDate.format(DateTimeFormatter.ofPattern(formatGenericP2M2))),
                     GenericP2M2.HeaderField.injectedVolume -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol`)
                   ).flatMap {
                     case (k,Some(v)) => Some(k,v)
@@ -103,13 +121,12 @@ object FormatConversions {
                   }
                 })
           }
-
     )
   }
 
   implicit def XcaliburToGenericP2M2(x: Xcalibur) : GenericP2M2 =
     GenericP2M2(
-      x.results
+      samples = x.results
         .flatMap(
           (injections : CompoundSheetXcalibur) => {
             injections.compoundByInjection.map(
@@ -117,10 +134,11 @@ object FormatConversions {
                 Map(
                   GenericP2M2.HeaderField.metabolite -> injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.`Component Name`),
                   GenericP2M2.HeaderField.sample -> values.get(Xcalibur.HeaderField.Filename),
-                  GenericP2M2.HeaderField.retTime -> values.get(Xcalibur.HeaderField.RT),
-                  GenericP2M2.HeaderField.area -> values.get(Xcalibur.HeaderField.Area),
-                  GenericP2M2.HeaderField.height -> values.get(Xcalibur.HeaderField.Height),
-                  GenericP2M2.HeaderField.acquisitionDate -> (values.get(Xcalibur.HeaderField.`Acq Date`) match {
+                  GenericP2M2.HeaderField.retTime -> formatAsDouble(values.get(Xcalibur.HeaderField.RT)),
+                  GenericP2M2.HeaderField.area -> formatAsDouble(values.get(Xcalibur.HeaderField.Area)),
+                  GenericP2M2.HeaderField.height -> formatAsDouble(values.get(Xcalibur.HeaderField.Height)),
+                  GenericP2M2.HeaderField.vial -> values.get(Xcalibur.HeaderField.Vial),
+                    GenericP2M2.HeaderField.acquisitionDate -> (values.get(Xcalibur.HeaderField.`Acq Date`) match {
                     case Some(d) =>
                       Try({
                         val dtf = DateTimeFormatter.ofPattern("E MMM d H:m:s z u", Locale.ENGLISH)
@@ -132,6 +150,8 @@ object FormatConversions {
                   }
                     case _ => None
                   }) ,
+                  GenericP2M2.HeaderField.exportDate ->
+                    formatDateWithLocalDateTime(injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date),formatDateXcalibur),
                   GenericP2M2.HeaderField.injectedVolume -> values.get(Xcalibur.HeaderField.`Inj Vol`)
                 ).flatMap {
                   case (k,Some(v)) => Some(k,v)
@@ -150,10 +170,13 @@ object FormatConversions {
           Map(
             GenericP2M2.HeaderField.metabolite -> None,
             GenericP2M2.HeaderField.sample -> res.get(GCMS.HeaderField.Name),
-            GenericP2M2.HeaderField.retTime -> res.get(GCMS.HeaderField.`Ret.Time`),
-            GenericP2M2.HeaderField.area -> res.get(GCMS.HeaderField.Area),
-            GenericP2M2.HeaderField.height -> res.get(GCMS.HeaderField.Height),
-            GenericP2M2.HeaderField.acquisitionDate ->
+            GenericP2M2.HeaderField.retTime -> formatAsDouble(res.get(GCMS.HeaderField.`Ret.Time`)),
+            GenericP2M2.HeaderField.area -> formatAsDouble(res.get(GCMS.HeaderField.Area)),
+            GenericP2M2.HeaderField.height -> formatAsDouble(res.get(GCMS.HeaderField.Height)),
+            GenericP2M2.HeaderField.vial -> None,
+            GenericP2M2.HeaderField.exportDate ->
+              formatDateWithLocalDate(x.header.get(GCMS.HeaderFileField.Output_Date), formatGCMS),
+            GenericP2M2.HeaderField.exportDate ->
               formatDateWithLocalDate(x.header.get(GCMS.HeaderFileField.Output_Date),formatGCMS),
             GenericP2M2.HeaderField.injectedVolume -> None
           ).flatMap {
@@ -171,12 +194,15 @@ object FormatConversions {
           Map(
             GenericP2M2.HeaderField.metabolite -> res.get(OpenLabCDS.HeaderField.Name),
             GenericP2M2.HeaderField.sample -> x.header.get(OpenLabCDS.HeaderFileField.`Sample Name`),
-            GenericP2M2.HeaderField.retTime -> res.get(OpenLabCDS.HeaderField.RetTime),
-            GenericP2M2.HeaderField.area -> res.get(OpenLabCDS.HeaderField.Area),
-            GenericP2M2.HeaderField.height -> res.get(OpenLabCDS.HeaderField.Amount),
+            GenericP2M2.HeaderField.retTime -> formatAsDouble(res.get(OpenLabCDS.HeaderField.RetTime)),
+            GenericP2M2.HeaderField.area -> formatAsDouble(res.get(OpenLabCDS.HeaderField.Area)),
+            GenericP2M2.HeaderField.height -> formatAsDouble(res.get(OpenLabCDS.HeaderField.Amount)),
+            GenericP2M2.HeaderField.vial ->  None,
             GenericP2M2.HeaderField.acquisitionDate ->
               formatDateWithLocalDateTime(x.header.get(OpenLabCDS.HeaderFileField.`Last changed Acq. Method`),formatOpenLabCDS),
-            GenericP2M2.HeaderField.injectedVolume -> x.header.get(OpenLabCDS.HeaderFileField.`Inj Volume`)
+            GenericP2M2.HeaderField.exportDate ->
+              formatDateWithLocalDateTime(x.header.get(OpenLabCDS.HeaderFileField.`Last changed Analysis Method`), formatOpenLabCDS),
+            GenericP2M2.HeaderField.injectedVolume -> formatAsDouble(x.header.get(OpenLabCDS.HeaderFileField.`Inj Volume`))
           ).flatMap {
             case (k,Some(v)) => Some(k,v)
             case _ => None

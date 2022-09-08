@@ -3,7 +3,7 @@ package fr.inrae.metabolomics.p2m2.format
 import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
 
-import java.time.LocalDate
+import java.time.{LocalDate, LocalDateTime}
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
@@ -28,23 +28,41 @@ object GenericP2M2 {
     implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val
+    ID,                      /* build during conversion */
     sample,
     metabolite,
     retTime,
     area,
     height,
     injectedVolume,
-    acquisitionDate = Value
+    vial,
+    acquisitionDate,
+    exportDate,
+    chromatographInjectionId /* build during conversion */
+    = Value
+  }
+
+  object HeaderFieldChromatogram extends Enumeration {
+    implicit val rw: ReadWriter[HeaderFieldChromatogram] =
+      readwriter[Int].bimap[HeaderFieldChromatogram](x => x.id, HeaderFieldChromatogram(_))
+    type HeaderFieldChromatogram = Value
+    val
+    chromatographInjectionId,
+    vial,
+    exportDate,
+    acquisitionDate,
+    injectedVolume = Value
   }
 }
 
-case class GenericP2M2(values : Seq[Map[GenericP2M2.HeaderField.HeaderField,String]]=Seq()) extends MassSpectrometryResultSet {
-  def +(that: GenericP2M2): GenericP2M2 = GenericP2M2(this.values++that.values)
+case class GenericP2M2(
+                        samples : Seq[Map[GenericP2M2.HeaderField.HeaderField,String]]=Seq()
+                      ) extends MassSpectrometryResultSet {
+  def +(that: GenericP2M2): GenericP2M2 = GenericP2M2(this.samples++that.samples)
   def +(that: MassSpectrometryResultSet): GenericP2M2 = this+that.toGenericP2M2
 
-  override def toGenericP2M2: GenericP2M2 = GenericP2M2(this.values)
+  override def toGenericP2M2: GenericP2M2 = GenericP2M2(this.samples)
 }
-
 
 object GCMS {
   implicit val rw: ReadWriter[GCMS] = macroRW
@@ -122,9 +140,9 @@ object QuantifyCompoundSummaryReportMassLynx {
       .appendPattern("E MMM dd HH:mm:ss yyyy")
       .toFormatter(Locale.US)
 
-    val printedDate: LocalDate = dateStr match {
-      case Some(d) => LocalDate.parse(d.trim, formatter)
-      case None => LocalDate.now()
+    val printedDate: LocalDateTime = dateStr match {
+      case Some(d) => LocalDateTime.parse(d.trim, formatter)
+      case None => LocalDateTime.now()
     }
   }
 

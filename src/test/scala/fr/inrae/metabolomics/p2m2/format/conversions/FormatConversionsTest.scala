@@ -9,38 +9,36 @@ import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 object FormatConversionsTest extends TestSuite {
 
   def checkPartialBasic(o : GenericP2M2) = {
-    assert(o.values.nonEmpty)
-    assert(o.values.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
-    assert(!o.values.head.contains(GenericP2M2.HeaderField.height))
-    assert(!o.values.head.contains(GenericP2M2.HeaderField.retTime))
+    assert(o.samples.nonEmpty)
+    assert(o.samples.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))
+    assert(o.samples.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
+    assert(!o.samples.head.contains(GenericP2M2.HeaderField.area))
+    assert(!o.samples.head.contains(GenericP2M2.HeaderField.height))
+    assert(!o.samples.head.contains(GenericP2M2.HeaderField.retTime))
  //   assert(!o.values.head.contains(GenericP2M2.HeaderField.acquisitionDate))
-    assert(!o.values.head.contains(GenericP2M2.HeaderField.injectedVolume))
+    assert(!o.samples.head.contains(GenericP2M2.HeaderField.injectedVolume))
   }
 
   def checkBasic(o : GenericP2M2) = {
-    assert(o.values.nonEmpty)
-    assert(o.values.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.height).contains("height"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.retTime).contains("retTime"))
+    assert(o.samples.nonEmpty)
+    assert(o.samples.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))
+    assert(o.samples.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
+    assert(o.samples.head.get(GenericP2M2.HeaderField.area).contains("1.0"))
+    assert(o.samples.head.get(GenericP2M2.HeaderField.height).contains("2.0"))
+    assert(o.samples.head.get(GenericP2M2.HeaderField.retTime).contains("3.0"))
    // assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("acquisitionDate"))
-    assert(o.values.head.get(GenericP2M2.HeaderField.injectedVolume).contains("injectedVolume"))
+    assert(o.samples.head.get(GenericP2M2.HeaderField.injectedVolume).contains("injectedVolume"))
   }
 
   val tests: Tests = Tests{
     test("QuantifyCompoundSummaryReportMassLynx empty object to convert") {
-
-
       val o : GenericP2M2 =
         QuantifyCompoundSummaryReportMassLynx(
         origin = "none",
         header = Header(None),
         results = Seq(("metabolite", Seq(Map() )) ) )
 
-      assert(o.values.isEmpty)
+      assert(o.samples.isEmpty)
     }
     test("QuantifyCompoundSummaryReportMassLynx basic partial object to convert") {
       val o : GenericP2M2 =
@@ -60,17 +58,18 @@ object FormatConversionsTest extends TestSuite {
       val o : GenericP2M2 =
         QuantifyCompoundSummaryReportMassLynx(
           origin = "none",
-          header = Header(None),
+          header = Header(Some("Fri Sep 20 14:23:33 2019")),
           results = Seq(("metabolite", Seq(
             Map(
               QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "sample",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "area",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.Height -> "height",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.RT -> "retTime",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "1.0",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.Height -> "2.0",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.RT -> "3.0",
               QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19",
               QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol` -> "injectedVolume"
             ))) ) )
-      assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.exportDate).contains("2019-09-20 14:23:33.0000"))
       checkBasic(o)
     }
 
@@ -80,7 +79,7 @@ object FormatConversionsTest extends TestSuite {
           origin = "none",
           results = Seq(CompoundSheetXcalibur()))
 
-      assert(o.values.isEmpty)
+      assert(o.samples.isEmpty)
     }
     test("Xcalibur basic partial object to convert") {
       val o : GenericP2M2 =
@@ -88,13 +87,15 @@ object FormatConversionsTest extends TestSuite {
           origin = "none",
           results = Seq(CompoundSheetXcalibur(
             compoundInformationHeader = Map(
-              Xcalibur.HeaderSheetField.`Component Name` -> "metabolite"
+              Xcalibur.HeaderSheetField.`Component Name` -> "metabolite",
+              Xcalibur.HeaderSheetField.Date -> "07/06/2022 08:57:12",
             ),
             compoundByInjection = Seq(Map(
               Xcalibur.HeaderField.Filename -> "sample",
               Xcalibur.HeaderField.Area -> "area",
             )))))
 
+      assert(o.samples.head.get(GenericP2M2.HeaderField.exportDate).contains("2022-06-07 08:57:12.0000"))
       checkPartialBasic(o)
     }
     test("Xcalibur basic object to convert") {
@@ -107,22 +108,22 @@ object FormatConversionsTest extends TestSuite {
             ),
             compoundByInjection = Seq(Map(
               Xcalibur.HeaderField.Filename -> "sample",
-              Xcalibur.HeaderField.Area -> "area",
-              Xcalibur.HeaderField.Height -> "height",
-              Xcalibur.HeaderField.RT -> "retTime",
+              Xcalibur.HeaderField.Area -> "1.0",
+              Xcalibur.HeaderField.Height -> "2.0",
+              Xcalibur.HeaderField.RT -> "3.0",
               Xcalibur.HeaderField.`Acq Date` -> "Tue Jun 20 14:53:08 CEST 2017",
               Xcalibur.HeaderField.`Inj Vol` -> "injectedVolume"
             )))))
 
       checkBasic(o)
-      assert(o.values.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2017-06-20 14:53:08.0000"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2017-06-20 14:53:08.0000"))
     }
 
     test("GCMS empty object to convert") {
       val o : GenericP2M2 =
         GCMS(origin = "none")
 
-      assert(o.values.isEmpty)
+      assert(o.samples.isEmpty)
     }
 
     test("Xcalibur basic partial object to convert") {
@@ -132,18 +133,19 @@ object FormatConversionsTest extends TestSuite {
           header=Map(),
           msQuantitativeResults = Seq(Map(
             GCMS.HeaderField.Name -> "sample",
-            GCMS.HeaderField.Area -> "area"))
+            GCMS.HeaderField.Area -> "area"
+          ))
         )
 
-      assert(o.values.nonEmpty)
-      assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
-      assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
+      assert(o.samples.nonEmpty)
+      assert(o.samples.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
+      assert(!o.samples.head.contains(GenericP2M2.HeaderField.area))
     }
     test("OpenlabCDS empty object to convert") {
       val o : GenericP2M2 =
         OpenLabCDS(origin = "none")
 
-      assert(o.values.isEmpty)
+      assert(o.samples.isEmpty)
     }
 
     test("Xcalibur basic partial object to convert") {
@@ -153,7 +155,8 @@ object FormatConversionsTest extends TestSuite {
           header=Map(
             OpenLabCDS.HeaderFileField.`Sample Name` -> "sample",
             OpenLabCDS.HeaderFileField.`Inj Volume` -> "0.1",
-            OpenLabCDS.HeaderFileField.`Last changed Acq. Method` -> "2/25/2021 3:02:59 PM"
+            OpenLabCDS.HeaderFileField.`Last changed Acq. Method` -> "2/25/2021 3:02:59 PM",
+            OpenLabCDS.HeaderFileField.`Last changed Analysis Method` -> "2/26/2021 3:03:00 PM"
           )
           ,
           results = Seq(Map(
@@ -164,9 +167,11 @@ object FormatConversionsTest extends TestSuite {
           ))
         )
 
-      assert(o.values.nonEmpty)
-      assert(o.values.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
-      assert(o.values.head.get(GenericP2M2.HeaderField.area).contains("area"))
+      assert(o.samples.nonEmpty)
+      assert(o.samples.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
+      assert(!o.samples.head.contains(GenericP2M2.HeaderField.area))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2021-02-25 15:02:59.0000"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.exportDate).contains("2021-02-26 15:03:00.0000"))
     }
 
     test("formatDateWithLocalDate") {
@@ -183,11 +188,11 @@ object FormatConversionsTest extends TestSuite {
     }
     test("Isocor toGenericP2M2") {
       val g : GenericP2M2 = Isocor(origin="").toGenericP2M2
-      assert(g.values==Seq())
+      assert(g.samples==Seq())
     }
     test("GenericP2M2 toGenericP2M2") {
       val g : GenericP2M2 = GenericP2M2().toGenericP2M2
-      assert(g.values==Seq())
+      assert(g.samples==Seq())
     }
   }
 }
