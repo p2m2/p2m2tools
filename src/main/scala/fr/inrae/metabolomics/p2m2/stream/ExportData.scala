@@ -17,10 +17,10 @@ case object ExportData {
                                   samples: Seq[Map[GenericP2M2.HeaderField.HeaderField, String]] = Seq(),
                                   chromatographs: Seq[Map[GenericP2M2.HeaderFieldChromatogram.HeaderFieldChromatogram, String]] = Seq())
 
-  def getTimeStamp(x: String) = {
+  def getTimeStamp(x: String): String = {
     Timestamp.valueOf(
       LocalDateTime.parse(x, new DateTimeFormatterBuilder()
-        .appendPattern(FormatConversions.formatGenericP2M2).toFormatter(Locale.US))).getTime().toString
+        .appendPattern(FormatConversions.formatGenericP2M2).toFormatter(Locale.FRANCE))).getTime.toString
   }
 
   def getIdChromatograph(acquisitionDate: Option[String], exportDate: Option[String]): String =
@@ -30,15 +30,8 @@ case object ExportData {
       case (Some(v), None) => getTimeStamp(v) + "_DATE_EXP_UNKNOWN"
       case (None, None) => "DATE_ACQ_UNKNOWN_DATE_EXP_UNKNOWN"
     }
-  /**
-   * Appliquer une decoration sur GenericP2M2 pour aggrementer les information chromatograph
-   * Contrainte : Toutes les valeurs doivent se trouver dans HeaderField
-   * - ajouter vial dans HeaderField
-   *
-   * @param o
-   * @return
-   */
-  def decoreWithChromatograh(o: GenericP2M2): GenericP2M2Extended = {
+
+  def decorWithChromatograph(o: GenericP2M2): GenericP2M2Extended = {
     GenericP2M2Extended(
       samples = o.samples.zipWithIndex.map {
         case (values: Map[GenericP2M2.HeaderField.HeaderField, String], idx: Int) =>
@@ -67,7 +60,7 @@ case object ExportData {
   }
   def xlsP2M2(resultsSet : GenericP2M2): ByteArrayOutputStream = {
 
-    val resultsSetExtended: GenericP2M2Extended  = decoreWithChromatograh(resultsSet)
+    val resultsSetExtended: GenericP2M2Extended  = decorWithChromatograph(resultsSet)
 
     val wb = new HSSFWorkbook
     val results = wb.createSheet("RESULTS")
