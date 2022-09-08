@@ -54,6 +54,8 @@ object ExportDataTest extends TestSuite {
       assert(workbook.getSheetAt(0).getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size)
       assert(workbook.getSheetAt(0).getLastRowNum == 1)
       assert(workbook.getSheetAt(0).getRow(1).getLastCellNum == GenericP2M2.HeaderField.values.size)
+      println("======================================")
+      println(workbook.getSheetAt(0).getRow(1).getCell(0).toString)
       assert(workbook.getSheetAt(0).getRow(1).getCell(0).toString == "0_1497963188000_1498049588000")
       assert(workbook.getSheetAt(0).getRow(1).getCell(1).toString == "sample")
       assert(workbook.getSheetAt(0).getRow(1).getCell(2).toString == "metabolite")
