@@ -132,11 +132,17 @@ case class OpenLabCDS(
 }
 
 object QuantifySummaryReportMassLynx {
-  val rw: ReadWriter[MassSpectrometryResultSet] =
+  val rw: ReadWriter[MassSpectrometryResultSet] = {
     ReadWriter.merge(
       QuantifyCompoundSummaryReportMassLynx.rw,
       QuantifySampleSummaryReportMassLynx.rw,
     )
+  }
+
+  object Header {
+    implicit val rw: ReadWriter[Header] = macroRW
+  }
+
   case class  Header(dateStr : Option[String] = None)  {
     val formatter: DateTimeFormatter = new DateTimeFormatterBuilder()
       .appendPattern("E MMM dd HH:mm:ss yyyy")
@@ -146,18 +152,6 @@ object QuantifySummaryReportMassLynx {
       case Some(d) => LocalDateTime.parse(d.trim, formatter)
       case None => LocalDateTime.now()
     }
-  }
-
-  object Header {
-    implicit val rw: ReadWriter[Header] = macroRW
-  }
-
-  object HeaderField extends Enumeration {
-    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
-    type HeaderField = Value
-    val `Num. Injection`, /* Build artificial (Column namle does not exist in the Quantify Compound Summary Report) */
-    Name, `Inj. Vol`, `Acq.Date`, `Acq.Time`, Type, `Conc.`, `Mod.Time`, `Std. Conc`,
-    Trace, RT, Area, uM, `%Dev`, `S/N`, `Vial`, `Height/Area`, Height = Value
   }
 }
 
@@ -170,12 +164,45 @@ abstract class QuantifySummaryReportMassLynx() extends MassSpectrometryResultSet
  */
 object QuantifyCompoundSummaryReportMassLynx {
   implicit val rw: ReadWriter[QuantifyCompoundSummaryReportMassLynx] = macroRW
+  object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
+    type HeaderField = Value
+    val `Num. Injection`, /* Build artificial (Column name does not exist in the Quantify Compound Summary Report) */
+    `Name`, `Inj. Vol`, `Acq.Date`, `Acq.Time`, `RT`, `Area`, `Mod.Date`, `Mod.Time`, `1º Det. Flags`, `1º Max.Cnc Flag`,
+    `1º Rpt Lim Flag`, `1º S/N Flag`, `1º Symmetry Direction`, `1º Symmetry %`, `1º Area`, `1º Chr.Noise`, `1º Ratio Flag`,
+    `1º Ht`, `1º Ratio (Actual)`, `1º Ratio (Pred)`, `1º S/N`, `1º Trace`, `2º Det. Flags`, `2º Max.Cnc Flag`,
+    `2º Rpt Lim Flag`, `2º S/N Flag`, `2º Symmetry Direction`, `2º Symmetry %`, `2º Area`, `2º Chr.Noise`, `2º Ratio Flag`,
+    `2º Ht`, `2º Ratio (Actual)`, `2º Ratio (Pred)`, `2º Sig/Noise`, `2º Trace`, `3º Det. Flags`, `3º Max.Cnc Flag`,
+    `3º Rpt Lim Flag`, `3º S/N Flag`, `3º Symmetry Direction`, `3º Symmetry %`, `3º Area`, `3º Chr.Noise`, `3º Ratio Flag`,
+    `3º Height`, `3º Ratio (Actual)`, `3º Ratio (Pred)`, `3º Sig/Noise`, `3º Trace`, `4º Det. Flags`, `4º Max.Cnc Flag`,
+    `4º Rpt Lim Flag`, `4º S/N Flag`, `4º Symmetry Direction`, `4º Symmetry %`, `4º Area`, `4º Chr.Noise`,
+    `4º Ratio Flag`, `4º Height`, `4º Ratio (Actual)`, `4º Ratio (Pred)`, `4º Sig/Noise`, `4º Trace`, `Abs. Corr. Resp`,
+    `Abs.Resp`, `Adj.RT`, `Analyte Deviation`, `Base Width`, `Below Rpt Lim`, `Blank Flag`, `Blank Limit`, `BS Conc.`,
+    `RRF %Rel SD`, `RRF Mean`, `RRF SD`, `Conc.`, `Cal.Date`, `Cal.File`, `Cal.Time`, `Noise`, `Noise Height`, `Trace`,
+    `Coeff. Of Determination`, `CD Flag`, `Conc. Dev. Allowed`, `Conc. Dev. Flagged`, `Dev. Flagging Required`, `%Dev`,
+    `Corr. Resp`, `EMPC`, `Formula 1`, `Formula 2`, `Formula 3`, `Formula 4`, `Forward Fit`, `RRT`, `Scan`, `a`,
+    `Height/Area`, `i-FIT`, `i-FIT % Conf`, `i-FIT % Conf Flag`, `i-FIT Flag`, `i-FIT Norm`, `i-FIT Norm Flag`,
+    `IS Abs.Resp`, `IS Area`, `IS#`, `IS RT`, `IS Height`, `LOD`, `LOD Flag`, `LOQ`, `LOQ Flag`, `Lowerbound 1`,
+    `Lowerbound 2`, `Lowerbound 3`, `Lowerbound 4`, `Found Mass`, `Error (mDa)`, `Error (ppm)`, `Error (mDa) Flag`,
+    `Error (ppm) Flag`, `Max. Cnc Flag`, `Mediumbound 1`, `Mediumbound 2`, `Mediumbound 3`, `Mediumbound 4`,
+    `Mod.Comment`, `Mod.User`, `No Solution Flag`, `(b/a)`, `Asymmetry Flagged`, `Peak End Height`, `Peak End Time`,
+    `Height`, `Peak Missing Flag`, `Quality`, `Quality Description`, `Response`, `Peak Start Height`, `Peak Start Time`,
+    `Pk Kurt`, `Pk Sigma`, `Pk Skew`, `Pk Width`, `Pred.RRT`, `Pred.RT`, `Primary Flags`, `Quality Reference`,
+    `Quan Actual Ratio`, `Sig/Noise Flag`, `Quan Trace`, `Quan Trace Ratio`, `Quantify Reference`,
+    `R.T. Tolerance Flag`, `%Rec`, `Recovery Flag`, `Reinjection Number`, `Rpt Lim Flag`, `Reverse Fit`, `RRF`,
+    `S/N LOD`, `S/N LOQ`, `Conditions`, `#`, `ID`, `Submitter`, `Task`, `Sample Text`, `Type`, `Sec.Peaks`, `S/N`,
+    `Solvent Flag`, `Solvent Limit`, `Std. Conc`, `Subject Text`, `Subject Time`, `Symmetry Direction`, `Symmetry %`,
+    `b`, `TEQ 1`, `TEQ 2`, `TEQ 3`, `TEQ 4`, `TEF 1`, `TEF 2`, `TEF 3`, `TEF 4`, `TLOD 1`, `TLOD 2`, `TLOD 3`, `TLOD 4`,
+    `TLOQ 1`, `TLOQ 2`, `TLOQ 3`, `TLOQ 4`, `Upperbound 1`, `Upperbound 2`, `Upperbound 3`, `Upperbound 4`, `Divisor1`,
+    `Factor1`, `Factor2`, `Factor3`, `Pk.Factor`, `User RF`, `Vial` = Value
+  }
 }
 case class QuantifyCompoundSummaryReportMassLynx(
                                                   origin : String,
                                                   header : QuantifySummaryReportMassLynx.Header,
                                                   // list of Name Compound/ Area/etc....
-                                                  resultsByCompound : Seq[(String,Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
+                                                  resultsByCompound : Seq[(String,
+                                                    Seq[Map[QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
                                                 ) extends QuantifySummaryReportMassLynx {
   override def toGenericP2M2: GenericP2M2 = this
 
@@ -183,12 +210,48 @@ case class QuantifyCompoundSummaryReportMassLynx(
 
 object QuantifySampleSummaryReportMassLynx {
   implicit val rw: ReadWriter[QuantifySampleSummaryReportMassLynx] = macroRW
+
+  object HeaderField extends Enumeration {
+    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
+    type HeaderField = Value
+    val `Num. Injection`, /* Build artificial (Column name does not exist in the Quantify Compound Summary Report) */
+    `Name`, `Trace`, `RT`, `Area`, `IS Area`, `Response`, `Conc.`, `%Dev`, `Primary Flags`, `1º Det. Flags`,
+    `1º Max.Cnc Flag`, `1º Rpt Lim Flag`, `1º S/N Flag`, `1º Symmetry Direction`, `1º Symmetry %`, `1º Area`,
+    `1º Chr.Noise`, `1º Ratio Flag`, `1º Ht`, `1º Ratio (Actual)`, `1º Ratio (Pred)`, `1º S/N`, `1º Trace`,
+    `2º Det. Flags`, `2º Max.Cnc Flag`, `2º Rpt Lim Flag`, `2º S/N Flag`, `2º Symmetry Direction`, `2º Symmetry %`,
+    `2º Area`, `2º Chr.Noise`, `2º Ratio Flag`, `2º Ht`, `2º Ratio (Actual)`, `2º Ratio (Pred)`, `2º Sig/Noise`,
+    `2º Trace`, `3º Det. Flags`, `3º Max.Cnc Flag`, `3º Rpt Lim Flag`, `3º S/N Flag`, `3º Symmetry Direction`,
+    `3º Symmetry %`, `3º Area`, `3º Chr.Noise`, `3º Ratio Flag`, `3º Height`, `3º Ratio (Actual)`, `3º Ratio (Pred)`,
+    `3º Sig/Noise`, `3º Trace`, `4º Det. Flags`, `4º Max.Cnc Flag`, `4º Rpt Lim Flag`, `4º S/N Flag`,
+    `4º Symmetry Direction`, `4º Symmetry %`, `4º Area`, `4º Chr.Noise`, `4º Ratio Flag`, `4º Height`,
+    `4º Ratio (Actual)`, `4º Ratio (Pred)`, `4º Sig/Noise`, `4º Trace`, `Abs. Corr. Resp`, `Abs.Resp`,
+    `Acq.Date`, `Acq.Time`, `Adj.RT`, `Analyte Deviation`, `Base Width`, `Below Rpt Lim`, `Blank Flag`,
+    `Blank Limit`, `BS Conc.`, `RRF %Rel SD`, `RRF Mean`, `RRF SD`, `Cal.Date`, `Cal.File`, `Cal.Time`, `CAS`, `Noise`,
+    `Noise Height`, `Coeff. Of Determination`, `CD Flag`, `Compound Type`, `Conc. Dev. Allowed`, `Conc. Dev. Flagged`,
+    `Dev. Flagging Required`, `Corr. Resp`, `EMPC`, `Formula 1`, `Formula 2`, `Formula 3`, `Formula 4`, `Forward Fit`,
+    `RRT`, `Scan`, `a`, `Height/Area`, `i-FIT`, `i-FIT % Conf`, `i-FIT % Conf Flag`, `i-FIT Flag`, `i-FIT Norm`,
+    `i-FIT Norm Flag`, `IS Abs.Resp`, `IS#`, `IS RT`, `IS Height`, `LOD`, `LOD Flag`, `LOQ`, `LOQ Flag`, `Lowerbound 1`,
+    `Lowerbound 2`, `Lowerbound 3`, `Lowerbound 4`, `Found Mass`, `Error (mDa)`, `Error (ppm)`, `Error (mDa) Flag`,
+    `Error (ppm) Flag`, `Max. Cnc Flag`, `Mediumbound 1`, `Mediumbound 2`, `Mediumbound 3`, `Mediumbound 4`,
+    `Mod.Comment`, `Mod.Date`, `Mod.Time`, `Mod.User`, `No Solution Flag`, `(b/a)`, `Asymmetry Flagged`,
+    `Peak End Height`, `Peak End Time`, `Height`, `Peak Missing Flag`, `Quality`, `Quality Description`,
+    `Peak Start Height`, `Peak Start Time`, `Peaks`, `Pk Kurt`, `Pk Sigma`, `Pk Skew`, `Pk Width`, `Pred.RRT`,
+    `Pred.RT`, `Quality Reference`, `Quan Actual Ratio`, `Sig/Noise Flag`, `Quan Trace`, `Quan Trace Ratio`,
+    `Quantify Reference`, `R.T. Tolerance Flag`, `%Rec`, `Recovery Flag`, `Reinjection Number`, `Rpt Lim Flag`,
+    `Reverse Fit`, `RRF`, `S/N LOD`, `S/N LOQ`, `ID`, `Sample Text`, `Sec.Peaks`, `S/N`, `Solvent Flag`,
+    `Solvent Limit`, `Std. Conc`, `Symmetry Direction`, `Symmetry %`, `b`, `TEQ 1`, `TEQ 2`, `TEQ 3`, `TEQ 4`,
+    `TEF 1`, `TEF 2`, `TEF 3`, `TEF 4`, `TLOD 1`, `TLOD 2`, `TLOD 3`, `TLOD 4`, `TLOQ 1`, `TLOQ 2`, `TLOQ 3`, `TLOQ 4`,
+    `Upperbound 1`, `Upperbound 2`, `Upperbound 3`, `Upperbound 4`, `Divisor1`, `Factor1`, `Factor2`, `Factor3`,
+    `Pk.Factor`, `User RF` = Value
+  }
+
 }
 case class QuantifySampleSummaryReportMassLynx(
                                                   origin : String,
                                                   header : QuantifySummaryReportMassLynx.Header,
                                                   // list of Name Compound/ Area/etc....
-                                                  resultsBySample : Seq[(String,Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
+                                                  resultsBySample : Seq[(String,
+                                                    Seq[Map[QuantifySampleSummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
                                                 ) extends QuantifySummaryReportMassLynx {
   override def toGenericP2M2: GenericP2M2 = this
 

@@ -99,22 +99,22 @@ object FormatConversions {
         .flatMap {
           case (
             compound : String,
-              allValues  : Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField,String]]) =>
+              allValues  : Seq[Map[QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField,String]]) =>
               allValues
                 .filter( _.nonEmpty )
                 .map(
                 values => {
                   Map(
                     GenericP2M2.HeaderField.metabolite -> Some(compound),
-                    GenericP2M2.HeaderField.sample -> values.get(QuantifySummaryReportMassLynx.HeaderField.Name),
-                    GenericP2M2.HeaderField.retTime -> formatAsDouble(values.get(QuantifySummaryReportMassLynx.HeaderField.RT)),
-                    GenericP2M2.HeaderField.area -> formatAsDouble(values.get(QuantifySummaryReportMassLynx.HeaderField.Area)),
-                    GenericP2M2.HeaderField.height -> formatAsDouble(values.get(QuantifySummaryReportMassLynx.HeaderField.Height)),
-                    GenericP2M2.HeaderField.vial -> values.get(QuantifySummaryReportMassLynx.HeaderField.`Vial`),
+                    GenericP2M2.HeaderField.sample -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Name),
+                    GenericP2M2.HeaderField.retTime -> formatAsDouble(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.RT)),
+                    GenericP2M2.HeaderField.area -> formatAsDouble(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Area)),
+                    GenericP2M2.HeaderField.height -> formatAsDouble(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.Height)),
+                    GenericP2M2.HeaderField.vial -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Vial`),
                       GenericP2M2.HeaderField.acquisitionDate ->
-                      formatDateWithLocalDate(values.get(QuantifySummaryReportMassLynx.HeaderField.`Acq.Date`),formatMassLynxTxt) ,
+                      formatDateWithLocalDate(values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date`),formatMassLynxTxt) ,
                     GenericP2M2.HeaderField.exportDate ->  Some(x.header.printedDate.format(DateTimeFormatter.ofPattern(formatGenericP2M2))),
-                    GenericP2M2.HeaderField.injectedVolume -> values.get(QuantifySummaryReportMassLynx.HeaderField.`Inj. Vol`)
+                    GenericP2M2.HeaderField.injectedVolume -> values.get(QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol`)
                   ).flatMap {
                     case (k,Some(v)) => Some(k,v)
                     case _ => None
@@ -131,22 +131,22 @@ object FormatConversions {
         .flatMap {
           case (
             sample: String,
-            allValues: Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField, String]]) =>
+            allValues: Seq[Map[QuantifySampleSummaryReportMassLynx.HeaderField.HeaderField, String]]) =>
             allValues
               .filter(_.nonEmpty)
               .map(
                 values => {
                   Map(
-                    GenericP2M2.HeaderField.metabolite -> values.get(QuantifySummaryReportMassLynx.HeaderField.Name),
+                    GenericP2M2.HeaderField.metabolite -> values.get(QuantifySampleSummaryReportMassLynx.HeaderField.Name),
                     GenericP2M2.HeaderField.sample -> Some(sample) ,
-                    GenericP2M2.HeaderField.retTime -> formatAsDouble(values.get(QuantifySummaryReportMassLynx.HeaderField.RT)),
-                    GenericP2M2.HeaderField.area -> formatAsDouble(values.get(QuantifySummaryReportMassLynx.HeaderField.Area)),
-                    GenericP2M2.HeaderField.height -> formatAsDouble(values.get(QuantifySummaryReportMassLynx.HeaderField.Height)),
-                    GenericP2M2.HeaderField.vial -> values.get(QuantifySummaryReportMassLynx.HeaderField.`Vial`),
+                    GenericP2M2.HeaderField.retTime -> formatAsDouble(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.RT)),
+                    GenericP2M2.HeaderField.area -> formatAsDouble(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.Area)),
+                    GenericP2M2.HeaderField.height -> formatAsDouble(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.Height)),
+                    GenericP2M2.HeaderField.vial -> None ,
                     GenericP2M2.HeaderField.acquisitionDate ->
-                      formatDateWithLocalDate(values.get(QuantifySummaryReportMassLynx.HeaderField.`Acq.Date`), formatMassLynxTxt),
+                      formatDateWithLocalDate(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.`Acq.Date`), formatMassLynxTxt),
                     GenericP2M2.HeaderField.exportDate -> Some(x.header.printedDate.format(DateTimeFormatter.ofPattern(formatGenericP2M2))),
-                    GenericP2M2.HeaderField.injectedVolume -> values.get(QuantifySummaryReportMassLynx.HeaderField.`Inj. Vol`)
+                    GenericP2M2.HeaderField.injectedVolume -> None
                   ).flatMap {
                     case (k, Some(v)) => Some(k, v)
                     case _ => None
@@ -161,10 +161,16 @@ object FormatConversions {
       x.origin,
       x.header,
       resultsByCompound = x.resultsBySample flatMap {
-        case (sample:String, values : Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField,String]])=>
+        case (sample:String, values : Seq[Map[QuantifySampleSummaryReportMassLynx.HeaderField.HeaderField,String]])=>
           values.map(  m => {
-              val compound = m(QuantifySummaryReportMassLynx.HeaderField.Name)
-              val newM = m + (QuantifySummaryReportMassLynx.HeaderField.Name -> sample)
+              val compound = m(QuantifySampleSummaryReportMassLynx.HeaderField.Name)
+              val newM = m flatMap {
+                case QuantifySampleSummaryReportMassLynx.HeaderField.Name -> _ =>
+                  Some(QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> sample)
+                case k->v if QuantifyCompoundSummaryReportMassLynx.HeaderField.values.map(_.toString).contains(k.toString)
+                => Some(QuantifyCompoundSummaryReportMassLynx.HeaderField.values.filter(_.toString == k.toString).last -> v)
+                case _ => None
+              }
             (compound,Seq(newM))
             })
         })
@@ -175,10 +181,16 @@ object FormatConversions {
       x.origin,
       x.header,
       resultsBySample = x.resultsByCompound flatMap {
-        case (compound: String, values: Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField, String]]) =>
+        case (compound: String, values: Seq[Map[QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField, String]]) =>
           values.map(m => {
-            val sample = m(QuantifySummaryReportMassLynx.HeaderField.Name)
-            val newM = m + (QuantifySummaryReportMassLynx.HeaderField.Name -> compound)
+            val sample = m(QuantifyCompoundSummaryReportMassLynx.HeaderField.Name)
+            val newM = m flatMap {
+              case QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> _ =>
+                Some(QuantifySampleSummaryReportMassLynx.HeaderField.Name -> compound)
+              case k -> v if QuantifySampleSummaryReportMassLynx.HeaderField.values.map(_.toString).contains(k.toString)
+              => Some(QuantifySampleSummaryReportMassLynx.HeaderField.values.filter(_.toString == k.toString).last -> v)
+              case _ => None
+            }
             (sample, Seq(newM))
           })
       })

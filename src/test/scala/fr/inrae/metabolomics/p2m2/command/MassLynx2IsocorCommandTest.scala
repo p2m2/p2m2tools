@@ -100,7 +100,9 @@ object MassLynx2IsocorCommandTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=QuantifySummaryReportMassLynx.Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=
+          QuantifySummaryReportMassLynxParser.
+            parseResultsByElement(QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
       val list = MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map("His"->"C6H9N3O2")).transform(entry)
 

@@ -2,13 +2,14 @@ package fr.inrae.metabolomics.p2m2.format.conversions
 
 import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, Isocor,
+  OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
 import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 
 object FormatConversionsTest extends TestSuite {
 
-  def checkPartialBasic(o : GenericP2M2) = {
+  def checkPartialBasic(o : GenericP2M2): Unit = {
     assert(o.samples.nonEmpty)
     assert(o.samples.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))
     assert(o.samples.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
@@ -19,7 +20,7 @@ object FormatConversionsTest extends TestSuite {
     assert(!o.samples.head.contains(GenericP2M2.HeaderField.injectedVolume))
   }
 
-  def checkBasic(o : GenericP2M2) = {
+  def checkBasic(o : GenericP2M2): Unit = {
     assert(o.samples.nonEmpty)
     assert(o.samples.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))
     assert(o.samples.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
@@ -47,8 +48,8 @@ object FormatConversionsTest extends TestSuite {
             header = Header(None),
             resultsByCompound = Seq(("metabolite", Seq(
               Map(
-                QuantifySummaryReportMassLynx.HeaderField.Name -> "sample",
-                QuantifySummaryReportMassLynx.HeaderField.Area -> "area",
+                QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "sample",
+                QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "area",
               ))) ) )
 
       checkPartialBasic(o)
@@ -61,12 +62,12 @@ object FormatConversionsTest extends TestSuite {
           header = Header(Some("Fri Sep 20 14:23:33 2019")),
           resultsByCompound = Seq(("metabolite", Seq(
             Map(
-              QuantifySummaryReportMassLynx.HeaderField.Name -> "sample",
-              QuantifySummaryReportMassLynx.HeaderField.Area -> "1.0",
-              QuantifySummaryReportMassLynx.HeaderField.Height -> "2.0",
-              QuantifySummaryReportMassLynx.HeaderField.RT -> "3.0",
-              QuantifySummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19",
-              QuantifySummaryReportMassLynx.HeaderField.`Inj. Vol` -> "injectedVolume"
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "sample",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "1.0",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.Height -> "2.0",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.RT -> "3.0",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19",
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol` -> "injectedVolume"
             ))) ) )
       assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
       assert(o.samples.head.get(GenericP2M2.HeaderField.exportDate).contains("2019-09-20 14:23:33.0000"))

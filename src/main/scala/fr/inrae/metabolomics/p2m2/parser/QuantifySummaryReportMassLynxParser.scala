@@ -2,7 +2,6 @@ package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.format.{QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, QuantifySummaryReportMassLynx}
 import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2
 
 import scala.io.{Codec, Source}
@@ -41,7 +40,8 @@ object QuantifySummaryReportMassLynxParser
       case res => res
     }
 
-  def parseResultsByElement(element: String, toParse : Seq[String] ) : Seq[(String,Seq[Map[HeaderField,String]])] = {
+  def parseResultsByElement[HeaderField<: Enumeration](t:HeaderField,toParse : Seq[String] )
+  : Seq[(String,Seq[Map[HeaderField#Value,String]])] = {
     val listCompoundIndexLine = toParse.zipWithIndex.filter( _._1.trim.startsWith("Compound")).map(_._2)
 
     listCompoundIndexLine
@@ -54,15 +54,15 @@ object QuantifySummaryReportMassLynxParser
           case idx => listCompoundIndexLine(idx+1)
         }
         // element = "Compound" or "Sample Name"
-        val compoundName : String = """\s\d+:\s+(.*)""".r.findFirstMatchIn(toParse(idx_line)) match {
+        val name : String = """\s\d+:\s+(.*)""".r.findFirstMatchIn(toParse(idx_line)) match {
           case Some(v) => v.group(1)
-          case None => throw new Exception("Can not parse Compound name:"+toParse(idx_line))
+          case None => throw new Exception("Can not parse Compound/Sample name:"+toParse(idx_line))
         }
-        (compoundName,parseArrayCompound(toParse.slice(iStart,iEnd)))
+        (name,parseArrayCompound(t,toParse.slice(iStart,iEnd)))
       })
   }
 
-  def parseArrayCompound( toParse : Seq[String] ) :Seq[Map[HeaderField,String]] = {
+  def parseArrayCompound[HeaderField <: Enumeration](t:HeaderField, toParse : Seq[String] ) :Seq[Map[HeaderField#Value,String]] = {
       toParse.filter(_.trim.nonEmpty).find(_.trim.startsWith("Name")) match {
         case Some(headerString) =>
           /* first value of array in the number corresponding to the injection*/
@@ -76,7 +76,7 @@ object QuantifySummaryReportMassLynxParser
             .map( mapLine => {
               mapLine
                 .zipWithIndex.flatMap {  case (value, index) =>
-                ParserUtils.getHeaderField(QuantifySummaryReportMassLynx.HeaderField,header(index)) match {
+                ParserUtils.getHeaderField(t,header(index)) match {
                   case Some(k) if value.nonEmpty => Some(k -> value)
                   case _ => None
                 }
@@ -90,7 +90,7 @@ object QuantifySummaryReportMassLynxParser
     p2m2.format.QuantifyCompoundSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
-      resultsByCompound = parseResultsByElement("Compound",toParse)
+      resultsByCompound = parseResultsByElement(QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse)
     )
   }
 
@@ -98,7 +98,7 @@ object QuantifySummaryReportMassLynxParser
     p2m2.format.QuantifySampleSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
-      resultsBySample = parseResultsByElement("Sample Name", toParse)
+      resultsBySample = parseResultsByElement(QuantifySampleSummaryReportMassLynx.HeaderField, toParse)
     )
   }
 

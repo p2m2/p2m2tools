@@ -1,8 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.{QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx}
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.{Header, HeaderField}
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx
+import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
 import utest.{TestSuite, Tests, test}
 
 import scala.util.{Failure, Success, Try}
@@ -17,7 +18,6 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
     HeaderField.`Std. Conc` ->"",
     HeaderField.RT ->1.78,
     HeaderField.Area ->96688,
-    HeaderField.uM ->"",
     HeaderField.`%Dev` ->"",
     HeaderField.`S/N` ->796,
     HeaderField.`Vial` ->"1:A,6",
@@ -33,7 +33,6 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
     HeaderField.`Std. Conc` ->"",
     HeaderField.RT ->1.75,
     HeaderField.Area ->16945,
-    HeaderField.uM ->"",
     HeaderField.`%Dev` ->"",
     HeaderField.`S/N` ->58,
     HeaderField.`Vial` ->"1:A,3",
@@ -71,14 +70,18 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
   test("parse empty compound") {
     val toParse =
       """Compound 1:  NH4+""".stripMargin
-    assert(QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList) == List(("NH4+",List())))
+    assert(QuantifySummaryReportMassLynxParser
+      .parseResultsByElement(
+        QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList) == List(("NH4+",List())))
   }
 
   test("parse bad def compound") {
     val toParse =
       """Compoundsss 1  :  NH4+""".stripMargin
 
-    Try(QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)) match {
+    Try(QuantifySummaryReportMassLynxParser
+      .parseResultsByElement(
+        QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)) match {
       case Success(v) => println(v);assert(false)
       case Failure(_) => assert(true)
     }
@@ -90,7 +93,10 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
         |
         |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
         |1	GlyN15_A_3	188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
-    assert(QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList) == List(("NH4+", List(injectionTest1))))
+    assert(QuantifySummaryReportMassLynxParser
+      .parseResultsByElement(
+        QuantifyCompoundSummaryReportMassLynx.HeaderField,
+        toParse.split("\n").toList) == List(("NH4+", List(injectionTest1))))
   }
 
   test("Test Unknown Name") {
@@ -100,7 +106,10 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
         |	Name	Trace	Type	Std. Conc	RT	Area	uM	%Dev	S/N	Vial	Height/Area	Acq.Date	Height
         |1		188			1.78	96688			796	1:A,6	11.911	17-sept-19	1151660""".stripMargin
 
-    assert(!QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList).head._2.head.contains(HeaderField.Name))
+    assert(!QuantifySummaryReportMassLynxParser
+      .parseResultsByElement(
+        QuantifyCompoundSummaryReportMassLynx.HeaderField,
+        toParse.split("\n").toList).head._2.head.contains(HeaderField.Name))
   }
 
   test("full file content") {
@@ -177,7 +186,12 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
         QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/targeted/070120_Saturation_CQA.txt").getPath)
           .toQuantifyCompoundSummaryReportMassLynx
 
-      println(results.toQuantifySampleSummaryReportMassLynx.resultsBySample)
+      val resOfOneSample = results.toQuantifySampleSummaryReportMassLynx
+        .resultsBySample
+        .filter( _._1 == """070120_CQA_22,18µgmL""")
+        .map(_._2)
+
+      assert(resOfOneSample.length == 4)
     }
   }
 

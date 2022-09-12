@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.HeaderField
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions
 import fr.inrae.metabolomics.p2m2.parser.QuantifySummaryReportMassLynxParser
 import fr.inrae.metabolomics.p2m2.format.{Isocor, QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx}

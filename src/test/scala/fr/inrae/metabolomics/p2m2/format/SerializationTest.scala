@@ -100,10 +100,10 @@ object SerializationTest extends TestSuite {
         resultsByCompound = Seq(
           ("TA" , Seq(
             Map(
-              QuantifySummaryReportMassLynx.HeaderField.Name -> "nameTest"
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "nameTest"
             ),
             Map(
-              QuantifySummaryReportMassLynx.HeaderField.Name -> "nameTest2"
+              QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "nameTest2"
             )
           )
           )

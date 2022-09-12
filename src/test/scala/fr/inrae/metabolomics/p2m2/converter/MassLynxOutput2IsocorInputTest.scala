@@ -26,7 +26,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry).results.isEmpty)
@@ -42,7 +43,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map()).transform(entry).results.isEmpty)
@@ -58,7 +60,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),listSampleToRemove=Seq("M+H")).transform(entry).results.isEmpty)
@@ -74,7 +77,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
 
       assert(MassLynxOutput2IsocorInput(derivatives=Map("His"->"ACCQTAG"),formula=Map())
@@ -94,7 +98,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
       assert( MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map(),resolution=1000).transform(entry).results ==
         List(CompoundIsocor(Map(HeaderField.sample ->"GlyN15_A_3",HeaderField.metabolite ->"His",
@@ -111,7 +116,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map(),formula=Map(),resolution=1000).transform(entry).results.isEmpty)
@@ -127,7 +133,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000).transform(entry).results ==
@@ -146,7 +153,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
 
       assert( MassLynxOutput2IsocorInput(derivatives=Map("His" -> "TOTO"),formula=Map(),resolution=1000)
@@ -166,7 +174,8 @@ object  MassLynxOutput2IsocorInputTest extends TestSuite {
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
         header=Header(),
-        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement("Compound",toParse.split("\n").toList)
+        resultsByCompound=QuantifySummaryReportMassLynxParser.parseResultsByElement(
+          QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
       assert( MassLynxOutput2IsocorInput(derivatives=Map("TATA" -> "TOTO"),formula=Map(),resolution=1000)
         .transform(entry).results.isEmpty)
