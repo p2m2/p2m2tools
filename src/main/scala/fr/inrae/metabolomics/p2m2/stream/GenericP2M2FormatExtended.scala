@@ -2,10 +2,7 @@ package fr.inrae.metabolomics.p2m2.stream
 import upickle.default._
 
 object GenericP2M2FormatExtended {
-  implicit val rw: ReadWriter[GenericP2M2FormatExtended] = macroRW
-
   object HeaderField extends Enumeration {
-    implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val
     ID, /* build during conversion */
@@ -23,8 +20,6 @@ object GenericP2M2FormatExtended {
   }
 
   object HeaderFieldChromatogram extends Enumeration {
-    implicit val rw: ReadWriter[HeaderFieldChromatogram] =
-      readwriter[Int].bimap[HeaderFieldChromatogram](x => x.id, HeaderFieldChromatogram(_))
     type HeaderFieldChromatogram = Value
     val
     chromatographInjectionId,

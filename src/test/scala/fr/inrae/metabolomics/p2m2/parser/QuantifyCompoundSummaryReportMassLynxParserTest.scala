@@ -74,7 +74,7 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
       .parseResultsByElement(
         QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList) == List(("NH4+",List())))
   }
-    
+
   test("parse compound") {
     val toParse =
       """Compound 1:  NH4+

@@ -1,5 +1,6 @@
 package fr.inrae.metabolomics.p2m2.format
 import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, MassSpectrometryResultSet, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.stream.GenericP2M2FormatExtended
 import upickle.default._
 
 case object MassSpectrometryResultSetFactory {
