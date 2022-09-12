@@ -1,7 +1,7 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.Xcalibur
-import fr.inrae.metabolomics.p2m2.format.Xcalibur.{HeaderField, HeaderSheetField}
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.{HeaderField, HeaderSheetField}
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 

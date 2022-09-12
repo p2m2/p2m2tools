@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.format.Isocor.{CompoundIsocor, HeaderField}
+import fr.inrae.metabolomics.p2m2.format.ms.Isocor.{CompoundIsocor, HeaderField}
 import utest.{TestSuite, Tests, test}
 
 object IsocorTest extends TestSuite {

@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.{GCMS, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
 import utest.{TestSuite, Tests, test}
 
 object ParserManagerTest extends TestSuite {

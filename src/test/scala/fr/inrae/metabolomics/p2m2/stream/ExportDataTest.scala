@@ -1,7 +1,8 @@
 package fr.inrae.metabolomics.p2m2.stream
 
-import fr.inrae.metabolomics.p2m2.format.GenericP2M2
-import fr.inrae.metabolomics.p2m2.parser.{GCMSParser, OpenLabCDSParser, QuantifyCompoundSummaryReportMassLynxParser, XcaliburXlsParser}
+import fr.inrae.metabolomics.p2m2.format.ms.GenericP2M2
+import fr.inrae.metabolomics.p2m2.parser.{GCMSParser, OpenLabCDSParser, QuantifySummaryReportMassLynxParser, XcaliburXlsParser}
+
 import java.io.FileOutputStream
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
@@ -51,7 +52,7 @@ object ExportDataTest extends TestSuite {
       // + 2 ID , chromatographInjectionId
       assert(workbook.getSheetAt(0).getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size)
       assert(workbook.getSheetAt(0).getLastRowNum == 1)
-      assert(workbook.getSheetAt(0).getRow(1).getLastCellNum == GenericP2M2.HeaderField.values.size)
+      assert(workbook.getSheetAt(0).getRow(1).getLastCellNum == GenericP2M2FormatExtended.HeaderField.values.size)
       assert(workbook.getSheetAt(0).getRow(1).getCell(0).toString.nonEmpty)
       assert(workbook.getSheetAt(0).getRow(1).getCell(1).toString == "sample")
       assert(workbook.getSheetAt(0).getRow(1).getCell(2).toString == "metabolite")
@@ -74,7 +75,7 @@ object ExportDataTest extends TestSuite {
       val mergeAllAcquisition : GenericP2M2 = Seq(
         GCMSParser.parse(getClass.getResource("/GCMS/13CPROT4.txt").getPath),
         OpenLabCDSParser.parse(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath),
-        QuantifyCompoundSummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath),
+        QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath),
         XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
       ).foldLeft(GenericP2M2(Seq()))( (accumulator,v) => accumulator +v)
 

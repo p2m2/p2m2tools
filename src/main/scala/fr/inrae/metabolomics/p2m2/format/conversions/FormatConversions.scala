@@ -1,8 +1,9 @@
 package fr.inrae.metabolomics.p2m2.format.conversions
 
-import fr.inrae.metabolomics.p2m2.format.GCMS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GenericP2M2, _}
+import fr.inrae.metabolomics.p2m2.format.ms.GCMS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
+import fr.inrae.metabolomics.p2m2.format._
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, QuantifySummaryReportMassLynx, Xcalibur}
 
 import java.text.SimpleDateFormat
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
@@ -95,7 +96,7 @@ object FormatConversions {
   implicit def QuantifyCompoundSummaryReportMassLynxToGenericP2M2(x: QuantifyCompoundSummaryReportMassLynx) : GenericP2M2 = {
 
     GenericP2M2(
-      samples = x.results
+      samples = x.resultsByCompound
         .flatMap {
           case (
             compound : String,
@@ -122,6 +123,88 @@ object FormatConversions {
                 })
           }
     )
+  }
+
+  implicit def QuantifySampleSummaryReportMassLynxToGenericP2M2(x: QuantifySampleSummaryReportMassLynx): GenericP2M2 = {
+
+    GenericP2M2(
+      samples = x.resultsBySample
+        .flatMap {
+          case (
+            sample: String,
+            allValues: Seq[Map[QuantifySampleSummaryReportMassLynx.HeaderField.HeaderField, String]]) =>
+            allValues
+              .filter(_.nonEmpty)
+              .map(
+                values => {
+                  Map(
+                    GenericP2M2.HeaderField.metabolite -> values.get(QuantifySampleSummaryReportMassLynx.HeaderField.Name),
+                    GenericP2M2.HeaderField.sample -> Some(sample) ,
+                    GenericP2M2.HeaderField.retTime -> formatAsDouble(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.RT)),
+                    GenericP2M2.HeaderField.area -> formatAsDouble(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.Area)),
+                    GenericP2M2.HeaderField.height -> formatAsDouble(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.Height)),
+                    GenericP2M2.HeaderField.vial -> None ,
+                    GenericP2M2.HeaderField.acquisitionDate ->
+                      formatDateWithLocalDate(values.get(QuantifySampleSummaryReportMassLynx.HeaderField.`Acq.Date`), formatMassLynxTxt),
+                    GenericP2M2.HeaderField.exportDate -> Some(x.header.printedDate.format(DateTimeFormatter.ofPattern(formatGenericP2M2))),
+                    GenericP2M2.HeaderField.injectedVolume -> None
+                  ).flatMap {
+                    case (k, Some(v)) => Some(k, v)
+                    case _ => None
+                  }
+                })
+        }
+    )
+  }
+
+  implicit def QSSRMassLynxToQCSRMassLynx(x: QuantifySampleSummaryReportMassLynx): QuantifyCompoundSummaryReportMassLynx = {
+    QuantifyCompoundSummaryReportMassLynx(
+      x.origin,
+      x.header,
+      resultsByCompound = x.resultsBySample flatMap {
+        case (sample:String, values : Seq[Map[QuantifySampleSummaryReportMassLynx.HeaderField.HeaderField,String]])=>
+          values.map(  m => {
+              val compound = m(QuantifySampleSummaryReportMassLynx.HeaderField.Name)
+              val newM = m flatMap {
+                case QuantifySampleSummaryReportMassLynx.HeaderField.Name -> _ =>
+                  Some(QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> sample)
+                case k->v if QuantifyCompoundSummaryReportMassLynx.HeaderField.values.map(_.toString).contains(k.toString)
+                => Some(QuantifyCompoundSummaryReportMassLynx.HeaderField.values.filter(_.toString == k.toString).last -> v)
+                case _ => None
+              }
+            (compound,Seq(newM))
+            })
+        })
+  }
+
+  implicit def QCSRMassLynxToQSSRMassLynx(x: QuantifyCompoundSummaryReportMassLynx): QuantifySampleSummaryReportMassLynx = {
+    QuantifySampleSummaryReportMassLynx(
+      x.origin,
+      x.header,
+      resultsBySample = x.resultsByCompound flatMap {
+        case (compound: String, values: Seq[Map[QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField, String]]) =>
+          values.map(m => {
+            val sample = m(QuantifyCompoundSummaryReportMassLynx.HeaderField.Name)
+            val newM = m flatMap {
+              case QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> _ =>
+                Some(QuantifySampleSummaryReportMassLynx.HeaderField.Name -> compound)
+              case k -> v if QuantifySampleSummaryReportMassLynx.HeaderField.values.map(_.toString).contains(k.toString)
+              => Some(QuantifySampleSummaryReportMassLynx.HeaderField.values.filter(_.toString == k.toString).last -> v)
+              case _ => None
+            }
+            (sample, Seq(newM))
+          })
+      })
+  }
+
+  implicit def MassLynxToQSSRMassLynx(x: QuantifySummaryReportMassLynx): QuantifySampleSummaryReportMassLynx = x match {
+    case y : QuantifyCompoundSummaryReportMassLynx => QCSRMassLynxToQSSRMassLynx(y)
+    case y : QuantifySampleSummaryReportMassLynx => y
+  }
+
+  implicit def MassLynxToQCSRMassLynx(x: QuantifySummaryReportMassLynx): QuantifyCompoundSummaryReportMassLynx = x match {
+    case y: QuantifyCompoundSummaryReportMassLynx => y
+    case y: QuantifySampleSummaryReportMassLynx => QSSRMassLynxToQCSRMassLynx(y)
   }
 
   implicit def XcaliburToGenericP2M2(x: Xcalibur) : GenericP2M2 =

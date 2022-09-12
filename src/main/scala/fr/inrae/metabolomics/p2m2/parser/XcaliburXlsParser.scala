@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.Xcalibur
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur
 import Xcalibur.HeaderField.HeaderField
 import Xcalibur.{CompoundSheetXcalibur, HeaderField, HeaderSheetField}
 import Xcalibur.HeaderSheetField.HeaderSheetField

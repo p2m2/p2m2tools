@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.{HeaderField, HeaderFileField}
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}
 
 import scala.util.Try

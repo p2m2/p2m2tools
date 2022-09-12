@@ -1,11 +1,11 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.GCMS
+import fr.inrae.metabolomics.p2m2.format.ms.GCMS
 import GCMS.HeaderField.HeaderField
 import GCMS.{HeaderField, HeaderFileField}
 import GCMS.HeaderFileField.HeaderFileField
 
-import scala.io.Source
+import scala.io.{Codec, Source}
 import scala.util.{Failure, Success, Try}
 
 object GCMSParser extends Parser[GCMS] with FormatSniffer {
@@ -105,7 +105,7 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
   }
 
   def parse(filename : String) : GCMS = {
-    val source =       Source.fromFile(filename)
+    val source =       Source.fromFile(filename)(Codec("ISO-8859-1"))
     val lines = source.getLines()
     val ret = get(
       filename,
@@ -127,7 +127,7 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
 
   override def sniffFile(filename: String): Boolean = {
     Try({
-      val source =       Source.fromFile(filename)
+      val source =       Source.fromFile(filename)(Codec("ISO-8859-1"))
       val lines = source.getLines().slice(0,20).toList
       source.close()
       Try(parseHeader(lines)) match {

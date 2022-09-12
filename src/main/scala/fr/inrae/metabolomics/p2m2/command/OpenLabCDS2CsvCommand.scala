@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.converter.OpenLabCDS2CompilCsv
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS
 
 import java.io.{BufferedWriter, File, FileWriter}
 

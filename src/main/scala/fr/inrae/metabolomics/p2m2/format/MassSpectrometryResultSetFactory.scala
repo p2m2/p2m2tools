@@ -1,4 +1,6 @@
 package fr.inrae.metabolomics.p2m2.format
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, MassSpectrometryResultSet, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.stream.GenericP2M2FormatExtended
 import upickle.default._
 
 case object MassSpectrometryResultSetFactory {
@@ -8,6 +10,8 @@ case object MassSpectrometryResultSetFactory {
     case _ if stringObj.contains("OpenLabCDS") => Some(read[OpenLabCDS](stringObj))
     case _ if stringObj.contains("QuantifyCompoundSummaryReportMassLynx") =>
       Some(read[QuantifyCompoundSummaryReportMassLynx](stringObj))
+    case _ if stringObj.contains("QuantifySampleSummaryReportMassLynx") =>
+      Some(read[QuantifySampleSummaryReportMassLynx](stringObj))
     case _ if stringObj.contains("Xcalibur") => Some(read[Xcalibur](stringObj))
     case _ if stringObj.contains("Isocor") => Some(read[Isocor](stringObj))
     case _ => None
@@ -18,7 +22,9 @@ case object MassSpectrometryResultSetFactory {
     case a : GCMS => write(a)
     case a : OpenLabCDS => write(a)
     case a : QuantifyCompoundSummaryReportMassLynx => write(a)
+    case a : QuantifySampleSummaryReportMassLynx => write(a)
     case a : Xcalibur => write(a)
     case a : Isocor => write(a)
+    case _ => System.err.println("Can not *stringify* : ",o);""
   }
 }

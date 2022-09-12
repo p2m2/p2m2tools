@@ -2,9 +2,9 @@ package fr.inrae.metabolomics.p2m2.command
 
 import fr.inrae.metabolomics.p2m2.command.MassLynx2IsocorCommand.build_results_element
 import fr.inrae.metabolomics.p2m2.converter.MassLynxOutput2IsocorInput
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx
-import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
-import fr.inrae.metabolomics.p2m2.format.Isocor.{CompoundIsocor, HeaderField}
+import fr.inrae.metabolomics.p2m2.parser.QuantifySummaryReportMassLynxParser
+import fr.inrae.metabolomics.p2m2.format.ms.Isocor.{CompoundIsocor, HeaderField}
+import fr.inrae.metabolomics.p2m2.format.ms.{QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx}
 import utest.{TestSuite, Tests, test}
 
 import java.io.File
@@ -99,8 +99,10 @@ object MassLynx2IsocorCommandTest extends TestSuite {
 
       val entry = QuantifyCompoundSummaryReportMassLynx(
         origin="",
-        header=QuantifyCompoundSummaryReportMassLynx.Header(),
-        results=QuantifyCompoundSummaryReportMassLynxParser.parseResults(toParse.split("\n").toList)
+        header=QuantifySummaryReportMassLynx.Header(),
+        resultsByCompound=
+          QuantifySummaryReportMassLynxParser.
+            parseResultsByElement(QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)
       )
       val list = MassLynxOutput2IsocorInput(Map("His"->"ACCQTAG"),formula=Map("His"->"C6H9N3O2")).transform(entry)
 
