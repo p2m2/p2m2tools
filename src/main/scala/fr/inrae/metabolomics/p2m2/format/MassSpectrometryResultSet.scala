@@ -163,6 +163,7 @@ object QuantifySummaryReportMassLynx {
 
 abstract class QuantifySummaryReportMassLynx() extends MassSpectrometryResultSet {
   def toQuantifyCompoundSummaryReportMassLynx : QuantifyCompoundSummaryReportMassLynx = this
+  def toQuantifySampleSummaryReportMassLynx : QuantifySampleSummaryReportMassLynx = this
 }
 
 /**

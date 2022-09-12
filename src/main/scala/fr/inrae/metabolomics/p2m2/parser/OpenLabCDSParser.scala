@@ -5,7 +5,7 @@ import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField
 import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField.HeaderFileField
 
-import scala.io.Source
+import scala.io.{Codec, Source}
 import scala.util.matching.Regex
 import scala.util.{Failure, Success, Try}
 
@@ -117,7 +117,7 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
   }
 
   def parse(filename : String) : OpenLabCDS = {
-    val source =       Source.fromFile(filename)
+    val source =       Source.fromFile(filename)(Codec("ISO-8859-1"))
     val lines = source.getLines()
     val ret = get(
       filename,
@@ -138,7 +138,7 @@ object OpenLabCDSParser extends Parser[OpenLabCDS] with FormatSniffer {
 
   override def sniffFile(filename: String): Boolean = {
     Try({
-      val source =       Source.fromFile(filename)
+      val source =       Source.fromFile(filename)(Codec("ISO-8859-1"))
       val lines = source.getLines().slice(0,20).toList
       source.close()
       Try(parseHeader(lines)) match {

@@ -20,8 +20,6 @@ object QuantifySummaryReportMassLynxParser
         case Some(s) =>
           end match {
             case Some(e) =>
-              println(toParse.slice(s, e)
-                .filter(_.startsWith("Printed")).map( _.replace("Printed","").trim))
               Header(toParse.slice(s, e)
               .filter( _.startsWith("Printed") )
               .map( _.replace("Printed","").trim)
@@ -105,7 +103,7 @@ object QuantifySummaryReportMassLynxParser
   }
 
   def parse(filename : String) : QuantifySummaryReportMassLynx = {
-    val s = Source.fromFile(filename)
+    val s = Source.fromFile(filename)(Codec("ISO-8859-1"))
     val lines = s.getLines().toList
     s.close()
     """^Sample\S+Name:""".r.findFirstMatchIn(lines.slice(0,10).mkString("\n")) match {

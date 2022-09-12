@@ -166,7 +166,18 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
     }
 
     test("SortieMassLynxToutesColonnes.txt") {
-      assert(QuantifySummaryReportMassLynxParser.sniffFile(getClass.getResource("/MassLynx/targeted/SortieMassLynxToutesColonnes.txt").getPath))
+      val o : Boolean =
+        QuantifySummaryReportMassLynxParser.sniffFile(
+          getClass.getResource("/MassLynx/targeted/SortieMassLynxToutesColonnes.txt").getPath)
+      assert(o)
+    }
+
+    test("conversion QuantifyCompoundSummaryReportMassLynx -> QuantifySampleSummaryReportMassLynx") {
+      val results: QuantifyCompoundSummaryReportMassLynx =
+        QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/targeted/070120_Saturation_CQA.txt").getPath)
+          .toQuantifyCompoundSummaryReportMassLynx
+
+      println(results.toQuantifySampleSummaryReportMassLynx.resultsBySample)
     }
   }
 
