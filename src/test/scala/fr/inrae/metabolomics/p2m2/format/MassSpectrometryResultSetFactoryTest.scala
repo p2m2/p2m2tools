@@ -1,5 +1,6 @@
 package fr.inrae.metabolomics.p2m2.format
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.Header
+
+import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
 import utest.{TestSuite, Tests, test}
 
 object MassSpectrometryResultSetFactoryTest extends TestSuite {

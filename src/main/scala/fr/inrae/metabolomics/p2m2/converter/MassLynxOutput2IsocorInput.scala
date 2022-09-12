@@ -1,10 +1,11 @@
 package fr.inrae.metabolomics.p2m2.converter
 
 import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.parser.QuantifyCompoundSummaryReportMassLynxParser
-import fr.inrae.metabolomics.p2m2.format.{Isocor, QuantifyCompoundSummaryReportMassLynx}
+import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions
+import fr.inrae.metabolomics.p2m2.parser.QuantifySummaryReportMassLynxParser
+import fr.inrae.metabolomics.p2m2.format.{Isocor, QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx}
 
 case class MassLynxOutput2IsocorInput(
                                        derivatives : Map[String,String],
@@ -13,11 +14,11 @@ case class MassLynxOutput2IsocorInput(
                                        listSampleToRemove : Seq[String] = Seq("NH4")
                           ) {
 
-      def build(inputFiles : Seq[String]) : Seq[QuantifyCompoundSummaryReportMassLynx] = {
+      def build(inputFiles : Seq[String]) : Seq[QuantifySummaryReportMassLynx] = {
             println(inputFiles.mkString("\n"))
 
             inputFiles.map(
-                  fileName => QuantifyCompoundSummaryReportMassLynxParser.parse(fileName)
+                  fileName => QuantifySummaryReportMassLynxParser.parse(fileName)
             )
       }
 
@@ -38,11 +39,12 @@ case class MassLynxOutput2IsocorInput(
       }
 
         //sample	metabolite	derivative	isotopologue	area	resolution
-      def transform( massLynx : QuantifyCompoundSummaryReportMassLynx) : Isocor = {
+      def transform( massLynxGen : QuantifySummaryReportMassLynx) : Isocor = {
+            val massLynx : QuantifyCompoundSummaryReportMassLynx = FormatConversions.MassLynxToQCSRMassLynx(massLynxGen)
             Isocor(
               massLynx.origin,
               massLynx
-              .results
+              .resultsByCompound
               .flatMap  {
                     case (sample_and_compType : String , listMetabolites : List[Map[HeaderField,String]])  =>
                       val metabolite = sample_and_compType.split(",").head.trim

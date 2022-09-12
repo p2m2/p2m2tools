@@ -3,7 +3,7 @@ package fr.inrae.metabolomics.p2m2.format
 import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
 
-import java.time.{LocalDate, LocalDateTime}
+import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
@@ -15,7 +15,7 @@ sealed abstract class MassSpectrometryResultSet {
       GenericP2M2.rw,
       GCMS.rw,
       OpenLabCDS.rw,
-      QuantifyCompoundSummaryReportMassLynx.rw,
+      QuantifySummaryReportMassLynx.rw,
       Xcalibur.rw,
       Isocor.rw
     )
@@ -131,10 +131,12 @@ case class OpenLabCDS(
   override def toGenericP2M2: GenericP2M2 = this
 }
 
-
-
-object QuantifyCompoundSummaryReportMassLynx {
-  implicit val rw: ReadWriter[QuantifyCompoundSummaryReportMassLynx] = macroRW
+object QuantifySummaryReportMassLynx {
+  val rw: ReadWriter[MassSpectrometryResultSet] =
+    ReadWriter.merge(
+      QuantifyCompoundSummaryReportMassLynx.rw,
+      QuantifySampleSummaryReportMassLynx.rw,
+    )
   case class  Header(dateStr : Option[String] = None)  {
     val formatter: DateTimeFormatter = new DateTimeFormatterBuilder()
       .appendPattern("E MMM dd HH:mm:ss yyyy")
@@ -159,16 +161,36 @@ object QuantifyCompoundSummaryReportMassLynx {
   }
 }
 
+abstract class QuantifySummaryReportMassLynx() extends MassSpectrometryResultSet {
+  def toQuantifyCompoundSummaryReportMassLynx : QuantifyCompoundSummaryReportMassLynx = this
+}
+
 /**
  */
-
+object QuantifyCompoundSummaryReportMassLynx {
+  implicit val rw: ReadWriter[QuantifyCompoundSummaryReportMassLynx] = macroRW
+}
 case class QuantifyCompoundSummaryReportMassLynx(
                                                   origin : String,
-                                                  header : QuantifyCompoundSummaryReportMassLynx.Header,
+                                                  header : QuantifySummaryReportMassLynx.Header,
                                                   // list of Name Compound/ Area/etc....
-                                                  results : Seq[(String,Seq[Map[QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
-                                                ) extends MassSpectrometryResultSet {
+                                                  resultsByCompound : Seq[(String,Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
+                                                ) extends QuantifySummaryReportMassLynx {
   override def toGenericP2M2: GenericP2M2 = this
+
+}
+
+object QuantifySampleSummaryReportMassLynx {
+  implicit val rw: ReadWriter[QuantifySampleSummaryReportMassLynx] = macroRW
+}
+case class QuantifySampleSummaryReportMassLynx(
+                                                  origin : String,
+                                                  header : QuantifySummaryReportMassLynx.Header,
+                                                  // list of Name Compound/ Area/etc....
+                                                  resultsBySample : Seq[(String,Seq[Map[QuantifySummaryReportMassLynx.HeaderField.HeaderField,String]])] = List()
+                                                ) extends QuantifySummaryReportMassLynx {
+  override def toGenericP2M2: GenericP2M2 = this
+
 }
 
 object Xcalibur {

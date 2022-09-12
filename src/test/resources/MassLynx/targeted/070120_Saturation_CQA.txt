@@ -1,0 +1,36 @@
+Quantify Compound Summary Report 
+
+Printed Tue Jan 07 17:28:50 2020
+
+Compound 1:  CAT
+
+	Name	Inj. Vol	Acq.Date	Acq.Time	RT	Area	Type	Conc.	Std. Conc	Detection Flags
+1	070120_CQA_22,18µgmL	2.000	07-Jan-20	15:05:51	3.20	5.961	Analyte			bb
+2	070120_CQA_250µgmL	2.000	07-Jan-20	15:25:48	3.19	9.364	Analyte			bb
+3	070120_CQA_500µgmL	2.000	07-Jan-20	15:45:44	3.24	9.188	Analyte			bb
+4	070120_CQA_1000µgmL	2.000	07-Jan-20	16:05:40	3.24	8.310	Analyte			bb
+
+Compound 2:  CQA1
+
+	Name	Inj. Vol	Acq.Date	Acq.Time	RT	Area	Type	Conc.	Std. Conc	Detection Flags
+1	070120_CQA_22,18µgmL	2.000	07-Jan-20	15:05:51	3.40	3749.195	Analyte			bb
+2	070120_CQA_250µgmL	2.000	07-Jan-20	15:25:48	3.39	54385.078	Analyte			bb
+3	070120_CQA_500µgmL	2.000	07-Jan-20	15:45:44	3.38	119760.031	Analyte			bb
+4	070120_CQA_1000µgmL	2.000	07-Jan-20	16:05:40	3.36	207796.375	Analyte			MM
+
+Compound 3:  CAT_MS
+
+	Name	Inj. Vol	Acq.Date	Acq.Time	RT	Area	Type	Conc.	Std. Conc	Detection Flags
+1	070120_CQA_22,18µgmL	2.000	07-Jan-20	15:05:51			Analyte			
+2	070120_CQA_250µgmL	2.000	07-Jan-20	15:25:48	3.23	23.808	Analyte			bb
+3	070120_CQA_500µgmL	2.000	07-Jan-20	15:45:44			Analyte			
+4	070120_CQA_1000µgmL	2.000	07-Jan-20	16:05:40	3.29	16.005	Analyte			bb
+
+Compound 4:  CQA1_MS
+
+	Name	Inj. Vol	Acq.Date	Acq.Time	RT	Area	Type	Conc.	Std. Conc	Detection Flags
+1	070120_CQA_22,18µgmL	2.000	07-Jan-20	15:05:51	3.47	178859.953	Analyte			bb
+2	070120_CQA_250µgmL	2.000	07-Jan-20	15:25:48	3.47	827599.313	Analyte			bb
+3	070120_CQA_500µgmL	2.000	07-Jan-20	15:45:44	3.47	1130593.375	Analyte			bb
+4	070120_CQA_1000µgmL	2.000	07-Jan-20	16:05:40	3.45	1567727.500	Analyte			bb
+

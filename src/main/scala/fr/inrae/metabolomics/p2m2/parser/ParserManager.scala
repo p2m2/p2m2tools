@@ -8,8 +8,8 @@ case object ParserManager {
       Some(GCMSParser.parse(path))
     case _ if OpenLabCDSParser.sniffFile(path) =>
       Some(OpenLabCDSParser.parse(path))
-    case _ if QuantifyCompoundSummaryReportMassLynxParser.sniffFile(path) =>
-      Some(QuantifyCompoundSummaryReportMassLynxParser.parse(path))
+    case _ if QuantifySummaryReportMassLynxParser.sniffFile(path) =>
+      Some(QuantifySummaryReportMassLynxParser.parse(path))
     case _ if XcaliburXlsParser.sniffFile(path) =>
       Some(XcaliburXlsParser.parse(path))
     case _ => None

@@ -1,7 +1,7 @@
 package fr.inrae.metabolomics.p2m2.format
 
 import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
 import utest.{TestSuite, Tests, test}
 import upickle.default._
@@ -97,13 +97,13 @@ object SerializationTest extends TestSuite {
       val v = QuantifyCompoundSummaryReportMassLynx(
         origin = "origin",
         header = Header(None),
-        results = Seq(
+        resultsByCompound = Seq(
           ("TA" , Seq(
             Map(
-            QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "nameTest"
+              QuantifySummaryReportMassLynx.HeaderField.Name -> "nameTest"
             ),
             Map(
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "nameTest2"
+              QuantifySummaryReportMassLynx.HeaderField.Name -> "nameTest2"
             )
           )
           )

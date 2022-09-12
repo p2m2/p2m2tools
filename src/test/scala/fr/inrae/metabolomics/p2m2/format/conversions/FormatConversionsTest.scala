@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.format.conversions
 
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx, Xcalibur}
 import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 
@@ -36,7 +36,7 @@ object FormatConversionsTest extends TestSuite {
         QuantifyCompoundSummaryReportMassLynx(
         origin = "none",
         header = Header(None),
-        results = Seq(("metabolite", Seq(Map() )) ) )
+        resultsByCompound = Seq(("metabolite", Seq(Map() )) ) )
 
       assert(o.samples.isEmpty)
     }
@@ -45,10 +45,10 @@ object FormatConversionsTest extends TestSuite {
           QuantifyCompoundSummaryReportMassLynx(
             origin = "none",
             header = Header(None),
-            results = Seq(("metabolite", Seq(
+            resultsByCompound = Seq(("metabolite", Seq(
               Map(
-                QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "sample",
-                QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "area",
+                QuantifySummaryReportMassLynx.HeaderField.Name -> "sample",
+                QuantifySummaryReportMassLynx.HeaderField.Area -> "area",
               ))) ) )
 
       checkPartialBasic(o)
@@ -59,14 +59,14 @@ object FormatConversionsTest extends TestSuite {
         QuantifyCompoundSummaryReportMassLynx(
           origin = "none",
           header = Header(Some("Fri Sep 20 14:23:33 2019")),
-          results = Seq(("metabolite", Seq(
+          resultsByCompound = Seq(("metabolite", Seq(
             Map(
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "sample",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "1.0",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.Height -> "2.0",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.RT -> "3.0",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19",
-              QuantifyCompoundSummaryReportMassLynx.HeaderField.`Inj. Vol` -> "injectedVolume"
+              QuantifySummaryReportMassLynx.HeaderField.Name -> "sample",
+              QuantifySummaryReportMassLynx.HeaderField.Area -> "1.0",
+              QuantifySummaryReportMassLynx.HeaderField.Height -> "2.0",
+              QuantifySummaryReportMassLynx.HeaderField.RT -> "3.0",
+              QuantifySummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19",
+              QuantifySummaryReportMassLynx.HeaderField.`Inj. Vol` -> "injectedVolume"
             ))) ) )
       assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
       assert(o.samples.head.get(GenericP2M2.HeaderField.exportDate).contains("2019-09-20 14:23:33.0000"))
