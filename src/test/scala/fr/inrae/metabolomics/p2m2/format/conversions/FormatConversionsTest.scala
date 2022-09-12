@@ -4,7 +4,7 @@ import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
 import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
-import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, Xcalibur}
 
 object FormatConversionsTest extends TestSuite {
 
@@ -71,6 +71,50 @@ object FormatConversionsTest extends TestSuite {
       assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
       assert(o.samples.head.get(GenericP2M2.HeaderField.exportDate).contains("2019-09-20 14:23:33.0000"))
       checkBasic(o)
+    }
+
+    test("QuantifySampleSummaryReportMassLynxToGenericP2M2 basic object to convert") {
+      val o: GenericP2M2 =
+        QuantifySampleSummaryReportMassLynx(
+          origin = "none",
+          header = Header(Some("Fri Sep 20 14:23:33 2019")),
+          resultsBySample = Seq(("sample", Seq(
+            Map(
+              QuantifySampleSummaryReportMassLynx.HeaderField.Name -> "metabolite",
+              QuantifySampleSummaryReportMassLynx.HeaderField.Area -> "1.0",
+              QuantifySampleSummaryReportMassLynx.HeaderField.Height -> "2.0",
+              QuantifySampleSummaryReportMassLynx.HeaderField.RT -> "3.0",
+              QuantifySampleSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19"
+            )))))
+
+      assert(o.samples.nonEmpty)
+      assert(o.samples.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.sample).contains("sample"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.area).contains("1.0"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.height).contains("2.0"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.retTime).contains("3.0"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2019-09-17 00:00:00.0000"))
+      assert(o.samples.head.get(GenericP2M2.HeaderField.exportDate).contains("2019-09-20 14:23:33.0000"))
+
+    }
+
+    test("QSSRMassLynxToQCSRMassLynx basic object to convert") {
+      val x = QuantifySampleSummaryReportMassLynx(
+        origin = "none",
+        header = Header(Some("Fri Sep 20 14:23:33 2019")),
+        resultsBySample = Seq(("sample", Seq(
+          Map(
+            QuantifySampleSummaryReportMassLynx.HeaderField.Name -> "metabolite",
+            QuantifySampleSummaryReportMassLynx.HeaderField.Area -> "1.0",
+            QuantifySampleSummaryReportMassLynx.HeaderField.Height -> "2.0",
+            QuantifySampleSummaryReportMassLynx.HeaderField.RT -> "3.0",
+            QuantifySampleSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19"
+          )))))
+
+      val y = QSSRMassLynxToQCSRMassLynx(x)
+      val o1 : GenericP2M2 = x
+      val o2 : GenericP2M2= y
+      assert(o1==o2)
     }
 
     test("Xcalibur empty object to convert") {

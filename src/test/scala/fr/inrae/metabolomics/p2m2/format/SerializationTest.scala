@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, Xcalibur}
 import fr.inrae.metabolomics.p2m2.format.ms.Isocor.CompoundIsocor
 import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
@@ -112,6 +112,26 @@ object SerializationTest extends TestSuite {
       )
       assert(Try(read[QuantifyCompoundSummaryReportMassLynx](write(v))).isSuccess)
       assert(read[QuantifyCompoundSummaryReportMassLynx](write(v)) == v)
+    }
+
+    test("QuantifySampleSummaryReportMassLynx") {
+      val v = QuantifySampleSummaryReportMassLynx(
+        origin = "origin",
+        header = Header(None),
+        resultsBySample = Seq(
+          ("TA", Seq(
+            Map(
+              QuantifySampleSummaryReportMassLynx.HeaderField.Name -> "nameTest"
+            ),
+            Map(
+              QuantifySampleSummaryReportMassLynx.HeaderField.Name -> "nameTest2"
+            )
+          )
+          )
+        )
+      )
+      assert(Try(read[QuantifySampleSummaryReportMassLynx](write(v))).isSuccess)
+      assert(read[QuantifySampleSummaryReportMassLynx](write(v)) == v)
     }
 
     test("Xcalibur") {

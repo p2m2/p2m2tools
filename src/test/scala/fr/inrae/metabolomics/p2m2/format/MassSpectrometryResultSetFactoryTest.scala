@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, QuantifySummaryReportMassLynx, Xcalibur}
 import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
 import utest.{TestSuite, Tests, test}
 
@@ -30,6 +30,16 @@ object MassSpectrometryResultSetFactoryTest extends TestSuite {
           .contains(QuantifyCompoundSummaryReportMassLynx("origin",Header(None)))
       )
     }
+
+    test("QuantifySampleSummaryReportMassLynx") {
+      assert(
+        MassSpectrometryResultSetFactory.build(
+          MassSpectrometryResultSetFactory.stringify(
+            QuantifySampleSummaryReportMassLynx("origin", Header(None))))
+          .contains(QuantifySampleSummaryReportMassLynx("origin", Header(None)))
+      )
+    }
+
     test("Xcalibur") {
       assert(
         MassSpectrometryResultSetFactory.build(
@@ -43,6 +53,7 @@ object MassSpectrometryResultSetFactoryTest extends TestSuite {
 
     test("None") {
       assert(MassSpectrometryResultSetFactory.build("something").isEmpty)
+      assert(MassSpectrometryResultSetFactory.stringify(null).isEmpty)
     }
   }
 }

@@ -24,6 +24,6 @@ case object MassSpectrometryResultSetFactory {
     case a : QuantifySampleSummaryReportMassLynx => write(a)
     case a : Xcalibur => write(a)
     case a : Isocor => write(a)
-    case _ => System.err.println("Can not *stringify* : "+ o.getClass.toString);""
+    case _ => System.err.println("Can not *stringify* : ",o);""
   }
 }
