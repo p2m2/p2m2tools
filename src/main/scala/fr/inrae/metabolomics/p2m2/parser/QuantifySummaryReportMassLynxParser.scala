@@ -42,7 +42,10 @@ object QuantifySummaryReportMassLynxParser
 
   def parseResultsByElement[HeaderField<: Enumeration](t:HeaderField,toParse : Seq[String] )
   : Seq[(String,Seq[Map[HeaderField#Value,String]])] = {
-    val listCompoundIndexLine = toParse.zipWithIndex.filter( _._1.trim.startsWith("Compound")).map(_._2)
+    val listCompoundIndexLine = toParse.zipWithIndex.filter( x=>
+      x._1.trim.startsWith("Compound") || x._1.trim.startsWith("Sample Name:")
+
+    ).map(_._2)
 
     listCompoundIndexLine
       .zipWithIndex.map(
@@ -54,16 +57,17 @@ object QuantifySummaryReportMassLynxParser
           case idx => listCompoundIndexLine(idx+1)
         }
         // element = "Compound" or "Sample Name"
-        val name : String = """\s\d+:\s+(.*)""".r.findFirstMatchIn(toParse(idx_line)) match {
-          case Some(v) => v.group(1)
+        val name : String = """(Compound \d+|Sample Name):\s+(.*)""".r.findFirstMatchIn(toParse(idx_line)) match {
+          case Some(v) => v.group(2)
           case None => throw new Exception("Can not parse Compound/Sample name:"+toParse(idx_line))
         }
+
         (name,parseArrayCompound(t,toParse.slice(iStart,iEnd)))
       })
   }
 
   def parseArrayCompound[HeaderField <: Enumeration](t:HeaderField, toParse : Seq[String] ) :Seq[Map[HeaderField#Value,String]] = {
-      toParse.filter(_.trim.nonEmpty).find(_.trim.startsWith("Name")) match {
+      toParse.filter(_.trim.nonEmpty).find( x => x.trim.startsWith("Name") || x.trim.startsWith("#")) match {
         case Some(headerString) =>
           /* first value of array in the number corresponding to the injection*/
           val header :Seq[String] = "Num. Injection" +: headerString.trim.split(separator)
@@ -82,7 +86,7 @@ object QuantifySummaryReportMassLynxParser
                 }
               }.toMap
             })
-        case None => Seq()
+        case None =>  Seq()
       }
   }
 
@@ -106,7 +110,8 @@ object QuantifySummaryReportMassLynxParser
     val s = Source.fromFile(filename)(Codec("ISO-8859-1"))
     val lines = s.getLines().toList
     s.close()
-    """^Sample\S+Name:""".r.findFirstMatchIn(lines.slice(0,10).mkString("\n")) match {
+
+    """Sample\s+Name:""".r.findFirstMatchIn(lines.slice(0,10).mkString("\n")) match {
       case Some(_) => getSampleSummaryReport(
         filename,
         lines

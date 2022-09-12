@@ -6,6 +6,8 @@ import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
 import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, Xcalibur}
 
+import scala.collection.immutable.Seq
+
 object FormatConversionsTest extends TestSuite {
 
   def checkPartialBasic(o : GenericP2M2): Unit = {
@@ -40,6 +42,16 @@ object FormatConversionsTest extends TestSuite {
 
       assert(o.samples.isEmpty)
     }
+
+    test("QuantifySampleSummaryReportMassLynx empty object to convert") {
+      val o: GenericP2M2 =
+        QuantifySampleSummaryReportMassLynx(
+          origin = "none",
+          header = Header(None),
+          resultsBySample = Seq(("sample", Seq(Map()))))
+
+      assert(o.samples.isEmpty)
+    }
     test("QuantifyCompoundSummaryReportMassLynx basic partial object to convert") {
       val o : GenericP2M2 =
           QuantifyCompoundSummaryReportMassLynx(
@@ -50,6 +62,20 @@ object FormatConversionsTest extends TestSuite {
                 QuantifyCompoundSummaryReportMassLynx.HeaderField.Name -> "sample",
                 QuantifyCompoundSummaryReportMassLynx.HeaderField.Area -> "area",
               ))) ) )
+
+      checkPartialBasic(o)
+    }
+
+    test("QuantifySampleSummaryReportMassLynx basic partial object to convert") {
+      val o: GenericP2M2 =
+        QuantifySampleSummaryReportMassLynx(
+          origin = "none",
+          header = Header(None),
+          resultsBySample = Seq(("sample", Seq(
+            Map(
+              QuantifySampleSummaryReportMassLynx.HeaderField.Name -> "metabolite",
+              QuantifySampleSummaryReportMassLynx.HeaderField.Area -> "area",
+            )))))
 
       checkPartialBasic(o)
     }
@@ -85,7 +111,7 @@ object FormatConversionsTest extends TestSuite {
               QuantifySampleSummaryReportMassLynx.HeaderField.Height -> "2.0",
               QuantifySampleSummaryReportMassLynx.HeaderField.RT -> "3.0",
               QuantifySampleSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-sept-19"
-            )))))
+            ))))).toGenericP2M2
 
       assert(o.samples.nonEmpty)
       assert(o.samples.head.get(GenericP2M2.HeaderField.metabolite).contains("metabolite"))

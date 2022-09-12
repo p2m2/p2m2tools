@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx
+import fr.inrae.metabolomics.p2m2.format.ms.{QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx}
 import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx.HeaderField
 import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
@@ -74,19 +74,7 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
       .parseResultsByElement(
         QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList) == List(("NH4+",List())))
   }
-
-  test("parse bad def compound") {
-    val toParse =
-      """Compoundsss 1  :  NH4+""".stripMargin
-
-    Try(QuantifySummaryReportMassLynxParser
-      .parseResultsByElement(
-        QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse.split("\n").toList)) match {
-      case Success(v) => println(v);assert(false)
-      case Failure(_) => assert(true)
-    }
-  }
-
+    
   test("parse compound") {
     val toParse =
       """Compound 1:  NH4+
@@ -177,7 +165,7 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
     test("SortieMassLynxToutesColonnes.txt") {
       val o : Boolean =
         QuantifySummaryReportMassLynxParser.sniffFile(
-          getClass.getResource("/MassLynx/targeted/SortieMassLynxToutesColonnes.txt").getPath)
+          getClass.getResource("/MassLynx/targeted/SortieMassLynxSampleToutesColonnes.txt").getPath)
       assert(o)
     }
 
@@ -193,6 +181,20 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
 
       assert(resOfOneSample.length == 4)
     }
+
+    test("conversion SortieMassLynxCompoundToutesColonnes.txt") {
+      assert(Try(QuantifySummaryReportMassLynxParser.parse(
+        getClass.getResource("/MassLynx/targeted/SortieMassLynxCompoundToutesColonnes.txt").getPath)).isSuccess)
+    }
+
+    test("conversion SortieMassLynxSampleToutesColonnes.txt") {
+    val o = QuantifySummaryReportMassLynxParser.parse(
+      getClass.getResource("/MassLynx/targeted/SortieMassLynxSampleToutesColonnes.txt").getPath)
+
+      assert(o.toQuantifySampleSummaryReportMassLynx.resultsBySample.nonEmpty)
+
+    }
+
   }
 
 
