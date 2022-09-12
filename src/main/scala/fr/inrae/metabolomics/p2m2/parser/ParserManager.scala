@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.MassSpectrometryResultSet
+import fr.inrae.metabolomics.p2m2.format.ms.MassSpectrometryResultSet
 
 case object ParserManager {
   def buildMassSpectrometryObject(path : String) : Option[MassSpectrometryResultSet] = path match {

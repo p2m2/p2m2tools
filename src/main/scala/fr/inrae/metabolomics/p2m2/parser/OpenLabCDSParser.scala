@@ -1,9 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS.HeaderFileField.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS.HeaderFileField.HeaderFileField
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS
 
 import scala.io.{Codec, Source}
 import scala.util.matching.Regex

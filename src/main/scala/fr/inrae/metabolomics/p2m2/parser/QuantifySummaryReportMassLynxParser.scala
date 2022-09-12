@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.{QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, QuantifySummaryReportMassLynx}
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
 import fr.inrae.metabolomics.p2m2
+import fr.inrae.metabolomics.p2m2.format.ms.{QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, QuantifySummaryReportMassLynx}
 
 import scala.io.{Codec, Source}
 object QuantifySummaryReportMassLynxParser
@@ -87,7 +87,7 @@ object QuantifySummaryReportMassLynxParser
   }
 
   def getCompoundSummaryReport(filename : String, toParse : Seq[String]) : QuantifyCompoundSummaryReportMassLynx = {
-    p2m2.format.QuantifyCompoundSummaryReportMassLynx(
+    QuantifyCompoundSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
       resultsByCompound = parseResultsByElement(QuantifyCompoundSummaryReportMassLynx.HeaderField,toParse)
@@ -95,7 +95,7 @@ object QuantifySummaryReportMassLynxParser
   }
 
   def getSampleSummaryReport(filename: String, toParse: Seq[String]): QuantifySampleSummaryReportMassLynx = {
-    p2m2.format.QuantifySampleSummaryReportMassLynx(
+    QuantifySampleSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
       resultsBySample = parseResultsByElement(QuantifySampleSummaryReportMassLynx.HeaderField, toParse)

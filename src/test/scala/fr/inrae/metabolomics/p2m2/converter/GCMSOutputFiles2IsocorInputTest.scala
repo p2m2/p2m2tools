@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.converter
 
-import fr.inrae.metabolomics.p2m2.format.GCMS
+import fr.inrae.metabolomics.p2m2.format.ms.GCMS
 import fr.inrae.metabolomics.p2m2.parser.GCMSParser
 import GCMS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}

@@ -1,11 +1,10 @@
 package fr.inrae.metabolomics.p2m2.format.conversions
 
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
-import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GCMS, GenericP2M2, Isocor,
-  OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
 import utest.{TestSuite, Tests, test}
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
 
 object FormatConversionsTest extends TestSuite {
 

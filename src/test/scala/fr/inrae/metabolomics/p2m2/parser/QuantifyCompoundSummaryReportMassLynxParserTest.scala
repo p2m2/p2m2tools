@@ -1,9 +1,9 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
 import utest.{TestSuite, Tests, test}
 
 import scala.util.{Failure, Success, Try}

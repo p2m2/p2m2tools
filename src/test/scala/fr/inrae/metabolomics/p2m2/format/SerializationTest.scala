@@ -1,8 +1,9 @@
 package fr.inrae.metabolomics.p2m2.format
 
-import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.format.QuantifySummaryReportMassLynx.Header
-import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, Isocor, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.Isocor.CompoundIsocor
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifySummaryReportMassLynx.Header
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
 import utest.{TestSuite, Tests, test}
 import upickle.default._
 

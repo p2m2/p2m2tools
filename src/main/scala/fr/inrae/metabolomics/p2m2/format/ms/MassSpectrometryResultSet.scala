@@ -1,13 +1,13 @@
-package fr.inrae.metabolomics.p2m2.format
+package fr.inrae.metabolomics.p2m2.format.ms
 
-import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
+import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
+import fr.inrae.metabolomics.p2m2.format.ms.Isocor.CompoundIsocor
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
+import upickle.default._
 
 import java.time.LocalDateTime
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
 import java.util.Locale
-import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions._
-import upickle.default._
 
 sealed abstract class MassSpectrometryResultSet {
   val rw : ReadWriter[MassSpectrometryResultSet]  =
@@ -28,7 +28,6 @@ object GenericP2M2 {
     implicit val rw: ReadWriter[HeaderField] = readwriter[Int].bimap[HeaderField](x => x.id, HeaderField(_))
     type HeaderField = Value
     val
-    ID,                      /* build during conversion */
     sample,
     metabolite,
     retTime,
@@ -37,21 +36,8 @@ object GenericP2M2 {
     injectedVolume,
     vial,
     acquisitionDate,
-    exportDate,
-    chromatographInjectionId /* build during conversion */
+    exportDate
     = Value
-  }
-
-  object HeaderFieldChromatogram extends Enumeration {
-    implicit val rw: ReadWriter[HeaderFieldChromatogram] =
-      readwriter[Int].bimap[HeaderFieldChromatogram](x => x.id, HeaderFieldChromatogram(_))
-    type HeaderFieldChromatogram = Value
-    val
-    chromatographInjectionId,
-    vial,
-    exportDate,
-    acquisitionDate,
-    injectedVolume = Value
   }
 }
 

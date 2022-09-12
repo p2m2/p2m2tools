@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.parser
 
-import fr.inrae.metabolomics.p2m2.format.GCMS
+import fr.inrae.metabolomics.p2m2.format.ms.GCMS
 import GCMS.HeaderField.HeaderField
 import GCMS.{HeaderField, HeaderFileField}
 import GCMS.HeaderFileField.HeaderFileField

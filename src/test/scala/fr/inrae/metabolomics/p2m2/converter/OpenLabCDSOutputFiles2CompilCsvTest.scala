@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.converter
 
-import fr.inrae.metabolomics.p2m2.format.OpenLabCDS
+import fr.inrae.metabolomics.p2m2.format.ms.OpenLabCDS
 import fr.inrae.metabolomics.p2m2.parser.OpenLabCDSParser
 import OpenLabCDS.{HeaderField, HeaderFileField}
 import utest.{TestSuite, Tests, test}

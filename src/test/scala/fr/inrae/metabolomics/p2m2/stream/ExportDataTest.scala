@@ -1,6 +1,6 @@
 package fr.inrae.metabolomics.p2m2.stream
 
-import fr.inrae.metabolomics.p2m2.format.GenericP2M2
+import fr.inrae.metabolomics.p2m2.format.ms.GenericP2M2
 import fr.inrae.metabolomics.p2m2.parser.{GCMSParser, OpenLabCDSParser, QuantifySummaryReportMassLynxParser, XcaliburXlsParser}
 
 import java.io.FileOutputStream
@@ -52,7 +52,7 @@ object ExportDataTest extends TestSuite {
       // + 2 ID , chromatographInjectionId
       assert(workbook.getSheetAt(0).getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size)
       assert(workbook.getSheetAt(0).getLastRowNum == 1)
-      assert(workbook.getSheetAt(0).getRow(1).getLastCellNum == GenericP2M2.HeaderField.values.size)
+      assert(workbook.getSheetAt(0).getRow(1).getLastCellNum == GenericP2M2FormatExtended.HeaderField.values.size)
       assert(workbook.getSheetAt(0).getRow(1).getCell(0).toString.nonEmpty)
       assert(workbook.getSheetAt(0).getRow(1).getCell(1).toString == "sample")
       assert(workbook.getSheetAt(0).getRow(1).getCell(2).toString == "metabolite")

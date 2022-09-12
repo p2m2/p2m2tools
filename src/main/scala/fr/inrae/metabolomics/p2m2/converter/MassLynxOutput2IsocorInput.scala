@@ -1,11 +1,11 @@
 package fr.inrae.metabolomics.p2m2.converter
 
-import fr.inrae.metabolomics.p2m2.format.Isocor.CompoundIsocor
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField
-import fr.inrae.metabolomics.p2m2.format.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.ms.Isocor.CompoundIsocor
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx.HeaderField
+import fr.inrae.metabolomics.p2m2.format.ms.QuantifyCompoundSummaryReportMassLynx.HeaderField.HeaderField
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions
+import fr.inrae.metabolomics.p2m2.format.ms.{Isocor, QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx}
 import fr.inrae.metabolomics.p2m2.parser.QuantifySummaryReportMassLynxParser
-import fr.inrae.metabolomics.p2m2.format.{Isocor, QuantifyCompoundSummaryReportMassLynx, QuantifySummaryReportMassLynx}
 
 case class MassLynxOutput2IsocorInput(
                                        derivatives : Map[String,String],

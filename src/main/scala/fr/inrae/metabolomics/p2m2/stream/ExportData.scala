@@ -1,8 +1,8 @@
 package fr.inrae.metabolomics.p2m2.stream
 
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
-import fr.inrae.metabolomics.p2m2.format.GenericP2M2
 import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions
+import fr.inrae.metabolomics.p2m2.format.ms.{GenericP2M2, Utils}
 import fr.inrae.metabolomics.p2m2.parser.ParserUtils
 import org.apache.poi.ss.usermodel.Cell
 
@@ -13,9 +13,6 @@ import java.sql.Timestamp
 import java.util.Locale
 
 case object ExportData {
-  case class GenericP2M2Extended(
-                                  samples: Seq[Map[GenericP2M2.HeaderField.HeaderField, String]] = Seq(),
-                                  chromatographs: Seq[Map[GenericP2M2.HeaderFieldChromatogram.HeaderFieldChromatogram, String]] = Seq())
 
   def getTimeStamp(x: String): String = {
     Timestamp.valueOf(
@@ -31,25 +28,31 @@ case object ExportData {
       case (None, None) => "DATE_ACQ_UNKNOWN_DATE_EXP_UNKNOWN"
     }
 
-  def decorWithChromatograph(o: GenericP2M2): GenericP2M2Extended = {
-    GenericP2M2Extended(
+  def decorWithChromatograph(o: GenericP2M2): GenericP2M2FormatExtended = {
+    GenericP2M2FormatExtended(
       samples = o.samples.zipWithIndex.map {
         case (values: Map[GenericP2M2.HeaderField.HeaderField, String], idx: Int) =>
           val chromatographInjectionId = getIdChromatograph(values.get(GenericP2M2.HeaderField.acquisitionDate),
             values.get(GenericP2M2.HeaderField.exportDate))
-          values + (GenericP2M2.HeaderField.chromatographInjectionId -> chromatographInjectionId,
-            GenericP2M2.HeaderField.ID -> (idx + "_" + chromatographInjectionId))
+
+          values.flatMap {
+            case k->v if Utils.conversionEnumType(GenericP2M2FormatExtended.HeaderField,k).nonEmpty =>
+              Some(Utils.conversionEnumType(GenericP2M2FormatExtended.HeaderField,k).get -> v)
+            case _ => None
+          } + (
+            GenericP2M2FormatExtended.HeaderField.chromatographInjectionId -> chromatographInjectionId,
+            GenericP2M2FormatExtended.HeaderField.ID -> (idx + "_" + chromatographInjectionId))
       },
       chromatographs = o.samples.map(
         values => {
           Map(
-            GenericP2M2.HeaderFieldChromatogram.chromatographInjectionId ->
+            GenericP2M2FormatExtended.HeaderFieldChromatogram.chromatographInjectionId ->
               Some(getIdChromatograph(values.get(GenericP2M2.HeaderField.acquisitionDate),
                 values.get(GenericP2M2.HeaderField.exportDate))),
-            GenericP2M2.HeaderFieldChromatogram.vial -> values.get(GenericP2M2.HeaderField.vial),
-            GenericP2M2.HeaderFieldChromatogram.exportDate -> values.get(GenericP2M2.HeaderField.exportDate),
-            GenericP2M2.HeaderFieldChromatogram.acquisitionDate -> values.get(GenericP2M2.HeaderField.acquisitionDate),
-            GenericP2M2.HeaderFieldChromatogram.injectedVolume -> values.get(GenericP2M2.HeaderField.injectedVolume)
+            GenericP2M2FormatExtended.HeaderFieldChromatogram.vial -> values.get(GenericP2M2.HeaderField.vial),
+            GenericP2M2FormatExtended.HeaderFieldChromatogram.exportDate -> values.get(GenericP2M2.HeaderField.exportDate),
+            GenericP2M2FormatExtended.HeaderFieldChromatogram.acquisitionDate -> values.get(GenericP2M2.HeaderField.acquisitionDate),
+            GenericP2M2FormatExtended.HeaderFieldChromatogram.injectedVolume -> values.get(GenericP2M2.HeaderField.injectedVolume)
           ).flatMap {
             case (k, Some(v)) => Some(k, v)
             case _ => None
@@ -60,7 +63,7 @@ case object ExportData {
   }
   def xlsP2M2(resultsSet : GenericP2M2): ByteArrayOutputStream = {
 
-    val resultsSetExtended: GenericP2M2Extended  = decorWithChromatograph(resultsSet)
+    val resultsSetExtended: GenericP2M2FormatExtended  = decorWithChromatograph(resultsSet)
 
     val wb = new HSSFWorkbook
     val results = wb.createSheet("RESULTS")
@@ -94,11 +97,11 @@ cell.setCellStyle(cellStyle)
     /**
      * values
      */
-    resultsSetExtended.samples.toList.sortBy(_.get(GenericP2M2.HeaderField.sample)).zipWithIndex.foreach {
-      case (acquisition: Map[GenericP2M2.HeaderField.HeaderField,String], idx : Int) =>
+    resultsSetExtended.samples.toList.sortBy(_.get(GenericP2M2FormatExtended.HeaderField.sample)).zipWithIndex.foreach {
+      case (acquisition: Map[GenericP2M2FormatExtended.HeaderField.HeaderField,String], idx : Int) =>
         val row = results.createRow(idx+1)
 
-        GenericP2M2.HeaderField.values.zipWithIndex.foreach {
+        GenericP2M2FormatExtended.HeaderField.values.zipWithIndex.foreach {
           case (headName,idxCell) =>
             val cell : Cell = row.createCell(idxCell)
             cell.setCellValue(createHelper.createRichTextString(acquisition.getOrElse(headName,"")))
@@ -114,9 +117,9 @@ cell.setCellStyle(cellStyle)
       .createCell(0)
       .setCellValue(createHelper.createRichTextString("SAMPLE"))
 
-    resultsSetExtended.samples.toList.sortBy(_.get(GenericP2M2.HeaderField.sample)).flatMap {
-      acquisition: Map[GenericP2M2.HeaderField.HeaderField, String] =>
-        acquisition.get(GenericP2M2.HeaderField.sample)
+    resultsSetExtended.samples.toList.sortBy(_.get(GenericP2M2FormatExtended.HeaderField.sample)).flatMap {
+      acquisition: Map[GenericP2M2FormatExtended.HeaderField.HeaderField, String] =>
+        acquisition.get(GenericP2M2FormatExtended.HeaderField.sample)
     }.distinct.zipWithIndex.foreach {
       case (sample : String,idx : Int) =>
         val row = samples.createRow(idx+1)
@@ -132,9 +135,9 @@ cell.setCellStyle(cellStyle)
       .createCell(0)
       .setCellValue(createHelper.createRichTextString("METABOLITE"))
 
-    resultsSetExtended.samples.toList.sortBy(_.get(GenericP2M2.HeaderField.metabolite)).flatMap {
-      acquisition: Map[GenericP2M2.HeaderField.HeaderField, String] =>
-        acquisition.get(GenericP2M2.HeaderField.metabolite)
+    resultsSetExtended.samples.toList.sortBy(_.get(GenericP2M2FormatExtended.HeaderField.metabolite)).flatMap {
+      acquisition: Map[GenericP2M2FormatExtended.HeaderField.HeaderField, String] =>
+        acquisition.get(GenericP2M2FormatExtended.HeaderField.metabolite)
     }.distinct.zipWithIndex.foreach {
       case (metabolite : String,idx : Int) =>
         val row = metabolites.createRow(idx+1)
@@ -147,17 +150,17 @@ cell.setCellStyle(cellStyle)
      */
     val row = chromatogram.createRow(0)
 
-    GenericP2M2.HeaderFieldChromatogram.values.zipWithIndex.foreach {
+    GenericP2M2FormatExtended.HeaderFieldChromatogram.values.zipWithIndex.foreach {
       case (headName, idxCell) =>
         val cell: Cell = row.createCell(idxCell)
         cell.setCellValue(createHelper.createRichTextString(ParserUtils.toString(headName)))
     }
 
     resultsSetExtended.chromatographs.distinct.zipWithIndex.foreach {
-      case (x : Map[GenericP2M2.HeaderFieldChromatogram.HeaderFieldChromatogram,String],idx : Int) =>
+      case (x : Map[GenericP2M2FormatExtended.HeaderFieldChromatogram.HeaderFieldChromatogram,String],idx : Int) =>
         val row = chromatogram.createRow(idx+1)
 
-        GenericP2M2.HeaderFieldChromatogram.values.zipWithIndex.foreach {
+        GenericP2M2FormatExtended.HeaderFieldChromatogram.values.zipWithIndex.foreach {
           case (headName, idxCell) =>
 
             val cell: Cell = row.createCell(idxCell)

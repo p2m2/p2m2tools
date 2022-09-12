@@ -1,8 +1,9 @@
 package fr.inrae.metabolomics.p2m2.format.conversions
 
-import fr.inrae.metabolomics.p2m2.format.GCMS.HeaderField.HeaderField
-import fr.inrae.metabolomics.p2m2.format.Xcalibur.CompoundSheetXcalibur
-import fr.inrae.metabolomics.p2m2.format.{GenericP2M2, _}
+import fr.inrae.metabolomics.p2m2.format.ms.GCMS.HeaderField.HeaderField
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
+import fr.inrae.metabolomics.p2m2.format._
+import fr.inrae.metabolomics.p2m2.format.ms.{GCMS, GenericP2M2, OpenLabCDS, QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, QuantifySummaryReportMassLynx, Xcalibur}
 
 import java.text.SimpleDateFormat
 import java.time.format.{DateTimeFormatter, DateTimeFormatterBuilder}
