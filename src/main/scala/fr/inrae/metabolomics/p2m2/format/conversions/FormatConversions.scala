@@ -27,7 +27,29 @@ object FormatConversions {
   """(\d{2}-\w+-\d{2})""",
     "dd-MMMM-yy",
     Seq( /* TODO : fill rules with Quantify Compound Summary Report reports */
-      "sept" -> "September"
+      "-sept-" -> "-September-",
+      "-Sept-" -> "-September-",
+      "-oct-" -> "-October-",
+      "-Oct-" -> "-October-",
+      "-nov-" -> "-November-",
+      "-Nov-" -> "-November-",
+      "-dec-" -> "-December-",
+      "-Dec-" -> "-December-",
+      "-jan-" -> "-January-",
+      "-Jan-" -> "-January-",
+      "-feb-" -> "-February-",
+      "-Feb-" -> "-February-",
+      "-mar-" -> "-March-",
+      "-Mar-" -> "-March-",
+      "-apr-" -> "-April-",
+      "-Apr-" -> "-April-",
+      "-may-" -> "-May-",
+      "-jun-" -> "-June-",
+      "-Jun-" -> "-June-",
+      "-jul-" -> "-July-",
+      "-Jul-" -> "-July-",
+      "-aug-" -> "-August-",
+      "-Aug-" -> "-August-",
     )
   )
 

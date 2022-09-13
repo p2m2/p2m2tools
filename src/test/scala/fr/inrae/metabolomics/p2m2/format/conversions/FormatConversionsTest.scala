@@ -124,6 +124,21 @@ object FormatConversionsTest extends TestSuite {
 
     }
 
+    test("QuantifySampleSummaryReportMassLynxToGenericP2M2 17-Jan-20") {
+      val o: GenericP2M2 =
+        QuantifySampleSummaryReportMassLynx(
+          origin = "none",
+          header = Header(Some("Fri Sep 20 14:23:33 2019")),
+          resultsBySample = Seq(("sample", Seq(
+            Map(
+              QuantifySampleSummaryReportMassLynx.HeaderField.Name -> "metabolite",
+              QuantifySampleSummaryReportMassLynx.HeaderField.`Acq.Date` -> "17-Jan-20"
+            ))))).toGenericP2M2
+
+      assert(o.samples.nonEmpty)
+      assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2020-01-17 00:00:00.0000"))
+    }
+
     test("QSSRMassLynxToQCSRMassLynx basic object to convert") {
       val x = QuantifySampleSummaryReportMassLynx(
         origin = "none",
