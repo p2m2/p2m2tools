@@ -243,11 +243,6 @@ object FormatConversions {
           (injections : CompoundSheetXcalibur) => {
             injections.compoundByInjection.map(
               ( values : Map[Xcalibur.HeaderField.HeaderField, String]) => {
-
-
-                println(values.get(Xcalibur.HeaderField.Filename))
-
-
                 Map(
                   GenericP2M2.HeaderField.metabolite -> injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.`Component Name`),
                   GenericP2M2.HeaderField.sample -> values.get(Xcalibur.HeaderField.Filename),
