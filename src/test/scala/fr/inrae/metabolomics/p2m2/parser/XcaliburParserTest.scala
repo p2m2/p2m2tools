@@ -2,6 +2,7 @@ package fr.inrae.metabolomics.p2m2.parser
 
 import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.{HeaderField, HeaderSheetField}
 import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur
+import fr.inrae.metabolomics.p2m2.parser.XLSParserTest.getClass
 import org.apache.poi.hssf.usermodel.HSSFWorkbook
 import utest.{TestSuite, Tests, test}
 
@@ -56,6 +57,13 @@ object XcaliburParserTest extends TestSuite {
       assert(out.results(0).compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date).contains("07/06/2022 08:57:12"))
     }
 
+
+    test("data2.test") {
+      val fileTestPath: String = getClass.getResource("/Xcalibur/data.test2.XLS").getPath
+      val out = XcaliburXlsParser.parse(fileTestPath)
+      assert(out.results(5).compoundByInjection(1).get(Xcalibur.HeaderField.RT).contains("NF"))
+    }
+
     test("extensionIsCompatible") {
       assert(XcaliburXlsParser.extensionIsCompatible("test.XLS"))
       assert(XcaliburXlsParser.extensionIsCompatible("test.xls"))
@@ -74,6 +82,7 @@ object XcaliburParserTest extends TestSuite {
       assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath))
       assert(!XcaliburXlsParser.sniffFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
     }
+
 
   }
 }

@@ -61,7 +61,12 @@ case object ExportData {
       )
     )
   }
-  def xlsP2M2(resultsSet : GenericP2M2): ByteArrayOutputStream = {
+  def xlsP2M2(resultsSetAll : GenericP2M2): ByteArrayOutputStream = {
+
+    /* clean results */
+    val resultsSet = GenericP2M2(resultsSetAll.samples.filter(
+      sample =>  sample.nonEmpty && sample.contains(GenericP2M2.HeaderField.area)
+    ))
 
     val resultsSetExtended: GenericP2M2FormatExtended  = decorWithChromatograph(resultsSet)
 
@@ -78,10 +83,11 @@ case object ExportData {
      * header
      */
     val rowChromatogramHeader = results.createRow(0)
-
+    // Add ID
+    rowChromatogramHeader.createCell(0).setCellValue(createHelper.createRichTextString("ID"))
     GenericP2M2.HeaderField.values.zipWithIndex.foreach {
       case (headName,idx) =>
-        rowChromatogramHeader.createCell(idx).setCellValue(createHelper.createRichTextString(ParserUtils.toString(headName)))
+        rowChromatogramHeader.createCell(idx+1).setCellValue(createHelper.createRichTextString(ParserUtils.toString(headName)))
     }
 
     /*TODO manage format
@@ -93,7 +99,6 @@ cell.setCellValue(new Nothing)
 cell.setCellStyle(cellStyle)
      *
      */
-
     /**
      * values
      */
@@ -118,7 +123,7 @@ cell.setCellStyle(cellStyle)
       .setCellValue(createHelper.createRichTextString("SAMPLE"))
 
     resultsSetExtended.samples.toList.sortBy(_.get(GenericP2M2FormatExtended.HeaderField.sample)).flatMap {
-      acquisition: Map[GenericP2M2FormatExtended.HeaderField.HeaderField, String] =>
+      case acquisition: Map[GenericP2M2FormatExtended.HeaderField.HeaderField, String] =>
         acquisition.get(GenericP2M2FormatExtended.HeaderField.sample)
     }.distinct.zipWithIndex.foreach {
       case (sample : String,idx : Int) =>

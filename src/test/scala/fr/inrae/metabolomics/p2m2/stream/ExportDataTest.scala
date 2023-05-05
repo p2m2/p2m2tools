@@ -1,6 +1,8 @@
 package fr.inrae.metabolomics.p2m2.stream
 
-import fr.inrae.metabolomics.p2m2.format.ms.GenericP2M2
+import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions
+import fr.inrae.metabolomics.p2m2.format.ms.{GenericP2M2, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
 import fr.inrae.metabolomics.p2m2.parser.{GCMSParser, OpenLabCDSParser, QuantifySummaryReportMassLynxParser, XcaliburXlsParser}
 
 import java.io.FileOutputStream
@@ -22,6 +24,7 @@ object ExportDataTest extends TestSuite {
     finally if (outputStream != null) outputStream.close()
   }
   val tests: Tests = Tests {
+
     test("xlsP2M2 empty export") {
       val out : ByteArrayOutputStream = ExportData.xlsP2M2(GenericP2M2(Seq()))
       val in : ByteArrayInputStream = new ByteArrayInputStream(out.toByteArray)
@@ -30,7 +33,7 @@ object ExportDataTest extends TestSuite {
       assert(workbook.getNumberOfSheets == 4)
       // + 2 ID , chromatographInjectionId
       assert(workbook.getSheetAt(0)
-        .getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size)
+        .getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size + 1)
     }
     test("xlsP2M2 basic export") {
       val out : ByteArrayOutputStream = ExportData.xlsP2M2(GenericP2M2(Seq(
@@ -39,7 +42,7 @@ object ExportDataTest extends TestSuite {
           GenericP2M2.HeaderField.metabolite -> "metabolite",
           GenericP2M2.HeaderField.retTime -> "0.1",
           GenericP2M2.HeaderField.height -> "0.101",
-          GenericP2M2.HeaderField.area -> "198",
+          GenericP2M2.HeaderField.area -> "198.2",
           GenericP2M2.HeaderField.vial -> "",
           GenericP2M2.HeaderField.acquisitionDate -> "2017-06-20 14:53:08.0000",
           GenericP2M2.HeaderField.exportDate -> "2017-06-21 14:53:08.0000",
@@ -50,14 +53,14 @@ object ExportDataTest extends TestSuite {
       //saveAsXls("xlsP2M2",out)
       assert(workbook.getNumberOfSheets == 4)
       // + 2 ID , chromatographInjectionId
-      assert(workbook.getSheetAt(0).getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size)
+      assert(workbook.getSheetAt(0).getRow(0).getLastCellNum == GenericP2M2.HeaderField.values.size+1)
       assert(workbook.getSheetAt(0).getLastRowNum == 1)
       assert(workbook.getSheetAt(0).getRow(1).getLastCellNum == GenericP2M2FormatExtended.HeaderField.values.size)
       assert(workbook.getSheetAt(0).getRow(1).getCell(0).toString.nonEmpty)
       assert(workbook.getSheetAt(0).getRow(1).getCell(1).toString == "sample")
       assert(workbook.getSheetAt(0).getRow(1).getCell(2).toString == "metabolite")
       assert(workbook.getSheetAt(0).getRow(1).getCell(3).toString == "0.1")
-      assert(workbook.getSheetAt(0).getRow(1).getCell(4).toString == "198")
+      assert(workbook.getSheetAt(0).getRow(1).getCell(4).toString == "198.2")
       assert(workbook.getSheetAt(0).getRow(1).getCell(5).toString == "0.101")
       assert(workbook.getSheetAt(0).getRow(1).getCell(6).toString == "0.1")
       assert(workbook.getSheetAt(0).getRow(1).getCell(7).toString == "")
@@ -76,11 +79,19 @@ object ExportDataTest extends TestSuite {
         GCMSParser.parse(getClass.getResource("/GCMS/13CPROT4.txt").getPath),
         OpenLabCDSParser.parse(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath),
         QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath),
-        XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+        XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath),
       ).foldLeft(GenericP2M2(Seq()))( (accumulator,v) => accumulator +v)
 
       val out : ByteArrayOutputStream = ExportData.xlsP2M2(mergeAllAcquisition)
       saveAsXls("xlsP2M2",out)
     }
+/*
+    test("xlsP2M2 create Xcalibur data.2") {
+      val u = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/data.test2.XLS").getPath)
+      val r = FormatConversions.XcaliburToGenericP2M2(u)
+
+      val out: ByteArrayOutputStream = ExportData.xlsP2M2(r)
+      saveAsXls("Xcalibur_data2", out)
+    }*/
   }
 }

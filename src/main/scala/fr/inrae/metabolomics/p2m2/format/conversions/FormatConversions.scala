@@ -74,6 +74,12 @@ object FormatConversions {
     Seq()
   )
 
+  val formatDateXcalibur2: (String, String, Seq[(String, String)]) = (
+    """(\d{2}/\d{2}/\d{2}\s+\d+:\d+:\d+)""",
+    "MM/dd/yy H:mm:ss",
+    Seq()
+  )
+
   def formatDateWithLocalDate(dateOpt : Option[String], format : (String,String,Seq[(String,String)])) : Option[String] = dateOpt match {
     case Some(date) =>
       format._1.r.findFirstMatchIn(date) match {
@@ -102,7 +108,7 @@ object FormatConversions {
 
           Some(v2.format(DateTimeFormatter.ofPattern(formatGenericP2M2)))
 
-        case None => System.err.println(s"Can't not apply conversion with FormatConversions.formatDateWithLocalDateTime [$date]") ; Some(date)
+        case None => None //System.err.println(s"Can't not apply conversion with FormatConversions.formatDateWithLocalDateTime [$date]") ; None
       }
     case None => None
   }
@@ -229,7 +235,8 @@ object FormatConversions {
     case y: QuantifySampleSummaryReportMassLynx => QSSRMassLynxToQCSRMassLynx(y)
   }
 
-  implicit def XcaliburToGenericP2M2(x: Xcalibur) : GenericP2M2 =
+  implicit def XcaliburToGenericP2M2(x: Xcalibur) : GenericP2M2 = {
+    println("***********************XcaliburToGenericP2M2***************************")
     GenericP2M2(
       samples = x.results
         .flatMap(
@@ -246,17 +253,23 @@ object FormatConversions {
                     GenericP2M2.HeaderField.acquisitionDate -> (values.get(Xcalibur.HeaderField.`Acq Date`) match {
                     case Some(d) =>
                       Try({
-                        val dtf = DateTimeFormatter.ofPattern("E MMM d H:m:s z u", Locale.ENGLISH)
+                        val dtf: DateTimeFormatter = DateTimeFormatter.ofPattern("E MMM d H:m:s z u", Locale.ENGLISH)
                         //Fri Jun 03 20:49:08 CEST 2022
                         //Tue Jun 20 14:53:08 CEST 2017
                         ZonedDateTime.parse(d, dtf) }) match {
                         case Success(v) => Some(v.format(DateTimeFormatter.ofPattern(formatGenericP2M2)))
-                        case Failure(_) => System.err.println(s"Can't not apply conversion with FormatConversions.formatDate1 [$d]") ; Some(d)
+                        case Failure(_) =>
+                          System.err.println(s"Can't not apply conversion with FormatConversions.formatDate1 [$d]")
+                          formatDateWithLocalDateTime(Some(d),formatDateXcalibur2)
                   }
                     case _ => None
                   }) ,
-                  GenericP2M2.HeaderField.exportDate ->
-                    formatDateWithLocalDateTime(injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date),formatDateXcalibur),
+                  GenericP2M2.HeaderField.exportDate -> {
+                       formatDateWithLocalDateTime(injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date),formatDateXcalibur) match {
+                    case Some(v) => Some(v)
+                    case None =>
+                      formatDateWithLocalDateTime(injections.compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date),formatDateXcalibur2)
+                      }},
                   GenericP2M2.HeaderField.injectedVolume -> values.get(Xcalibur.HeaderField.`Inj Vol`)
                 ).flatMap {
                   case (k,Some(v)) => Some(k,v)
@@ -267,6 +280,7 @@ object FormatConversions {
           }
         )
     )
+  }
 
   implicit def GCMSToGenericP2M2(x: GCMS) :  GenericP2M2 =
     GenericP2M2(
