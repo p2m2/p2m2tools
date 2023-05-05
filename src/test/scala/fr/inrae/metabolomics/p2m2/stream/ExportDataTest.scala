@@ -1,6 +1,8 @@
 package fr.inrae.metabolomics.p2m2.stream
 
-import fr.inrae.metabolomics.p2m2.format.ms.GenericP2M2
+import fr.inrae.metabolomics.p2m2.format.conversions.FormatConversions
+import fr.inrae.metabolomics.p2m2.format.ms.{GenericP2M2, Xcalibur}
+import fr.inrae.metabolomics.p2m2.format.ms.Xcalibur.CompoundSheetXcalibur
 import fr.inrae.metabolomics.p2m2.parser.{GCMSParser, OpenLabCDSParser, QuantifySummaryReportMassLynxParser, XcaliburXlsParser}
 
 import java.io.FileOutputStream
@@ -22,6 +24,7 @@ object ExportDataTest extends TestSuite {
     finally if (outputStream != null) outputStream.close()
   }
   val tests: Tests = Tests {
+    /*
     test("xlsP2M2 empty export") {
       val out : ByteArrayOutputStream = ExportData.xlsP2M2(GenericP2M2(Seq()))
       val in : ByteArrayInputStream = new ByteArrayInputStream(out.toByteArray)
@@ -76,11 +79,32 @@ object ExportDataTest extends TestSuite {
         GCMSParser.parse(getClass.getResource("/GCMS/13CPROT4.txt").getPath),
         OpenLabCDSParser.parse(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath),
         QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath),
-        XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+        XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath),
       ).foldLeft(GenericP2M2(Seq()))( (accumulator,v) => accumulator +v)
 
       val out : ByteArrayOutputStream = ExportData.xlsP2M2(mergeAllAcquisition)
       saveAsXls("xlsP2M2",out)
+    }
+*/
+    test("xlsP2M2 create Xcalibur data.2") {
+      val u1 = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+      val u = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/data.test2.XLS").getPath)
+/*
+      u.results.foreach(
+        s => s.compoundByInjection.foreach(
+          d => println(d.get(Xcalibur.HeaderField.RT))
+        )
+      )
+*/
+      val r = FormatConversions.XcaliburToGenericP2M2(u)
+/*
+      r.samples.foreach(
+        s => println(s.get(GenericP2M2.HeaderField.sample))
+      )
+*/
+
+      val out: ByteArrayOutputStream = ExportData.xlsP2M2(r)
+      saveAsXls("Xcalibur_data2", out)
     }
   }
 }

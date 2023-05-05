@@ -270,7 +270,9 @@ object FormatConversionsTest extends TestSuite {
       assert(FormatConversions.formatDateWithLocalDateTime(Some("2/25/2021 3:02:59 PM"),FormatConversions.formatOpenLabCDS).isDefined)
       assert(FormatConversions.formatDateWithLocalDateTime(Some("ERROR"),FormatConversions.formatMassLynxTxt).contains("ERROR"))
       assert(FormatConversions.formatDateWithLocalDateTime(Some("2/25/2021 3:02:59 PM"),FormatConversions.formatOpenLabCDS).contains("2021-02-25 15:02:59.0000"))
+      assert(FormatConversions.formatDateWithLocalDateTime(Some("04/27/23 20:53:00"),FormatConversions.formatDateXcalibur2).contains("2023-04-27 20:53:00.0000"))
     }
+
     test("Isocor toGenericP2M2") {
       val g : GenericP2M2 = Isocor(origin="").toGenericP2M2
       assert(g.samples==Seq())

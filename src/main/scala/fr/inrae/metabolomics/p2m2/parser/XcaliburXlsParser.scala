@@ -39,6 +39,8 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
       case _ => Seq()
     }
 
+    println(header)
+
     (XLSParserUtil.getRowCellIndexesFromTerm(sheet,"Filename").headOption match {
       case Some((row, cell)) =>
         (row + 1).to(sheet.getLastRowNum)
