@@ -22,7 +22,7 @@ RUN git clone ${REPOSITORY_URL} /p2m2tools_repo
 WORKDIR /p2m2tools_repo
 
 
-RUN git checkout ${BRANCH} && sbt coverageOff assembly
+RUN git checkout ${BRANCH} && mkdir -p assembly && sbt coverageOff assembly
 
 COPY p2m2tools /usr/bin/
 
