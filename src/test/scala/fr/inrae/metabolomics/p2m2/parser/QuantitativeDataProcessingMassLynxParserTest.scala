@@ -8,7 +8,7 @@ import scala.xml.XML
 object QuantitativeDataProcessingMassLynxParserTest extends TestSuite{
   val tests: Tests = Tests {
     test("file empty") {
-      QuantitativeDataProcessingMassLynxParser.parse(getClass.getResource("/MassLynx/xml/quandata.xml").getPath)
+      QuantitativeDataProcessingMassLynxParser.parseFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath)
     }
 
     test("calibration") {

@@ -5,6 +5,7 @@ import fr.inrae.metabolomics.p2m2
 import fr.inrae.metabolomics.p2m2.format.ms.{QuantifyCompoundSummaryReportMassLynx, QuantifySampleSummaryReportMassLynx, QuantifySummaryReportMassLynx}
 
 import scala.io.{Codec, Source}
+import scala.util.{Failure, Success, Try}
 object QuantifySummaryReportMassLynxParser
   extends Parser[QuantifySummaryReportMassLynx]
   with FormatSniffer {
@@ -66,7 +67,7 @@ object QuantifySummaryReportMassLynxParser
       })
   }
 
-  def parseArrayCompound[HeaderField <: Enumeration](t:HeaderField, toParse : Seq[String] ) :Seq[Map[HeaderField#Value,String]] = {
+  private def parseArrayCompound[HeaderField <: Enumeration](t:HeaderField, toParse : Seq[String] ) :Seq[Map[HeaderField#Value,String]] = {
       toParse.filter(_.trim.nonEmpty).find( x => x.trim.startsWith("Name") || x.trim.startsWith("#")) match {
         case Some(headerString) =>
           /* first value of array in the number corresponding to the injection*/
@@ -98,7 +99,7 @@ object QuantifySummaryReportMassLynxParser
     )
   }
 
-  def getSampleSummaryReport(filename: String, toParse: Seq[String]): QuantifySampleSummaryReportMassLynx = {
+  private def getSampleSummaryReport(filename: String, toParse: Seq[String]): QuantifySampleSummaryReportMassLynx = {
     QuantifySampleSummaryReportMassLynx(
       origin = filename,
       header = parseHeader(toParse),
@@ -106,26 +107,30 @@ object QuantifySummaryReportMassLynxParser
     )
   }
 
-  def parse(filename : String) : QuantifySummaryReportMassLynx = {
-    val s = Source.fromFile(filename)(Codec("ISO-8859-1"))
-    val lines = s.getLines().toList
-    s.close()
+  def parse(source : Source): QuantifySummaryReportMassLynx = {
+    val lines = source.getLines().toList
+    source.close()
 
-    """Sample\s+Name:""".r.findFirstMatchIn(lines.slice(0,10).mkString("\n")) match {
+    """Sample\s+Name:""".r.findFirstMatchIn(lines.slice(0, 10).mkString("\n")) match {
       case Some(_) => getSampleSummaryReport(
-        filename,
+        source.descr,
         lines
           .map(_.trim)
           .filter(_.nonEmpty)
       )
       case None => getCompoundSummaryReport(
-        filename,
+        source.descr,
         lines
           .map(_.trim)
           .filter(_.nonEmpty)
       )
     }
   }
+
+  def parseByteArray(content: Array[Byte], encode : Codec = Codec("ISO-8859-1")) : QuantifySummaryReportMassLynx =
+    parse(Source.fromBytes(content)(encode))
+  def parseFile(filename : String, encode : Codec = Codec("ISO-8859-1")) : QuantifySummaryReportMassLynx =
+    parse(Source.fromFile(filename)(encode))
 
   override def extensionIsCompatible(filename: String): Boolean = {
     filename.split("\\.").lastOption match {
@@ -134,15 +139,21 @@ object QuantifySummaryReportMassLynxParser
     }
   }
 
-  override def sniffFile(filename: String): Boolean = {
-    try {
-
-      val source =       Source.fromFile(filename)(Codec("ISO-8859-1"))
-      val lines = source.getLines().slice(0,20).toList
-      source.close()
-      parseHeader(lines).dateStr.isDefined
-    } catch {
-      case e : Throwable => System.err.println(e.toString) ; false
+  private def testHeader(source: Source): Boolean = {
+    val trunkLines = source.getLines().slice(0, 20).toList
+    source.close()
+    parseHeader(trunkLines).dateStr.isDefined
+  }
+  override def sniffByteArray(content: Array[Byte], encode: Codec): Boolean = {
+    Try(testHeader(Source.fromBytes(content)(encode))) match {
+      case Success(v) => v
+      case Failure(_) => false
+    }
+  }
+  override def sniffFile(filename: String, encode: Codec): Boolean = {
+    Try(testHeader(Source.fromFile(filename)(encode))) match {
+      case Success(v) => v
+      case Failure(_) => false
     }
   }
 }

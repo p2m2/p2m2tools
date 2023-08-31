@@ -35,5 +35,9 @@ object ParserManagerTest extends TestSuite {
         x => assert(x.isInstanceOf[Xcalibur])
       }
     }
+
+    test("byte array") {
+      assert(ParserManager.buildMassSpectrometryObject(Array[Byte]()).isEmpty)
+    }
   }
 }

@@ -104,19 +104,25 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
     )
   }
 
-  def parse(filename : String) : GCMS = {
-    val source =       Source.fromFile(filename)(Codec("ISO-8859-1"))
+  def parse(source : Source): GCMS = {
     val lines = source.getLines()
     val ret = get(
-      filename,
+      source.descr,
       lines.toList
-        .map( _.trim )
-        .filter( _.nonEmpty)
-        .filter( ! _.startsWith("#") )
+        .map(_.trim)
+        .filter(_.nonEmpty)
+        .filter(!_.startsWith("#"))
     )
     source.close()
     ret
   }
+
+  def parseByteArray(content: Array[Byte], encode : Codec = Codec("ISO-8859-1")) : GCMS =
+    parse(Source.fromBytes(content)(encode))
+
+  def parseFile(filename: String, encode : Codec = Codec("ISO-8859-1")) : GCMS =
+    parse(Source.fromFile(filename)(encode))
+
 
   override def extensionIsCompatible(filename: String): Boolean = {
     filename.split("\\.").lastOption match {
@@ -125,16 +131,24 @@ object GCMSParser extends Parser[GCMS] with FormatSniffer {
     }
   }
 
-  override def sniffFile(filename: String): Boolean = {
-    Try({
-      val source =       Source.fromFile(filename)(Codec("ISO-8859-1"))
-      val lines = source.getLines().slice(0,20).toList
-      source.close()
-      Try(parseHeader(lines)) match {
-        case Success(m) if m.nonEmpty => true
-        case _ => false
-      }
-    }) match {
+  private def testHeader(source : Source) : Boolean = {
+    val trunkLines = source.getLines().slice(0, 20).toList
+    source.close()
+    Try(parseHeader(trunkLines)) match {
+      case Success(m) if m.nonEmpty => true
+      case _ => false
+    }
+  }
+
+  override def sniffByteArray(content: Array[Byte], encode : Codec): Boolean = {
+    Try(testHeader(Source.fromBytes(content)(encode))) match {
+      case Success(v) => v
+      case Failure(_) => false
+    }
+  }
+
+  override def sniffFile(filename: String, encode : Codec ): Boolean = {
+    Try(testHeader(Source.fromFile(filename)(encode))) match {
       case Success(v) => v
       case Failure(_) => false
     }

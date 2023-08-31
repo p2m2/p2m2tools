@@ -13,7 +13,7 @@ case class OpenLabCDS2CompilCsv(target_head : String ) {
             println(inputFiles.mkString("\n"))
 
             inputFiles.map(
-                  fileName => OpenLabCDSParser.parse(fileName)
+                  fileName => OpenLabCDSParser.parseFile(fileName)
             )
       }
 

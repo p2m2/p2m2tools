@@ -18,7 +18,7 @@ case class MassLynxOutput2IsocorInput(
             println(inputFiles.mkString("\n"))
 
             inputFiles.map(
-                  fileName => QuantifySummaryReportMassLynxParser.parse(fileName)
+                  fileName => QuantifySummaryReportMassLynxParser.parseFile(fileName)
             )
       }
 
