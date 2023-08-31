@@ -236,7 +236,6 @@ object FormatConversions {
   }
 
   implicit def XcaliburToGenericP2M2(x: Xcalibur) : GenericP2M2 = {
-    println("***********************XcaliburToGenericP2M2***************************")
     GenericP2M2(
       samples = x.results
         .flatMap(
@@ -258,9 +257,7 @@ object FormatConversions {
                         //Tue Jun 20 14:53:08 CEST 2017
                         ZonedDateTime.parse(d, dtf) }) match {
                         case Success(v) => Some(v.format(DateTimeFormatter.ofPattern(formatGenericP2M2)))
-                        case Failure(_) =>
-                          System.err.println(s"Can't not apply conversion with FormatConversions.formatDate1 [$d]")
-                          formatDateWithLocalDateTime(Some(d),formatDateXcalibur2)
+                        case Failure(_) => formatDateWithLocalDateTime(Some(d),formatDateXcalibur2)
                   }
                     case _ => None
                   }) ,

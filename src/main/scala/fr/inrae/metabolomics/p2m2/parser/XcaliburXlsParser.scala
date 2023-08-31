@@ -40,8 +40,6 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
       case _ => Seq()
     }
 
-    println(header)
-
     (XLSParserUtil.getRowCellIndexesFromTerm(sheet,"Filename").headOption match {
       case Some((row, cell)) =>
         (row + 1).to(sheet.getLastRowNum)
@@ -112,7 +110,6 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
   private def testHeader(is: InputStream): Boolean = {
     try {
       val workbook: HSSFWorkbook = new HSSFWorkbook(is)
-
       0.until(workbook.getNumberOfSheets)
         .map(workbook.getSheetAt)
         .exists(sheet => {
