@@ -214,7 +214,7 @@ object GCMSParserTest extends TestSuite {
     }
 
     test("parse 13CPROT1") {
-      val v = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT1.txt").getPath)
+      val v = GCMSParser.parseFile(getClass.getResource("/GCMS/13CPROT1.txt").getPath)
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT1.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:08:03")
@@ -222,7 +222,7 @@ object GCMSParserTest extends TestSuite {
     }
 
     test("parse 13CPROT2") {
-      val v = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT2.txt").getPath)
+      val v = GCMSParser.parseFile(getClass.getResource("/GCMS/13CPROT2.txt").getPath)
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT2.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:09:36")
@@ -230,7 +230,7 @@ object GCMSParserTest extends TestSuite {
     }
 
     test("parse 13CPROT3") {
-      val v = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT3.txt").getPath)
+      val v = GCMSParser.parseFile(getClass.getResource("/GCMS/13CPROT3.txt").getPath)
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT3.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:09:49")
@@ -238,7 +238,7 @@ object GCMSParserTest extends TestSuite {
     }
 
     test("parse 13CPROT4") {
-      val v = GCMSParser.parse(getClass.getResource("/GCMS/13CPROT4.txt").getPath)
+      val v = GCMSParser.parseFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath)
       assert (v.header.get(HeaderFileField.Data_File_Name).last == """C:\Users\ydellero\Desktop\Projets CR\P2M2\TQD\210510_13C_Younes\13CPROT4.qgd""" )
       assert (v.header.get(HeaderFileField.Output_Date).last == "23/08/2021")
       assert (v.header.get(HeaderFileField.Output_Time).last == "14:10:14")

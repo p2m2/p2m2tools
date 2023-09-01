@@ -11,7 +11,7 @@ case class GCMSOutputFiles2IsocorInput(resolution : Int = 2000, separator_name :
             println(gcmsInputFiles.mkString("\n"))
 
             gcmsInputFiles.map(
-                  fileName => GCMSParser.parse(fileName)
+                  fileName => GCMSParser.parseFile(fileName)
             )
       }
 

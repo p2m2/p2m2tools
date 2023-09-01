@@ -76,10 +76,10 @@ object ExportDataTest extends TestSuite {
 
     test("xlsP2M2 merge different format") {
       val mergeAllAcquisition : GenericP2M2 = Seq(
-        GCMSParser.parse(getClass.getResource("/GCMS/13CPROT4.txt").getPath),
-        OpenLabCDSParser.parse(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath),
-        QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath),
-        XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath),
+        GCMSParser.parseFile(getClass.getResource("/GCMS/13CPROT4.txt").getPath),
+        OpenLabCDSParser.parseFile(getClass.getResource("/OpenLabCDS/Report_Ex1.txt").getPath),
+        QuantifySummaryReportMassLynxParser.parseFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath),
+        XcaliburXlsParser.parseFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath),
       ).foldLeft(GenericP2M2(Seq()))( (accumulator,v) => accumulator +v)
 
       val out : ByteArrayOutputStream = ExportData.xlsP2M2(mergeAllAcquisition)

@@ -124,7 +124,7 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
 
   test("complete file") {
     val results : QuantifyCompoundSummaryReportMassLynx =
-      QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath)
+      QuantifySummaryReportMassLynxParser.parseFile(getClass.getResource("/MassLynx/mass_15Ngly.txt").getPath)
         .toQuantifyCompoundSummaryReportMassLynx
 
     assert( results.header == Header(Some("Fri Sep 20 14:23:33 2019")) )
@@ -134,7 +134,7 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
   test("targeted compound file") {
     val results : QuantifyCompoundSummaryReportMassLynx =
       QuantifySummaryReportMassLynxParser
-        .parse(
+        .parseFile(
           getClass.getResource("/MassLynx/targeted/190522_97.txt").getPath)
         .toQuantifyCompoundSummaryReportMassLynx
 
@@ -171,7 +171,7 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
 
     test("conversion QuantifyCompoundSummaryReportMassLynx -> QuantifySampleSummaryReportMassLynx") {
       val results: QuantifyCompoundSummaryReportMassLynx =
-        QuantifySummaryReportMassLynxParser.parse(getClass.getResource("/MassLynx/targeted/070120_Saturation_CQA.txt").getPath)
+        QuantifySummaryReportMassLynxParser.parseFile(getClass.getResource("/MassLynx/targeted/070120_Saturation_CQA.txt").getPath)
           .toQuantifyCompoundSummaryReportMassLynx
 
       val resOfOneSample = results.toQuantifySampleSummaryReportMassLynx
@@ -183,12 +183,12 @@ object QuantifyCompoundSummaryReportMassLynxParserTest extends TestSuite {
     }
 
     test("conversion SortieMassLynxCompoundToutesColonnes.txt") {
-      assert(Try(QuantifySummaryReportMassLynxParser.parse(
+      assert(Try(QuantifySummaryReportMassLynxParser.parseFile(
         getClass.getResource("/MassLynx/targeted/SortieMassLynxCompoundToutesColonnes.txt").getPath)).isSuccess)
     }
 
     test("conversion SortieMassLynxSampleToutesColonnes.txt") {
-    val o = QuantifySummaryReportMassLynxParser.parse(
+    val o = QuantifySummaryReportMassLynxParser.parseFile(
       getClass.getResource("/MassLynx/targeted/SortieMassLynxSampleToutesColonnes.txt").getPath)
 
       assert(o.toQuantifySampleSummaryReportMassLynx.resultsBySample.nonEmpty)

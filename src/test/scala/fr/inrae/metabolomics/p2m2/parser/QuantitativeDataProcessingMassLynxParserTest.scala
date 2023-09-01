@@ -1,14 +1,17 @@
 package fr.inrae.metabolomics.p2m2.parser
 
+import fr.inrae.metabolomics.p2m2.format.XMLQuantitativeDataProcessingMassLynx
 import fr.inrae.metabolomics.p2m2.format.XMLQuantitativeDataProcessingMassLynx.{CalibrationData, SecondaryPeaks}
 import utest.{TestSuite, Tests, test}
 
+import java.nio.file.{Files, Paths}
+import scala.util.Try
 import scala.xml.XML
 
 object QuantitativeDataProcessingMassLynxParserTest extends TestSuite{
   val tests: Tests = Tests {
     test("file empty") {
-      QuantitativeDataProcessingMassLynxParser.parse(getClass.getResource("/MassLynx/xml/quandata.xml").getPath)
+      assert(Try(QuantitativeDataProcessingMassLynxParser.parseFile(getClass.getResource("").getPath)).isFailure)
     }
 
     test("calibration") {
@@ -49,6 +52,21 @@ object QuantitativeDataProcessingMassLynxParserTest extends TestSuite{
       assert(!QuantitativeDataProcessingMassLynxParser.sniffFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath))
       assert(!QuantitativeDataProcessingMassLynxParser.sniffFile(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
       assert(QuantitativeDataProcessingMassLynxParser.sniffFile(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
+    }
+
+    test("sniffByteArray") {
+      val data = Files.readAllBytes(Paths.get(getClass.getResource("/MassLynx/xml/quandata.xml").getPath))
+      assert(QuantitativeDataProcessingMassLynxParser.sniffByteArray(data))
+    }
+
+    test("sniffByteArray wrong file") {
+      val data = Files.readAllBytes(Paths.get(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
+      assert(!QuantitativeDataProcessingMassLynxParser.sniffByteArray(data))
+    }
+
+    test("parseByteArray") {
+      val data = Files.readAllBytes(Paths.get(getClass.getResource("/Xcalibur/bad_file_xls.xls").getPath))
+      assert(Try(QuantitativeDataProcessingMassLynxParser.parseByteArray(data)).isFailure)
     }
   }
 }

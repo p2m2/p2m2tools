@@ -1,0 +1,37 @@
+2023.07.07 14:55:53 INFO  Started: Metals version 0.11.12 in workspace '/home/ofilangi/workspace/GITHUB/p2m2tools' for client Visual Studio Code 1.80.0.[0m
+juil. 07, 2023 2:55:53 PM org.flywaydb.core.internal.license.VersionPrinter printVersionOnly
+INFOS: Flyway Community Edition 9.16.3 by Redgate
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.license.VersionPrinter printVersion
+INFOS: See release notes here: https://rd.gt/416ObMi
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.license.VersionPrinter printVersion
+INFOS: 
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.database.base.BaseDatabaseType createDatabase
+INFOS: Database: jdbc:h2:file:/home/ofilangi/workspace/GITHUB/p2m2tools/.metals/metals (H2 2.1)
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory allAppliedMigrations
+INFOS: Schema history table "PUBLIC"."flyway_schema_history" does not exist yet
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.command.DbValidate validate
+INFOS: Successfully validated 4 migrations (execution time 00:00.017s)
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.schemahistory.JdbcTableSchemaHistory create
+INFOS: Creating Schema History table "PUBLIC"."flyway_schema_history" ...
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.command.DbMigrate migrateGroup
+INFOS: Current version of schema "PUBLIC": << Empty Schema >>
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFOS: Migrating schema "PUBLIC" to version "1 - Create tables"
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFOS: Migrating schema "PUBLIC" to version "2 - Server discovery"
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFOS: Migrating schema "PUBLIC" to version "3 - Jar symbols"
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.command.DbMigrate doMigrateGroup
+INFOS: Migrating schema "PUBLIC" to version "4 - Fingerprints"
+juil. 07, 2023 2:55:54 PM org.flywaydb.core.internal.command.DbMigrate logSummary
+INFOS: Successfully applied 4 migrations to schema "PUBLIC", now at version v4 (execution time 00:00.067s)
+2023.07.07 14:55:54 INFO  time: initialize in 0.56s[0m
+2023.07.07 14:55:57 WARN  Build server is not auto-connectable.[0m
+2023.07.07 14:55:57 WARN  no build target for: /home/ofilangi/workspace/GITHUB/p2m2tools/src/main/scala/fr/inrae/metabolomics/p2m2/command/GCMS2IsocorCommand.scala[0m
+2023.07.07 14:56:00 INFO  no build target found for /home/ofilangi/workspace/GITHUB/p2m2tools/src/main/scala/fr/inrae/metabolomics/p2m2/command/GCMS2IsocorCommand.scala. Using presentation compiler with project's scala-library version: 3.2.2[0m
+2023.07.07 14:56:02 INFO  time: code lens generation in 4.94s[0m
+2023.07.07 15:02:37 WARN  no build target for: /home/ofilangi/workspace/GITHUB/p2m2tools/src/main/scala/fr/inrae/metabolomics/p2m2/converter/GCMSOutputFiles2IsocorInput.scala[0m
+2023.07.07 15:02:46 WARN  no build target for: /home/ofilangi/workspace/GITHUB/p2m2tools/src/main/scala/fr/inrae/metabolomics/p2m2/parser/GCMSParser.scala[0m
+2023.07.07 15:38:32 INFO  Shutting down server[0m
+2023.07.07 15:38:32 INFO  shutting down Metals[0m
+2023.07.07 15:38:32 INFO  Exiting server[0m
