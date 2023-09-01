@@ -7,7 +7,8 @@ import Xcalibur.HeaderSheetField.HeaderSheetField
 import org.apache.poi.hssf.usermodel.{HSSFSheet, HSSFWorkbook}
 import org.apache.poi.ss.usermodel.{CellType, DateUtil}
 
-import java.io.{File, FileInputStream}
+import java.io.{ByteArrayInputStream, File, FileInputStream, InputStream}
+import scala.io.{Codec, Source}
 import scala.util.{Failure, Success, Try}
 
 object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
@@ -25,7 +26,7 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
 
   /**
    * Get the list of Injection
-   * @param sheet
+   * @param sheet : excel sheet to parse
    * @return
    */
   def getResults(sheet : HSSFSheet) : Seq[Map[HeaderField,String]] = {
@@ -39,30 +40,29 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
       case _ => Seq()
     }
 
-    println(header)
-
     (XLSParserUtil.getRowCellIndexesFromTerm(sheet,"Filename").headOption match {
       case Some((row, cell)) =>
         (row + 1).to(sheet.getLastRowNum)
           .filter(sheet.getRow(_) != null)
           .map(rowIndex => {
             cell.to(sheet.getRow(rowIndex).getLastCellNum)
-              .map{
-                case cellIndex =>
-                val cell = sheet.getRow(rowIndex).getCell(cellIndex)
-               // println(cell.getCellStyle.getDataFormatString,cell.getRichStringCellValue,cell.getCellType,cell.getStringCellValue)
+              .map {
+                cellIndex =>
+                  val cell = sheet.getRow(rowIndex).getCell(cellIndex)
+                  // println(cell.getCellStyle.getDataFormatString,cell.getRichStringCellValue,cell.getCellType,cell.getStringCellValue)
                   //println(cell.getStringCellValue)
                   Try(cell.getCellType) match {
                     case Success(CellType.NUMERIC) =>
                       if (DateUtil.isCellDateFormatted(cell)) {
                         cell.getDateCellValue.toString
-                        } else {
+                      } else {
                         cell.getNumericCellValue.toString
                       }
                     case Success(_) => cell.getRichStringCellValue.toString
                     case Failure(_) => ""
                   }
-          }})
+              }
+          })
       case _ => Seq()
     }) takeWhile( _.mkString("")!="") map {
       (seq: Seq[String]) =>
@@ -76,20 +76,18 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
         }.toMap
     }
   }
-
-  override def parse(filename : String) : Xcalibur = {
-    val file = new FileInputStream(new File(filename))
-    val workbook : HSSFWorkbook = new HSSFWorkbook(file)
+  def parse(is: InputStream, info : String) : Xcalibur = {
+    val workbook: HSSFWorkbook = new HSSFWorkbook(is)
     val numSheet = workbook.getNumberOfSheets
 
-    val compounds : Seq[CompoundSheetXcalibur] = 0.until(numSheet)
-      .map( workbook.getSheetAt )
+    val compounds: Seq[CompoundSheetXcalibur] = 0.until(numSheet)
+      .map(workbook.getSheetAt)
       .map(
         sheet => {
           sheet -> XLSParserUtil.getVerticalKeyValue(sheet)
         })
       .flatMap {
-        case (sheet : HSSFSheet, mapping : Map[String,String]) =>
+        case (sheet: HSSFSheet, mapping: Map[String, String]) =>
           val header = getHeaderSheet(mapping)
           header.filter(_._2.trim.nonEmpty) match {
             case head if head.nonEmpty => Some(CompoundSheetXcalibur(header, getResults(sheet)))
@@ -97,29 +95,38 @@ object XcaliburXlsParser extends Parser[Xcalibur] with FormatSniffer {
           }
       }
 
-    Xcalibur(filename,compounds)
+    Xcalibur(info, compounds)
   }
+
+  def parseByteArray(content: Array[Byte], encode: Codec) : Xcalibur =
+    parse(new ByteArrayInputStream(content),"stream"+content.length)
+  override def parseFile(filename : String, encode: Codec) : Xcalibur =
+    parse(new FileInputStream(new File(filename)),filename)
+
 
   override def extensionIsCompatible(filename: String): Boolean = {
     filename.split("\\.").last.trim.toLowerCase == "xls"
   }
-
-  override def sniffFile(filename: String): Boolean = {
-
+  private def testHeader(is: InputStream): Boolean = {
     try {
-      val file = new FileInputStream(new File(filename))
-      val workbook: HSSFWorkbook = new HSSFWorkbook(file)
-
+      val workbook: HSSFWorkbook = new HSSFWorkbook(is)
       0.until(workbook.getNumberOfSheets)
         .map(workbook.getSheetAt)
         .exists(sheet => {
-        XLSParserUtil.getRowCellIndexesFromTerm(sheet, "Filename").headOption match {
-          case Some(_) => true
-          case None => false
-        }
-      })
+          XLSParserUtil.getRowCellIndexesFromTerm(sheet, "Filename").headOption match {
+            case Some(_) => true
+            case None => false
+          }
+        })
     } catch {
       case _: Throwable => false
     }
+  }
+  override def sniffByteArray(content: Array[Byte], encode: Codec): Boolean = {
+    Try(testHeader(new ByteArrayInputStream(content))).getOrElse(false)
+  }
+
+  override def sniffFile(filename: String, encode: Codec): Boolean = {
+    Try(testHeader(new FileInputStream(new File(filename)))).getOrElse(false)
   }
 }

@@ -15,7 +15,7 @@ scmInfo := Some(
 )
 
 versionScheme := Some("early-semver")
-val static_version      = "0.2.1"
+val static_version      = "0.2.2"
 val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_version )
 
 version :=  version_build
@@ -23,11 +23,11 @@ version :=  version_build
 libraryDependencies ++= Seq(
   "com.lihaoyi" %% "utest" % "0.8.1" % Test,
   "org.apache.logging.log4j" % "log4j-to-slf4j" % "2.20.0" % Test,
-  "org.slf4j" % "slf4j-simple" % "2.0.5" % Test,
-  "org.apache.poi" % "poi-ooxml" % "5.2.2",
+  "org.slf4j" % "slf4j-simple" % "2.0.7" % Test,
+  "org.apache.poi" % "poi-ooxml" % "5.2.3",
   "com.github.scopt" %% "scopt" % "4.1.0",
-  "com.lihaoyi" %% "upickle" % "3.0.0",
-  "org.scala-lang.modules" %% "scala-xml" % "2.1.0" % Provided,
+  "com.lihaoyi" %% "upickle" % "3.1.2",
+  "org.scala-lang.modules" %% "scala-xml" % "2.2.0" % Provided,
 )
 
 // Coverage

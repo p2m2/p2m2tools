@@ -40,7 +40,7 @@ object XcaliburParserTest extends TestSuite {
     }
 
     test("parse test xls file") {
-      val out = XcaliburXlsParser.parse(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
+      val out = XcaliburXlsParser.parseFile(getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
       assert(out.origin == getClass.getResource("/Xcalibur/resuts_inj1_Long.XLS").getPath)
       assert(out.results.length==6)
       assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("CAT")))
@@ -60,7 +60,7 @@ object XcaliburParserTest extends TestSuite {
 
     test("data2.test") {
       val fileTestPath: String = getClass.getResource("/Xcalibur/data.test2.XLS").getPath
-      val out = XcaliburXlsParser.parse(fileTestPath)
+      val out = XcaliburXlsParser.parseFile(fileTestPath)
       assert(out.results(5).compoundByInjection(1).get(Xcalibur.HeaderField.RT).contains("NF"))
     }
 
