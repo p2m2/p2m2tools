@@ -1,4 +1,4 @@
-scalaVersion := "2.13.8"
+scalaVersion := "2.13.12"
 
 name := "P2M2Tools"
 organizationName := "p2m2"
@@ -16,6 +16,7 @@ scmInfo := Some(
 
 versionScheme := Some("early-semver")
 val static_version      = "0.2.3"
+
 val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_version )
 
 version :=  version_build
