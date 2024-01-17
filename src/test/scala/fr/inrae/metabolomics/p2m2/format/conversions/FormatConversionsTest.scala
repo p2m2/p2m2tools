@@ -204,6 +204,22 @@ object FormatConversionsTest extends TestSuite {
       assert(o.samples.head.get(GenericP2M2.HeaderField.acquisitionDate).contains("2017-06-20 14:53:08.0000"))
     }
 
+    test("Xcalibur big number bug #10 - service-p2m2tools-api") {
+      val o : GenericP2M2 =
+        Xcalibur(
+          origin = "none",
+          results = Seq(CompoundSheetXcalibur(
+            compoundInformationHeader = Map(
+              Xcalibur.HeaderSheetField.`Component Name` -> "metabolite"
+            ),
+            compoundByInjection = Seq(Map(
+              Xcalibur.HeaderField.Filename -> "sample",
+              Xcalibur.HeaderField.Area -> "1.00040269287222E7",
+            )))))
+
+      assert(o.samples.head.get(GenericP2M2.HeaderField.area).contains("1.00040269287222E7"))
+    }
+
     test("GCMS empty object to convert") {
       val o : GenericP2M2 =
         GCMS(origin = "none")
