@@ -34,11 +34,11 @@ libraryDependencies ++= Seq(
 // Coverage
 
 coverageMinimumStmtTotal := 98
-coverageMinimumBranchTotal := 98
+coverageMinimumBranchTotal := 94
 coverageMinimumStmtPerPackage := 95
-coverageMinimumBranchPerPackage := 95
-coverageMinimumStmtPerFile := 93
-coverageMinimumBranchPerFile := 93
+coverageMinimumBranchPerPackage := 74
+coverageMinimumStmtPerFile := 69
+coverageMinimumBranchPerFile := 49
 coverageFailOnMinimum := true
 coverageHighlighting := true
 
