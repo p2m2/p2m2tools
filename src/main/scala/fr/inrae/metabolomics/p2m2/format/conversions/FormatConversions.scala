@@ -113,8 +113,8 @@ object FormatConversions {
     case None => None
   }
 
-  def formatAsDouble(s: Option[String]): Option[String] = s match {
-    case Some(s2) =>  """([0-9.]+)""".r.findFirstMatchIn (s2) match {
+  private def formatAsDouble(s: Option[String]): Option[String] = s match {
+    case Some(s2) =>  """([0-9.]+E?[0-9]*)""".r.findFirstMatchIn (s2) match {
                     case Some (v) => Some(v.group (0).toDouble.toString)
                     case None => None
                   }

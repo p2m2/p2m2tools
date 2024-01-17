@@ -57,6 +57,13 @@ object XcaliburParserTest extends TestSuite {
       assert(out.results(0).compoundInformationHeader.get(Xcalibur.HeaderSheetField.Date).contains("07/06/2022 08:57:12"))
     }
 
+    test("parse test xls file") {
+      val out = XcaliburXlsParser.parseFile(getClass.getResource("/Xcalibur/test_big_number_10.XLS").getPath)
+      assert(out.origin == getClass.getResource("/Xcalibur/test_big_number_10.XLS").getPath)
+      assert(out.results.exists(_.compoundInformationHeader.get(HeaderSheetField.`Component Name`).contains("EC-PLG")))
+      assert(out.results(2).compoundByInjection(0).get(Xcalibur.HeaderField.Area).contains("1.00040269287222E7"))
+    }
+
 
     test("data2.test") {
       val fileTestPath: String = getClass.getResource("/Xcalibur/data.test2.XLS").getPath
