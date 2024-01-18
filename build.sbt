@@ -15,7 +15,7 @@ scmInfo := Some(
 )
 
 versionScheme := Some("early-semver")
-val static_version      = "0.2.3"
+val static_version      = "0.2.3c"
 
 val version_build = scala.util.Properties.envOrElse("PROG_VERSION", static_version )
 
